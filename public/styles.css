@@ -57,6 +57,8 @@ body {
     gap: 12px;
     text-decoration: none;
     transition: opacity 0.3s;
+    flex-shrink: 1;
+    min-width: 0;
 }
 
 .logo:hover {
@@ -70,6 +72,8 @@ body {
     gap: 0;
     justify-content: center;
     margin-left: 4px;
+    min-width: 0;
+    flex: 1;
 }
 
 .logo-icon {
@@ -90,6 +94,8 @@ body {
     font-size: 1.2rem;
     line-height: 1.2;
     margin: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .logo-letter-large {
@@ -1363,6 +1369,59 @@ section {
 
     .page-title {
         font-size: 1.8rem;
+    }
+
+    .container {
+        padding: 0 15px;
+    }
+
+    .logo-text {
+        font-size: 0.9rem;
+    }
+
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 360px) {
+    .container {
+        padding: 0 12px;
+    }
+
+    .hero-title {
+        font-size: 1.75rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .section-title {
+        font-size: 1.6rem;
+    }
+
+    .page-title {
+        font-size: 1.6rem;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        font-size: 0.9rem;
+    }
+
+    .logo-text {
+        font-size: 0.85rem;
+    }
+
+    .logo-icon {
+        width: 35px;
+        height: 35px;
+    }
+
+    .contact-form-wrapper {
+        padding: 1.2rem;
     }
 }
 
