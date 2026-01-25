@@ -34,6 +34,11 @@ window.addEventListener('scroll', () => {
 
 // Stats Counter Animation
 function animateCounter(element, target, duration = 2000) {
+    // If target is 0, set it directly without animation
+    if (target === 0) {
+        element.textContent = 0;
+        return;
+    }
     let start = 0;
     const increment = target / (duration / 16);
     const timer = setInterval(() => {
@@ -83,7 +88,7 @@ if (contactForm) {
         const message = formData.get('message') || '';
         
         // Create WhatsApp message
-        const whatsappMessage = `Hello SampraDayam Events!%0A%0A` +
+        const whatsappMessage = `Hello SAMPRDAYAM EVENTS!%0A%0A` +
             `Name: ${encodeURIComponent(name)}%0A` +
             `Event Type: ${encodeURIComponent(eventType)}%0A` +
             `Location: ${encodeURIComponent(location)}%0A` +
