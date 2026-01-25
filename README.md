@@ -1,10 +1,10 @@
-# Sampradayam Events
+# SampraDayam Events
 
-A modern website for Sampradayam Events, a premier event management company based in Nallajerla.
+A modern website for SampraDayam Events, a premier event management company based in Nallajerla.
 
 ## About
 
-**Sampradayam Events** - *Every Celebration is Memory*
+**SampraDayam Events** - *Every Celebration is Memory*
 
 We specialize in creating unforgettable experiences for all your special occasions. From intimate gatherings to grand celebrations, we bring your vision to life with meticulous planning and execution.
 
@@ -38,4 +38,4 @@ We offer comprehensive event management services including:
 
 ## Project
 
-This repository contains the website code for Sampradayam Events, showcasing our services, portfolio, and contact information.
+This repository contains the website code for SampraDayam Events, showcasing our services, portfolio, and contact information.
