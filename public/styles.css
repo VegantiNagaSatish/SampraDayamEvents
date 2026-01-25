@@ -1032,6 +1032,7 @@ section {
     flex-direction: column;
     gap: 0.25rem;
     flex: 1;
+    align-items: flex-start;
 }
 
 .footer-logo-text-wrapper .logo-text {
@@ -1040,13 +1041,16 @@ section {
 }
 
 .footer-tagline {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.7);
     font-style: normal;
     margin: 0;
-    font-size: 0.75rem;
+    margin-top: 2px;
+    font-size: 0.65rem;
     line-height: 1.3;
     font-weight: 400;
-    letter-spacing: 0.2px;
+    letter-spacing: 0.3px;
+    text-align: right;
+    align-self: flex-end;
 }
 
 .footer-description {
@@ -1150,26 +1154,29 @@ section {
 .social-link {
     text-decoration: none;
     transition: all 0.3s ease;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
+    width: auto;
+    height: auto;
     color: rgba(255, 255, 255, 0.7);
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
 }
 
 .social-link svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
+    display: block;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
 }
 
 .social-link:hover {
     color: var(--gold);
-    background: rgba(255, 215, 0, 0.08);
-    border-color: rgba(255, 215, 0, 0.2);
     transform: translateY(-2px);
 }
 
