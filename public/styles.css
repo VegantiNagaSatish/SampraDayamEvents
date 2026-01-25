@@ -69,6 +69,7 @@ body {
     align-items: flex-start;
     gap: 0;
     justify-content: center;
+    margin-left: 4px;
 }
 
 .logo-icon {
@@ -994,8 +995,8 @@ section {
 
 .footer-logo {
     display: flex;
-    align-items: center;
-    gap: 12px;
+    align-items: flex-start;
+    gap: 1rem;
     margin-bottom: 1rem;
 }
 
@@ -1008,13 +1009,22 @@ section {
     box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
     background: transparent;
     display: block;
+    flex-shrink: 0;
+}
+
+.footer-logo-text-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-left: 4px;
 }
 
 .footer-tagline {
     color: var(--gold);
     font-style: italic;
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.2;
 }
 
 .footer-description {
@@ -1094,11 +1104,22 @@ section {
     font-size: 1.8rem;
     text-decoration: none;
     transition: transform 0.3s;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.social-link svg {
+    width: 24px;
+    height: 24px;
 }
 
 .social-link:hover {
     transform: scale(1.2) rotate(5deg);
+    color: var(--gold);
 }
 
 .footer-bottom {
