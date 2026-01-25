@@ -1,4 +1,4 @@
-# Sampradayam Events
+# SampraDayam Events
 
 A modern website for Sampradayam Events, a premier event management company based in Nallajerla.
 
