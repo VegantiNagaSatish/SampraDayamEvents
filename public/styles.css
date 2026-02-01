@@ -17,6 +17,8 @@
     --text-light: #6c757d;
     --accent-purple: #6c5ce7;
     --accent-pink: #fd79a8;
+    /* Gallery page header background – change path here if you move images */
+    --gallery-header-bg: url('SampraDayamGallery/Marriage/IMG-20251216-WA0000.jpg');
 }
 
 body {
@@ -805,10 +807,10 @@ section {
     background: radial-gradient(circle at 30% 50%, rgba(255, 107, 53, 0.1) 0%, transparent 50%);
 }
 
-/* Gallery page header with background image */
+/* Gallery page header with background image (path set in :root --gallery-header-bg) */
 .page-header--gallery {
     background: linear-gradient(135deg, rgba(94, 53, 94, 0.85) 0%, rgba(40, 30, 60, 0.9) 100%),
-                url('SampraDayamGallery/IMG-20251216-WA0000.jpg') center / cover no-repeat;
+                var(--gallery-header-bg) center / cover no-repeat;
 }
 
 .page-header--gallery::before {
@@ -1016,9 +1018,18 @@ section {
     flex-shrink: 0;
 }
 
-.gallery-filter-btn__icon svg {
+.gallery-filter-btn__icon svg,
+.gallery-filter-icon {
     display: block;
     vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+}
+
+.gallery-filter-btn:hover .gallery-filter-icon,
+.gallery-filter-btn.active .gallery-filter-icon {
+    transform: scale(1.08);
 }
 
 .gallery-filter-btn:hover,
