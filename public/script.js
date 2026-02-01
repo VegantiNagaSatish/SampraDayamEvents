@@ -88,7 +88,7 @@ if (contactForm) {
         const message = formData.get('message') || '';
         
         // Create WhatsApp message
-        const whatsappMessage = `Hello SAMPRDAYAM EVENTS!%0A%0A` +
+        const whatsappMessage = `Hello SAMPRADAYAM EVENTS!%0A%0A` +
             `Name: ${encodeURIComponent(name)}%0A` +
             `Event Type: ${encodeURIComponent(eventType)}%0A` +
             `Location: ${encodeURIComponent(location)}%0A` +
