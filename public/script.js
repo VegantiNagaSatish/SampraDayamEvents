@@ -165,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (hintEl) {
                     if (filter === 'wedding') hintEl.textContent = 'Showing wedding & marriage stage photos.';
+                    else if (filter === 'birthday') hintEl.textContent = 'Showing birthday photos.';
                     else if (filter === 'all') hintEl.textContent = 'Showing all photos.';
                     else hintEl.textContent = 'No photos in this category yet.';
                 }
@@ -210,6 +211,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Escape' && lightbox.classList.contains('is-open')) closeLightbox();
         });
     }
+
+    // Fade in gallery images when loaded (smoother perceived loading)
+    document.querySelectorAll('.gallery-photo-item img').forEach(function (img) {
+        if (img.complete) img.classList.add('gallery-img-loaded');
+        else img.addEventListener('load', function () { img.classList.add('gallery-img-loaded'); });
+    });
 });
 
 // Smooth scroll for anchor links (if any)

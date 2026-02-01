@@ -1072,6 +1072,13 @@ section {
     display: block;
     vertical-align: middle;
     image-orientation: from-image;
+    -webkit-image-orientation: from-image;
+    transition: opacity 0.25s ease;
+    opacity: 0;
+}
+
+.gallery-photo-item img.gallery-img-loaded {
+    opacity: 1;
 }
 
 .gallery-photo-item .gallery-photo-item__view {
@@ -1168,6 +1175,7 @@ section {
     border-radius: 8px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     image-orientation: from-image;
+    -webkit-image-orientation: from-image;
 }
 
 .gallery-lightbox__close {
