@@ -150,27 +150,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    function applyGalleryFilter(filter) {
+        if (!filter || !photoItems.length) return;
+        photoItems.forEach(item => {
+            const category = item.getAttribute('data-category');
+            const show = category === filter;
+            item.classList.toggle('hidden', !show);
+        });
+        if (hintEl) {
+            if (filter === 'marriagestage') hintEl.textContent = 'Showing Marriage Stage photos.';
+            else if (filter === 'haldi') hintEl.textContent = 'Showing Haldi ceremony photos.';
+            else if (filter === 'birthday') hintEl.textContent = 'Showing birthday photos.';
+            else hintEl.textContent = 'No photos in this category yet.';
+        }
+    }
+
     if (filterBtns.length && photoItems.length) {
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 filterBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                const filter = btn.getAttribute('data-filter');
-
-                photoItems.forEach(item => {
-                    const category = item.getAttribute('data-category');
-                    const show = filter === 'all' || category === filter;
-                    item.classList.toggle('hidden', !show);
-                });
-
-                if (hintEl) {
-                    if (filter === 'wedding') hintEl.textContent = 'Showing wedding & marriage stage photos.';
-                    else if (filter === 'birthday') hintEl.textContent = 'Showing birthday photos.';
-                    else if (filter === 'all') hintEl.textContent = 'Showing all photos.';
-                    else hintEl.textContent = 'No photos in this category yet.';
-                }
+                applyGalleryFilter(btn.getAttribute('data-filter'));
             });
         });
+        const activeBtn = document.querySelector('.gallery-filter-btn.active');
+        if (activeBtn) applyGalleryFilter(activeBtn.getAttribute('data-filter'));
     }
 
     // Gallery lightbox: click photo to view full size
