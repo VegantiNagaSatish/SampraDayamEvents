@@ -126,7 +126,7 @@ const observer = new IntersectionObserver((entries) => {
 
 // Observe service cards, feature cards, and gallery items
 document.addEventListener('DOMContentLoaded', () => {
-    const animatedElements = document.querySelectorAll('.service-card, .feature-card, .gallery-item, .testimonial-card, .service-card-large');
+    const animatedElements = document.querySelectorAll('.service-card, .feature-card, .gallery-item, .gallery-photo-item, .testimonial-card, .service-card-large');
     
     animatedElements.forEach((item, index) => {
         item.style.opacity = '0';
@@ -134,6 +134,33 @@ document.addEventListener('DOMContentLoaded', () => {
         item.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
         observer.observe(item);
     });
+
+    // Gallery filter: when clicking Wedding (or All), show/hide photos by category
+    const filterBtns = document.querySelectorAll('.gallery-filter-btn');
+    const photoItems = document.querySelectorAll('.gallery-photo-item');
+    const hintEl = document.getElementById('galleryFilterHint');
+
+    if (filterBtns.length && photoItems.length) {
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filter = btn.getAttribute('data-filter');
+
+                photoItems.forEach(item => {
+                    const category = item.getAttribute('data-category');
+                    const show = filter === 'all' || category === filter;
+                    item.classList.toggle('hidden', !show);
+                });
+
+                if (hintEl) {
+                    if (filter === 'wedding') hintEl.textContent = 'Showing wedding & marriage stage photos.';
+                    else if (filter === 'all') hintEl.textContent = 'Showing all photos.';
+                    else hintEl.textContent = 'No photos in this category yet.';
+                }
+            });
+        });
+    }
 });
 
 // Smooth scroll for anchor links (if any)

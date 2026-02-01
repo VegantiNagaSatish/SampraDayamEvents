@@ -48,53 +48,72 @@
     <!-- Gallery Section -->
     <section class="gallery">
         <div class="container">
-            <div class="gallery-grid">
-                <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span>Wedding Event</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span>Birthday Celebration</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span>Corporate Event</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span>Dhoti Ceremony</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span>Half Saree Ceremony</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span>House Warming</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span>Get Together</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span>Event Decoration</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span>Lighting & Sound</span>
-                    </div>
-                </div>
+            <div class="gallery-filters">
+                <button type="button" class="gallery-filter-btn active" data-filter="all">All</button>
+                <button type="button" class="gallery-filter-btn" data-filter="wedding">Wedding</button>
+                <button type="button" class="gallery-filter-btn" data-filter="birthday">Birthday</button>
+                <button type="button" class="gallery-filter-btn" data-filter="corporate">Corporate</button>
+                <button type="button" class="gallery-filter-btn" data-filter="dhoti">Dhoti Ceremony</button>
+                <button type="button" class="gallery-filter-btn" data-filter="halfsaree">Half Saree</button>
+                <button type="button" class="gallery-filter-btn" data-filter="housewarming">House Warming</button>
+                <button type="button" class="gallery-filter-btn" data-filter="gettogether">Get Together</button>
             </div>
+            <div class="gallery-grid gallery-photos-grid" id="galleryPhotos">
+                <!-- Wedding & Marriage Stage photos from SampraDayam Gallery -->
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0000.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0001.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0002.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0004.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0005.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0006.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0010.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0015.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0016.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0019.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0021(1).jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0022.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0024.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0026.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0027.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0028.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0029.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0030.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0031.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0032.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0038.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0039.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0041.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0043.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0044.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0046.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0047.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0048.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0049.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0050.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0051.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20251216-WA0052.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20260125-WA0075.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20260125-WA0080.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20260125-WA0087.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20260125-WA0088.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/IMG-20260125-WA0089.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/WhatsApp Image 2026-01-25 at 16.08.11.jpeg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/0e7fe686358342fd1419f004481a073c.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/2d71c195f2ebcc9d9832599e23df948f (1).jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/2d71c195f2ebcc9d9832599e23df948f.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/2d90d310088a5ea8fff714ad626a596b.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/3384331f144d253bdd41013ee9a4fcca.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/3bf4b7ec8fdf1aa040b483ee561669b5.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/46e324d71be2c4d05a3d8f839b03b21b.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/5c06b91588ed85435670402117993d60.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/659b84e9c273d480d82ebbbaff59806c.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/90e8fe42fcc24b16b5a19cc587eae773.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/98e8a1ec1ad6781a7b6650f66847ad26.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/bf4db2570332cfd0d458c48ede2ef9fe.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/f8f643d31015e752b9a5c4ff7d0fc48d.jpg" alt="Marriage stage" loading="lazy"></div>
+                <div class="gallery-photo-item" data-category="wedding"><img src="../SampraDayamGallery/fb15508cac151ccdd73e7292126aa178.jpg" alt="Marriage stage" loading="lazy"></div>
+            </div>
+            <p class="gallery-filter-hint" id="galleryFilterHint">Showing all photos. Click "Wedding" to see marriage stage photos only.</p>
         </div>
     </section>
 
