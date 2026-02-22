@@ -150,8 +150,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    var folderView = document.getElementById('galleryFolderView');
+    var galleryPhotosGrid = document.getElementById('galleryPhotos');
+    var marriageBtn = document.getElementById('galleryFilterMarriage');
+    var folderCards = document.querySelectorAll('.gallery-folder-card');
+    var allFilterBtns = document.querySelectorAll('.gallery-filter-btn[data-filter]');
+
+    function showNoSelection() {
+        if (folderView) folderView.classList.add('hidden');
+        if (galleryPhotosGrid) galleryPhotosGrid.classList.remove('hidden');
+        photoItems.forEach(function (item) { item.classList.add('hidden'); });
+        if (hintEl) hintEl.textContent = 'Select a category to view photos.';
+        allFilterBtns.forEach(function (b) { b.classList.remove('active'); });
+    }
+
+    function showMarriageFolders() {
+        if (folderView) {
+            folderView.classList.remove('hidden');
+            folderView.setAttribute('aria-hidden', 'false');
+        }
+        if (galleryPhotosGrid) galleryPhotosGrid.classList.add('hidden');
+        if (hintEl) hintEl.textContent = 'Choose a folder';
+        if (marriageBtn) marriageBtn.classList.add('active');
+        allFilterBtns.forEach(function (b) {
+            if (b !== marriageBtn) b.classList.remove('active');
+        });
+    }
+
+    function showPhotoGrid() {
+        if (folderView) {
+            folderView.classList.add('hidden');
+            folderView.setAttribute('aria-hidden', 'true');
+        }
+        if (galleryPhotosGrid) galleryPhotosGrid.classList.remove('hidden');
+    }
+
     function applyGalleryFilter(filter) {
-        if (!filter || !photoItems.length) return;
+        if (!filter || filter === 'marriage' || !photoItems.length) return;
+        showPhotoGrid();
         photoItems.forEach(item => {
             const category = item.getAttribute('data-category');
             const show = category === filter;
@@ -165,17 +201,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    if (filterBtns.length && photoItems.length) {
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                applyGalleryFilter(btn.getAttribute('data-filter'));
+    function setActiveFilter(filter) {
+        if (!filter || filter === 'marriage') return;
+        if (filter === 'marriagestage' || filter === 'haldi') {
+            if (marriageBtn) marriageBtn.classList.add('active');
+            allFilterBtns.forEach(function (b) {
+                b.classList.toggle('active', b === marriageBtn);
             });
-        });
-        const activeBtn = document.querySelector('.gallery-filter-btn.active');
-        if (activeBtn) applyGalleryFilter(activeBtn.getAttribute('data-filter'));
+        } else {
+            if (marriageBtn) marriageBtn.classList.remove('active');
+            allFilterBtns.forEach(function (b) {
+                b.classList.toggle('active', b.getAttribute('data-filter') === filter);
+            });
+        }
     }
+
+    if (marriageBtn) {
+        marriageBtn.addEventListener('click', function () {
+            showMarriageFolders();
+        });
+    }
+    folderCards.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var filter = btn.getAttribute('data-filter');
+            applyGalleryFilter(filter);
+            setActiveFilter(filter);
+        });
+    });
+    allFilterBtns.forEach(function (btn) {
+        if (btn === marriageBtn) return;
+        btn.addEventListener('click', function () {
+            var filter = btn.getAttribute('data-filter');
+            applyGalleryFilter(filter);
+            setActiveFilter(filter);
+        });
+    });
+
+    showMarriageFolders();
 
     // Gallery lightbox: click photo to view full size
     const lightbox = document.getElementById('galleryLightbox');

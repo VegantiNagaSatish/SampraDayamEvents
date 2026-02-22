@@ -1038,6 +1038,70 @@ section {
     color: var(--white);
 }
 
+/* Gallery folder view: show 2 folders when Marriage is selected (no dropdown) */
+.gallery-folder-view {
+    margin-top: 0;
+    min-height: 200px;
+}
+
+.gallery-folder-view.hidden {
+    display: none !important;
+}
+
+.gallery-folder-view__hint {
+    text-align: center;
+    color: var(--text-light);
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+}
+
+.gallery-folders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.25rem;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.gallery-folder-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.5rem 1rem;
+    border: 2px solid var(--primary-color);
+    border-radius: 16px;
+    background: var(--white);
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.gallery-folder-card:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+.gallery-folder-card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gallery-folder-card__icon svg {
+    width: 48px;
+    height: 48px;
+}
+
+.gallery-content .gallery-photos-grid.hidden {
+    display: none !important;
+}
+
 /* Masonry-style gallery for a more dynamic look */
 .gallery-photos-grid {
     display: block;

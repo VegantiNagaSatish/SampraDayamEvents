@@ -49,17 +49,11 @@
     <section class="gallery">
         <div class="container">
             <div class="gallery-filters">
-                <button type="button" class="gallery-filter-btn active" data-filter="marriagestage">
-                    <span class="gallery-filter-btn__icon" aria-hidden="true">
-                        <svg class="gallery-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-9Z"/><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/></svg>
-                    </span>
-                    Marriage Stage
-                </button>
-                <button type="button" class="gallery-filter-btn" data-filter="haldi">
+                <button type="button" class="gallery-filter-btn" data-filter="marriage" id="galleryFilterMarriage">
                     <span class="gallery-filter-btn__icon" aria-hidden="true">
                         <svg class="gallery-filter-icon gallery-filter-icon--filled" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
                     </span>
-                    Haldi
+                    Marriage
                 </button>
                 <button type="button" class="gallery-filter-btn" data-filter="birthday">
                     <span class="gallery-filter-btn__icon" aria-hidden="true">
@@ -98,7 +92,24 @@
                     Get Together
                 </button>
             </div>
-            <div class="gallery-grid gallery-photos-grid" id="galleryPhotos">
+            <div class="gallery-content" id="galleryContent">
+                <div class="gallery-folder-view hidden" id="galleryFolderView" aria-hidden="true">
+                    <div class="gallery-folders-grid">
+                        <button type="button" class="gallery-folder-card" data-filter="marriagestage">
+                            <span class="gallery-folder-card__icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+                            </span>
+                            <span class="gallery-folder-card__label">Marriage Stage</span>
+                        </button>
+                        <button type="button" class="gallery-folder-card" data-filter="haldi">
+                            <span class="gallery-folder-card__icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+                            </span>
+                            <span class="gallery-folder-card__label">Haldi</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="gallery-grid gallery-photos-grid" id="galleryPhotos">
                 <!-- Marriage Stage first -->
                 <div class="gallery-photo-item" data-category="marriagestage"><img src="../SampraDayamGallery/Marriage/MarriageStages/IMG-20251216-WA0000.jpg" alt="Marriage stage" loading="lazy" decoding="async" fetchpriority="high"></div>
                 <div class="gallery-photo-item" data-category="marriagestage"><img src="../SampraDayamGallery/Marriage/MarriageStages/IMG-20251216-WA0001.jpg" alt="Marriage stage" loading="lazy" decoding="async" fetchpriority="high"></div>
@@ -135,7 +146,6 @@
                 <div class="gallery-photo-item" data-category="marriagestage"><img src="../SampraDayamGallery/Marriage/MarriageStages/WhatsApp Image 2026-01-25 at 16.08.11.jpeg" alt="Marriage stage" loading="lazy" decoding="async"></div>
                 <!-- Haldi -->
                 <div class="gallery-photo-item" data-category="haldi"><img src="../SampraDayamGallery/Marriage/Haldi/0e7fe686358342fd1419f004481a073c.jpg" alt="Haldi ceremony" loading="lazy" decoding="async"></div>
-                <div class="gallery-photo-item" data-category="haldi"><img src="../SampraDayamGallery/Marriage/Haldi/2d71c195f2ebcc9d9832599e23df948f (1).jpg" alt="Haldi ceremony" loading="lazy" decoding="async"></div>
                 <div class="gallery-photo-item" data-category="haldi"><img src="../SampraDayamGallery/Marriage/Haldi/2d71c195f2ebcc9d9832599e23df948f.jpg" alt="Haldi ceremony" loading="lazy" decoding="async"></div>
                 <div class="gallery-photo-item" data-category="haldi"><img src="../SampraDayamGallery/Marriage/Haldi/2d90d310088a5ea8fff714ad626a596b.jpg" alt="Haldi ceremony" loading="lazy" decoding="async"></div>
                 <div class="gallery-photo-item" data-category="haldi"><img src="../SampraDayamGallery/Marriage/Haldi/3384331f144d253bdd41013ee9a4fcca.jpg" alt="Haldi ceremony" loading="lazy" decoding="async"></div>
@@ -154,8 +164,9 @@
                 <div class="gallery-photo-item" data-category="birthday"><img src="../SampraDayamGallery/Birthday/IMG-20260125-WA0087.jpg" alt="Birthday event" loading="lazy" decoding="async"></div>
                 <div class="gallery-photo-item" data-category="birthday"><img src="../SampraDayamGallery/Birthday/IMG-20260125-WA0088.jpg" alt="Birthday event" loading="lazy" decoding="async"></div>
                 <div class="gallery-photo-item" data-category="birthday"><img src="../SampraDayamGallery/Birthday/IMG-20260125-WA0089.jpg" alt="Birthday event" loading="lazy" decoding="async"></div>
+                </div>
             </div>
-            <p class="gallery-filter-hint" id="galleryFilterHint">Showing Marriage Stage photos.</p>
+            <p class="gallery-filter-hint" id="galleryFilterHint">Choose a folder</p>
         </div>
     </section>
 
