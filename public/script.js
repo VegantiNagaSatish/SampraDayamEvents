@@ -196,6 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (hintEl) {
             if (filter === 'marriagestage') hintEl.textContent = 'Showing Marriage Stage photos.';
             else if (filter === 'haldi') hintEl.textContent = 'Showing Haldi ceremony photos.';
+            else if (filter === 'reception') hintEl.textContent = 'Showing Reception photos.';
             else if (filter === 'birthday') hintEl.textContent = 'Showing birthday photos.';
             else hintEl.textContent = 'No photos in this category yet.';
         }
@@ -203,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setActiveFilter(filter) {
         if (!filter || filter === 'marriage') return;
-        if (filter === 'marriagestage' || filter === 'haldi') {
+        if (filter === 'marriagestage' || filter === 'haldi' || filter === 'reception') {
             if (marriageBtn) marriageBtn.classList.add('active');
             allFilterBtns.forEach(function (b) {
                 b.classList.toggle('active', b === marriageBtn);
