@@ -1,10 +1,8 @@
 # SampraDayam Events
 
-A modern, responsive website for SampraDayam Events, a premier event management company based in Nallajerla, Andhra Pradesh.
+A modern, responsive website for **SampraDayam Events** — *Every Celebration is Memory* — a premier event management company based in Nallajerla, Andhra Pradesh.
 
 ## About
-
-**SampraDayam Events** - *Every Celebration is Memory*
 
 We specialize in creating unforgettable experiences for all your special occasions. From intimate gatherings to grand celebrations, we bring your vision to life with meticulous planning and execution.
 
@@ -14,9 +12,7 @@ We specialize in creating unforgettable experiences for all your special occasio
 
 ## Services
 
-We offer comprehensive event management services including:
-
-- Wedding Celebrations
+- Wedding Celebrations (Marriage Stage & Haldi)
 - Birthday Parties
 - Catering Services
 - Get Together Events
@@ -29,138 +25,95 @@ We offer comprehensive event management services including:
 
 ## Contact
 
-**Phone:**
-- 83091 33572
-- 79974 49444
+- **Phone:** 83091 33572 · 79974 49444  
+- **Email:** sampradayam.events393@gmail.com  
+- **Instagram:** [@_sampradayam_events](https://www.instagram.com/_sampradayam_events?igsh=bGJwbXo4bXJtMGho)  
+- **WhatsApp:** [83091 33572](https://wa.me/918309133572)
 
-**Email:**
-- sampradayam.events393@gmail.com
-
-**Social Media:**
-- Instagram: [@_sampradayam_events](https://www.instagram.com/_sampradayam_events?igsh=bGJwbXo4bXJtMGho)
-- WhatsApp: [83091 33572](https://wa.me/918309133572)
-
-## Website Features
-
-- **Responsive Design:** Fully responsive website that works seamlessly on all devices (desktop, tablet, mobile)
-- **Modern UI/UX:** Clean, elegant design with smooth animations and transitions
-- **Interactive Gallery:** Showcase of past events and celebrations
-- **Contact Form:** Easy-to-use contact form with WhatsApp integration
-- **Google Maps Integration:** Interactive map showing business location
-- **Service Showcase:** Detailed information about all services offered
-- **About Section:** Company story and values
-- **Statistics Counter:** Animated statistics display
-- **Smooth Scrolling:** Enhanced user experience with smooth page navigation
+---
 
 ## Project Structure
 
 ```
 SampraDayamEvents/
-├── public/                 # Main website files (deployed to Firebase)
-│   ├── index.html         # Home page
-│   ├── about.html         # About page
-│   ├── services.html      # Services page
-│   ├── gallery.html       # Gallery page
-│   ├── contact.html       # Contact page
-│   ├── styles.css         # Main stylesheet
-│   ├── script.js          # JavaScript functionality
-│   ├── sdLogo.jpeg        # Logo (light version)
-│   └── sdLogoBlack.jpeg   # Logo (dark version)
-├── firebase.json          # Firebase hosting configuration
-├── .firebaserc            # Firebase project configuration
-└── README.md              # This file
+├── public/                      # Site source (Firebase hosting root)
+│   ├── index.html              # Home
+│   ├── about.html              # About
+│   ├── services.html           # Services
+│   ├── gallery.html            # Gallery with category filters
+│   ├── contact.html            # Contact
+│   ├── styles.css              # Main stylesheet
+│   ├── script.js               # Navigation, gallery filters, lightbox, contact
+│   ├── sdLogo.jpeg             # Logo (favicon & nav)
+│   ├── sdLogoBlack.jpeg        # Logo variant
+│   └── SampraDayamGallery/     # Gallery images
+│       ├── Marriage/
+│       │   ├── MarriageStages/ # Marriage stage photos
+│       │   └── Haldi/          # Haldi ceremony photos
+│       └── Birthday/           # Birthday event photos
+├── firebase.json               # Firebase Hosting config (public dir)
+├── .firebaserc                 # Firebase project
+├── .gitignore
+└── README.md
 ```
 
-## Technology Stack
+## Tech Stack
 
-- **HTML5:** Semantic markup
-- **CSS3:** Modern styling with Flexbox and Grid
-- **JavaScript (Vanilla):** Interactive features and animations
-- **Firebase Hosting:** Website deployment and hosting
-- **Google Fonts:** Poppins and Playfair Display fonts
-- **Google Maps API:** Location embedding
+- **HTML5** — Semantic markup  
+- **CSS3** — Custom properties, Flexbox, Grid, transitions  
+- **Vanilla JavaScript** — Gallery filters, lightbox, mobile menu, contact (WhatsApp)  
+- **Firebase Hosting** — Deploy target  
+- **Google Fonts** — Poppins, Playfair Display  
 
 ## Local Development
 
-To run the website locally:
+Serve the `public` folder:
 
-1. **Using Python (Simple HTTP Server):**
-   ```bash
-   cd public
-   python3 -m http.server 8000
-   ```
-   Then open `http://localhost:8000` in your browser.
+```bash
+cd public
+python3 -m http.server 8000
+```
 
-2. **Using Node.js (http-server):**
-   ```bash
-   npm install -g http-server
-   cd public
-   http-server -p 8000
-   ```
+Then open **http://localhost:8000** (or http://[::]:8000).
 
-## Deployment
+Optional (Node):
 
-The website is deployed on **Firebase Hosting**.
+```bash
+npx http-server public -p 8000
+```
 
-### Deploy to Firebase
+## Deployment (Firebase)
 
-1. **Install Firebase CLI:**
-   ```bash
-   npm install -g firebase-tools
-   ```
+1. Install CLI: `npm install -g firebase-tools`
+2. Login: `firebase login`
+3. Deploy: `firebase deploy --only hosting`
 
-2. **Login to Firebase:**
-   ```bash
-   firebase login
-   ```
+Hosting is configured to use the `public` directory.
 
-3. **Deploy:**
-   ```bash
-   firebase deploy --only hosting
-   ```
+## Website Features
 
-### Firebase Configuration
-
-- **Project ID:** sampradayam-events
-- **Public Directory:** `public`
-- **Hosting URL:** Available after deployment
+- **Responsive layout** — Mobile-first, works on all devices  
+- **Gallery** — Category filters: Marriage (Marriage Stage, Haldi), Birthday, Corporate, Dhoti Ceremony, Half Saree, House Warming, Get Together  
+- **Lightbox** — Full-size image view from gallery  
+- **Contact** — Form opens WhatsApp with pre-filled message  
+- **Maps** — Embedded Google Map for location  
+- **Favicon** — Site logo in browser tab  
+- **Dark theme** — Black backgrounds for header, gallery, and page headers  
 
 ## Pages
 
-1. **Home (`index.html`):** Hero section, features, services showcase, statistics
-2. **Services (`services.html`):** Detailed service offerings
-3. **Gallery (`gallery.html`):** Portfolio of past events
-4. **About (`about.html`):** Company information and story
-5. **Contact (`contact.html`):** Contact form, location map, contact details
-
-## Features Implemented
-
-- ✅ Responsive navigation with mobile menu
-- ✅ Animated statistics counter
-- ✅ Smooth scroll animations
-- ✅ Contact form with WhatsApp integration
-- ✅ Google Maps location embed
-- ✅ Social media links (Instagram, WhatsApp)
-- ✅ Footer with contact information and quick links
-- ✅ Modern, clean UI design
-- ✅ Mobile-first responsive design
-
-## Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-- Mobile browsers (iOS Safari, Chrome Mobile)
+| Page        | Path           | Description                    |
+|------------|----------------|--------------------------------|
+| Home       | `index.html`   | Hero, services, stats, preview |
+| Services   | `services.html`| Service details                |
+| Gallery    | `gallery.html` | Filterable photo gallery       |
+| About      | `about.html`   | Company story                  |
+| Contact    | `contact.html` | Form, map, contact info        |
 
 ## License
 
-This project is proprietary and belongs to SampraDayam Events.
-
-## Credits
-
-Developed for SampraDayam Events - Creating magical moments and unforgettable experiences.
+Proprietary — SampraDayam Events.
 
 ---
 
-**Every Celebration is Memory** ✨
+**Every Celebration is Memory**
