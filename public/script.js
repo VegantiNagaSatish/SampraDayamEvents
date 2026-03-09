@@ -145,12 +145,24 @@ const observer = new IntersectionObserver((entries) => {
 
 // Observe service cards, feature cards, and gallery items
 document.addEventListener('DOMContentLoaded', () => {
-    const animatedElements = document.querySelectorAll('.service-card, .feature-card, .gallery-item, .gallery-photo-item, .testimonial-card, .service-card-large');
-    
-    animatedElements.forEach((item, index) => {
+    const animatedSelectors = '.service-card, .feature-card, .gallery-item, .testimonial-card, .service-card-large';
+    const galleryPhotoItems = document.querySelectorAll('.gallery-photo-item');
+    const otherAnimated = document.querySelectorAll(animatedSelectors);
+
+    // Other elements: keep staggered animation
+    otherAnimated.forEach((item, index) => {
         item.style.opacity = '0';
         item.style.transform = 'translateY(30px)';
         item.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+        observer.observe(item);
+    });
+
+    // Gallery photos: use a small capped delay so grid images appear quickly when in view (not 8–20s)
+    galleryPhotoItems.forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(30px)';
+        const delay = Math.min(index * 0.03, 0.35);
+        item.style.transition = `opacity 0.4s ease ${delay}s, transform 0.4s ease ${delay}s`;
         observer.observe(item);
     });
 
@@ -174,6 +186,39 @@ document.addEventListener('DOMContentLoaded', () => {
     var marriageBtn = document.getElementById('galleryFilterMarriage');
     var folderCards = document.querySelectorAll('.gallery-folder-card');
     var allFilterBtns = document.querySelectorAll('.gallery-filter-btn[data-filter]');
+
+    // Preload all gallery images so every folder opens fast. Interleave by category so
+    // Marriage doesn't hog the queue—each folder gets equal priority (round-robin).
+    (function preloadAllGalleryImages() {
+        if (!photoItems.length) return;
+        var byCategory = {};
+        photoItems.forEach(function (item) {
+            var cat = item.getAttribute('data-category') || 'other';
+            if (!byCategory[cat]) byCategory[cat] = [];
+            var img = item.querySelector('img');
+            if (img && img.src) byCategory[cat].push(img.src);
+        });
+        var categories = Object.keys(byCategory);
+        var maxLen = 0;
+        categories.forEach(function (c) { if (byCategory[c].length > maxLen) maxLen = byCategory[c].length; });
+        var interleaved = [];
+        for (var i = 0; i < maxLen; i++) {
+            categories.forEach(function (c) {
+                if (byCategory[c][i]) interleaved.push(byCategory[c][i]);
+            });
+        }
+        function runPreload() {
+            interleaved.forEach(function (src) {
+                var preload = new Image();
+                preload.src = src;
+            });
+        }
+        if (typeof requestIdleCallback !== 'undefined') {
+            requestIdleCallback(runPreload, { timeout: 1000 });
+        } else {
+            setTimeout(runPreload, 400);
+        }
+    })();
 
     function showNoSelection() {
         if (folderView) folderView.classList.add('hidden');

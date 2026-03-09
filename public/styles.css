@@ -1137,6 +1137,10 @@ section {
     margin-top: 0;
 }
 
+.gallery-photos-wrapper {
+    position: relative;
+}
+
 .gallery-photo-item {
     break-inside: avoid;
     margin-bottom: 1.25rem;
@@ -1175,7 +1179,7 @@ section {
     vertical-align: middle;
     image-orientation: from-image;
     -webkit-image-orientation: from-image;
-    transition: opacity 0.25s ease;
+    transition: opacity 0.2s ease;
     opacity: 0;
 }
 
