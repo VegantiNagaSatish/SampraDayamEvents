@@ -72,6 +72,25 @@ document.addEventListener('DOMContentLoaded', () => {
     statNumbers.forEach(stat => {
         statsObserver.observe(stat);
     });
+
+    // Gallery header videos: play intro1 then intro2, then loop back to intro1
+    const galleryIntro1 = document.getElementById('galleryIntro1');
+    const galleryIntro2 = document.getElementById('galleryIntro2');
+    if (galleryIntro1 && galleryIntro2) {
+        galleryIntro1.classList.add('is-active');
+        galleryIntro1.addEventListener('ended', () => {
+            galleryIntro1.classList.remove('is-active');
+            galleryIntro2.currentTime = 0;
+            galleryIntro2.classList.add('is-active');
+            galleryIntro2.play();
+        });
+        galleryIntro2.addEventListener('ended', () => {
+            galleryIntro2.classList.remove('is-active');
+            galleryIntro1.currentTime = 0;
+            galleryIntro1.classList.add('is-active');
+            galleryIntro1.play();
+        });
+    }
 });
 
 // Contact Form Handler
