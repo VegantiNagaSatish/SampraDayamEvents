@@ -1736,7 +1736,6 @@ section {
     }
     .ugadi-banner__text {
         font-size: 0.72rem;
-        -webkit-line-clamp: 2;
     }
 }
 
@@ -1787,13 +1786,6 @@ section {
         padding: 0 0.5rem;
     }
     .ugadi-banner__text {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        max-width: 100%;
-        white-space: normal;
-        line-height: 1.25;
         font-size: 0.8rem;
     }
     .navbar {
