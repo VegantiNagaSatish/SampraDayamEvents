@@ -34,6 +34,58 @@ body {
     padding: 0 20px;
 }
 
+/* Ugadi announcement banner */
+.ugadi-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(90deg, #1b5e20 0%, #2e7d32 25%, #388e3c 50%, #f9a825 85%, #ffc107 100%);
+    background-size: 200% 100%;
+    animation: ugadi-shimmer 8s ease-in-out infinite;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.ugadi-banner__inner {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0 1rem;
+}
+
+.ugadi-banner__icon {
+    font-size: 1rem;
+    opacity: 0.95;
+    flex-shrink: 0;
+}
+
+.ugadi-banner__text {
+    margin: 0;
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.02em;
+}
+
+@keyframes ugadi-shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ugadi-banner {
+        animation: none;
+        background: linear-gradient(90deg, #1b5e20 0%, #388e3c 50%, #f9a825 100%);
+    }
+}
+
 /* Navigation */
 .navbar {
     background: #0f1328;
@@ -41,7 +93,7 @@ body {
     padding: 1rem 0;
     position: fixed;
     width: 100%;
-    top: 0;
+    top: 40px;
     z-index: 1000;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -175,12 +227,12 @@ body {
 /* Hero Section */
 .hero {
     background: #0f1328;
-    min-height: calc(100vh - 70px);
+    min-height: calc(100vh - 110px);
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    margin-top: 70px;
+    margin-top: 110px;
     overflow: hidden;
     padding: 4rem 0;
     z-index: 1;
@@ -792,7 +844,7 @@ section {
     padding: 140px 0 100px;
     text-align: center;
     color: var(--white);
-    margin-top: 70px;
+    margin-top: 110px;
     position: relative;
     overflow: hidden;
 }
@@ -1645,6 +1697,27 @@ section {
     
     .footer-map {
         height: 200px;
+    }
+
+    .ugadi-banner__text {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .ugadi-banner {
+        min-height: 40px;
+        height: auto;
+        padding: 0.35rem 0.5rem;
+    }
+    .ugadi-banner__inner {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.25rem;
+    }
+    .ugadi-banner__text {
+        font-size: 0.75rem;
+        text-align: center;
     }
 }
 
