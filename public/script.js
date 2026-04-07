@@ -73,22 +73,22 @@ document.addEventListener('DOMContentLoaded', () => {
         statsObserver.observe(stat);
     });
 
-    // Gallery header videos: play intro1 then intro2, then loop back to intro1
-    const galleryIntro1 = document.getElementById('galleryIntro1');
-    const galleryIntro2 = document.getElementById('galleryIntro2');
-    if (galleryIntro1 && galleryIntro2) {
-        galleryIntro1.classList.add('is-active');
-        galleryIntro1.addEventListener('ended', () => {
-            galleryIntro1.classList.remove('is-active');
-            galleryIntro2.currentTime = 0;
-            galleryIntro2.classList.add('is-active');
-            galleryIntro2.play();
+    // Home gallery videos: play intro1 then intro2, then loop back to intro1
+    const homeIntro1 = document.getElementById('homeGalleryIntro1');
+    const homeIntro2 = document.getElementById('homeGalleryIntro2');
+    if (homeIntro1 && homeIntro2) {
+        homeIntro1.classList.add('is-active');
+        homeIntro1.addEventListener('ended', () => {
+            homeIntro1.classList.remove('is-active');
+            homeIntro2.currentTime = 0;
+            homeIntro2.classList.add('is-active');
+            homeIntro2.play();
         });
-        galleryIntro2.addEventListener('ended', () => {
-            galleryIntro2.classList.remove('is-active');
-            galleryIntro1.currentTime = 0;
-            galleryIntro1.classList.add('is-active');
-            galleryIntro1.play();
+        homeIntro2.addEventListener('ended', () => {
+            homeIntro2.classList.remove('is-active');
+            homeIntro1.currentTime = 0;
+            homeIntro1.classList.add('is-active');
+            homeIntro1.play();
         });
     }
 });
