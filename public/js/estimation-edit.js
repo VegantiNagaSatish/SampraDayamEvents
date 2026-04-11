@@ -15,10 +15,33 @@ import { auth, db } from './admin-shared.js';
 import { computeLine, formatINR, rupeesToWords, sumLineTotals } from './admin-utils.js';
 
 const SELLER = {
-  name: 'SAMPRADAYAM EVENTS',
+  name: 'సంప్రదాయం ఈవెంట్స్',
   phones: '+91 8309133572, +91 7997449444',
   email: 'sampradayam.events393@gmail.com'
 };
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function renderLetterheadContact(el) {
+  if (!el) return;
+  el.classList.add('invoice-letterhead__contact--icons');
+  const p = escapeHtml(SELLER.phones);
+  const e = escapeHtml(SELLER.email);
+  el.innerHTML =
+    '<span class="invoice-letterhead__contact-row">' +
+    '<svg class="invoice-letterhead__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>' +
+    `<span>${p}</span></span>` +
+    '<span class="invoice-letterhead__contact-sep" aria-hidden="true">·</span>' +
+    '<span class="invoice-letterhead__contact-row">' +
+    '<svg class="invoice-letterhead__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 2v.01L12 13 4 6.01V6l8 7 8-7z"/></svg>' +
+    `<span>${e}</span></span>`;
+}
 
 const params = new URLSearchParams(window.location.search);
 let invoiceId = params.get('id');
@@ -237,7 +260,7 @@ function buildInvoiceShareText() {
     .map((l, i) => `${i + 1}. ${l.description} × ${l.qty} @ ${formatINR(l.price)} → ${formatINR(computeLine(l.qty, l.price).lineTotal)}`)
     .join('\n');
   return (
-    `*SAMPRADAYAM EVENTS* — Estimation\n` +
+    `*${SELLER.name}* — Estimation\n` +
     `Estimation #: *${num}*\n` +
     `Bill to: ${bill}\n` +
     `Date: ${date}\n\n` +
@@ -423,5 +446,13 @@ if (dateEl) dateEl.addEventListener('input', () => refreshLineTotals());
 
 const printSellerName = document.getElementById('printSellerName');
 const printSellerContact = document.getElementById('printSellerContact');
-if (printSellerName) printSellerName.textContent = SELLER.name;
-if (printSellerContact) printSellerContact.textContent = `${SELLER.phones} · ${SELLER.email}`;
+const printSignFor = document.getElementById('printSignFor');
+if (printSellerName) {
+  printSellerName.textContent = SELLER.name;
+  printSellerName.setAttribute('lang', 'te');
+}
+renderLetterheadContact(printSellerContact);
+if (printSignFor) {
+  printSignFor.textContent = SELLER.name;
+  printSignFor.setAttribute('lang', 'te');
+}
