@@ -147,6 +147,74 @@ body.invoice-app-body {
   border-radius: 6px;
 }
 
+.line-item-cell .line-catalog {
+  width: 100%;
+  max-width: min(100%, 22rem);
+  font-size: 0.85rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+}
+
+.line-custom-wrap {
+  margin-top: 0.4rem;
+}
+
+.line-desc-readonly {
+  white-space: pre-wrap;
+  max-width: 22rem;
+}
+
+.admin-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+a.admin-dashboard-card {
+  display: block;
+  padding: 1.5rem 1.25rem;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  background: var(--white);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+a.admin-dashboard-card:hover {
+  border-color: var(--orange);
+  box-shadow: 0 8px 24px rgba(255, 107, 53, 0.12);
+}
+
+.admin-dashboard-card__label {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  line-height: 2rem;
+  text-align: center;
+  border-radius: 8px;
+  background: var(--primary-color);
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.admin-dashboard-card__title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem;
+  color: var(--primary-color);
+  margin: 0 0 0.5rem;
+}
+
+.admin-dashboard-card__desc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
 .invoice-lines-table input[type='number'] {
   width: 100%;
   max-width: 100px;
@@ -287,7 +355,8 @@ body.invoice-app-body {
   }
 
   .invoice-lines-table textarea,
-  .invoice-lines-table input {
+  .invoice-lines-table input,
+  .invoice-lines-table select {
     border: none !important;
     background: transparent !important;
     resize: none !important;

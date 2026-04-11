@@ -13,11 +13,12 @@
 
 ### 0.1 Access from the website (implemented)
 
-- **Navigation:** A visible **Invoices** link in the main site header goes to the invoice login screen (`invoice-login.html`).
+- **Navigation:** The main site header uses **Admin** (not “Invoices”) linking to `admin-dashboard.html`. If the user is not signed in, they are sent to **Admin sign in** (`invoice-login.html`). After login, **Admin** opens `admin-dashboard.html` with two choices: **Items list** (`invoice-catalog.html`) and **Invoices** (`invoice-admin.html`).
 - **Admin sign-in:** **Phone number + password** on the login form. Firebase does not support “phone + password” as one native type, so the app maps the **10-digit phone** to a synthetic **email** for **Email/Password** auth:  
   `{10-digit-phone}@invoice.sampradayam.events`  
   You must create **that exact user** in Firebase Console (Authentication → Email/Password) with the password you want. **Do not put the password in the website source code**—only you type it at login; it lives in Firebase Auth.
 - **After login:** Admin can **list** invoices, **create** new ones, **save drafts**, **edit drafts**, and **mark complete** (assigns the next `INV-n` number and locks status to **completed** in v1).
+- **Price list (`invoice-catalog.html`):** Admin maintains **catalog items** (name + default unit price) in Firestore collection `catalogItems`. On the invoice editor, each line **chooses an item** from that list (label shows *name — ₹price*); **Custom description…** still allows one-off lines. Saved invoice lines store `description`, `price`, `qty`, `taxPercent`, and optional `catalogItemId`.
 
 ### 0.2 Status model (v1)
 
@@ -171,7 +172,7 @@ Please prepare (can be pasted in a follow-up message or doc):
 3. **Build → Authentication → Users → Add user:**  
    - Email: `8309133572@invoice.sampradayam.events` (replace `8309133572` if you use another admin phone).  
    - Password: choose a strong password (**change it if it was ever shared in chat**).
-4. **Build → Firestore Database:** create database (production mode), then deploy **Security Rules** from this repo (`firestore.rules`) so only signed-in users can read/write `invoices` and `settings`.
+4. **Build → Firestore Database:** create database (production mode), then deploy **Security Rules** from this repo (`firestore.rules`) so only signed-in users can read/write `invoices`, `settings`, and **`catalogItems`** (price list). If rules were deployed before the catalog existed, run `firebase deploy --only firestore:rules` again after pulling the latest `firestore.rules`.
 5. **Project settings → Your apps → Web app:** copy the config into `public/js/firebase-config.js` (replace the placeholder object).
 6. Deploy: `firebase deploy` (or deploy Hosting + Firestore rules together).
 

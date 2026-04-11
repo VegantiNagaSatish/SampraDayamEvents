@@ -25,7 +25,7 @@ onAuthStateChanged(auth, (user) => {
 if (logoutBtn) {
   logoutBtn.addEventListener('click', async () => {
     await signOut(auth);
-    window.location.href = 'invoice-login.html';
+    window.location.href = 'index.html';
   });
 }
 

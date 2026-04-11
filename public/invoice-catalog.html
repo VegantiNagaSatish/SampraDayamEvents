@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin — Sign in | SampraDayam Events</title>
+  <title>Items list | SampraDayam Events</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="invoice.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,7 +28,7 @@
           <li><a href="gallery.html" class="nav-link">Gallery</a></li>
           <li><a href="about.html" class="nav-link">About</a></li>
           <li><a href="contact.html" class="nav-link">Contact</a></li>
-          <li><a href="invoice-login.html" class="nav-link active">Admin</a></li>
+          <li><a href="admin-dashboard.html" class="nav-link">Admin</a></li>
         </ul>
       </div>
     </div>
@@ -36,26 +36,31 @@
 
   <main class="invoice-app-main">
     <div class="invoice-card">
-      <h1>Admin sign in</h1>
-      <p class="invoice-muted">Sign in with your admin phone number and password. Configure Firebase first — see <code>invoice_requirement.md</code> §11.</p>
+      <div class="invoice-toolbar no-print">
+        <h1 style="margin:0; flex:1; font-family:'Playfair Display',serif; color:var(--primary-color);">Items list</h1>
+        <a class="btn btn-outline" href="admin-dashboard.html">Admin home</a>
+        <a class="btn btn-outline" href="invoice-admin.html">Invoices</a>
+        <button type="button" class="btn btn-outline" id="catalogRefresh">Refresh</button>
+      </div>
+      <p class="invoice-muted">Items here appear in the dropdown when you create an invoice. Example: <strong>Catering boys</strong> — ₹600.</p>
+      <div id="catalogError" class="invoice-alert" hidden></div>
 
-      <div id="invoiceLoginError" class="invoice-alert" hidden></div>
-
-      <form id="invoiceLoginForm" class="invoice-form">
-        <div class="form-row">
-          <label for="adminPhone">Phone (10 digits)</label>
-          <input type="text" id="adminPhone" name="phone" inputmode="numeric" autocomplete="username" maxlength="15" placeholder="10-digit mobile" required>
-        </div>
-        <div class="form-row">
-          <label for="adminPassword">Password</label>
-          <input type="password" id="adminPassword" name="password" autocomplete="current-password" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Sign in</button>
-      </form>
+      <div class="invoice-table-wrap">
+        <table class="invoice-list-table">
+          <thead>
+            <tr>
+              <th>Item name</th>
+              <th>Price (₹)</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="catalogBody"></tbody>
+        </table>
+      </div>
     </div>
   </main>
 
-  <script type="module" src="js/invoice-login.js"></script>
+  <script type="module" src="js/invoice-catalog.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

@@ -28,7 +28,7 @@
           <li><a href="gallery.html" class="nav-link">Gallery</a></li>
           <li><a href="about.html" class="nav-link">About</a></li>
           <li><a href="contact.html" class="nav-link">Contact</a></li>
-          <li><a href="invoice-admin.html" class="nav-link active">Invoices</a></li>
+          <li><a href="admin-dashboard.html" class="nav-link">Admin</a></li>
         </ul>
       </div>
     </div>
@@ -37,7 +37,9 @@
   <main class="invoice-app-main">
     <div class="invoice-card">
       <div class="invoice-toolbar no-print">
-        <a class="btn btn-outline" href="invoice-admin.html">← Back to list</a>
+        <a class="btn btn-outline" href="admin-dashboard.html">Admin home</a>
+        <a class="btn btn-outline" href="invoice-admin.html">← Invoices</a>
+        <a class="btn btn-outline" href="invoice-catalog.html">Items list</a>
         <button type="button" class="btn btn-primary" id="saveDraftBtn">Save draft</button>
         <button type="button" class="btn btn-outline" id="completeInvoiceBtn">Mark complete</button>
         <button type="button" class="btn btn-outline" id="printInvoiceBtn" hidden>Print</button>
@@ -66,7 +68,7 @@
           <thead>
             <tr>
               <th>#</th>
-              <th>Description</th>
+              <th>Item</th>
               <th>Qty</th>
               <th>Price (₹)</th>
               <th>Tax %</th>

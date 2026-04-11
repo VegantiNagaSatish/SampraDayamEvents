@@ -1,5 +1,14 @@
-import { signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword
+} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
 import { auth, normalizePhoneDigits, phoneToEmail } from './invoice-shared.js';
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    window.location.replace('admin-dashboard.html');
+  }
+});
 
 const form = document.getElementById('invoiceLoginForm');
 const errEl = document.getElementById('invoiceLoginError');
@@ -37,10 +46,18 @@ if (form) {
     try {
       const email = phoneToEmail(phone);
       await signInWithEmailAndPassword(auth, email, password);
-      window.location.href = 'invoice-admin.html';
+      window.location.href = 'admin-dashboard.html';
     } catch (err) {
       console.error(err);
-      showError('Could not sign in. Check phone, password, and Firebase config.');
+      const code = err?.code || '';
+      if (code === 'auth/invalid-credential' || code === 'auth/user-not-found' || code === 'auth/wrong-password') {
+        const expected = phoneToEmail(phone);
+        showError(`Wrong phone or password. In Firebase → Authentication → Users, add a user whose email is exactly: ${expected}`);
+      } else if (code === 'auth/invalid-api-key' || code === 'auth/api-key-not-valid') {
+        showError('Invalid Firebase API key — check public/js/firebase-config.js matches this project.');
+      } else {
+        showError(`Sign-in failed (${code || 'unknown'}). Check phone, password, and Firebase config.`);
+      }
     } finally {
       if (btn) {
         btn.disabled = false;

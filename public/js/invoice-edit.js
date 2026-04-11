@@ -4,6 +4,9 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
+  orderBy,
+  query,
   runTransaction,
   serverTimestamp,
   updateDoc
@@ -37,6 +40,20 @@ const invoicePreviewNum = document.getElementById('invoicePreviewNum');
 
 let currentStatus = 'draft';
 let currentInvoiceNumber = null;
+/** @type {{ id: string, name: string, price: number }[]} */
+let catalogItems = [];
+
+async function fetchCatalog() {
+  const q = query(collection(db, 'catalogItems'), orderBy('name'));
+  const snap = await getDocs(q);
+  catalogItems = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+}
+
+function escapeHtml(s) {
+  const div = document.createElement('div');
+  div.textContent = s == null ? '' : String(s);
+  return div.innerHTML;
+}
 
 function showFormError(msg) {
   if (formError) {
@@ -46,15 +63,64 @@ function showFormError(msg) {
 }
 
 function emptyLine() {
-  return { description: '', qty: 1, price: 0, taxPercent: 0 };
+  return { catalogItemId: null, description: '', qty: 1, price: 0, taxPercent: 0 };
+}
+
+function normalizeSavedLine(raw) {
+  return {
+    catalogItemId: raw.catalogItemId || null,
+    description: raw.description || '',
+    qty: Number(raw.qty) || 0,
+    price: Number(raw.price) || 0,
+    taxPercent: Number(raw.taxPercent) || 0
+  };
+}
+
+/** Pick initial <select> value for a saved line. */
+function resolveSelectValue(line) {
+  if (line.catalogItemId && catalogItems.some((c) => c.id === line.catalogItemId)) {
+    return line.catalogItemId;
+  }
+  const byName = catalogItems.find((c) => c.name === line.description);
+  if (byName && Number(byName.price) === Number(line.price)) return byName.id;
+  if (line.description?.trim()) return '__custom__';
+  return '';
 }
 
 function getLinesFromDom() {
   const rows = tbody?.querySelectorAll('tr[data-line]') || [];
   const lines = [];
   rows.forEach((tr) => {
+    const ro = tr.querySelector('.line-desc-readonly');
+    if (ro) {
+      lines.push(
+        normalizeSavedLine({
+          catalogItemId: tr.dataset.catalogId || null,
+          description: ro.textContent?.trim() || '',
+          qty: tr.dataset.qty,
+          price: tr.dataset.price,
+          taxPercent: tr.dataset.taxPercent
+        })
+      );
+      return;
+    }
+    const sel = tr.querySelector('.line-catalog');
+    const ta = tr.querySelector('.line-desc-custom');
+    let description = '';
+    let catalogItemId = null;
+    if (sel) {
+      if (sel.value === '__custom__') {
+        description = ta?.value?.trim() || '';
+        catalogItemId = null;
+      } else if (sel.value) {
+        const opt = sel.selectedOptions[0];
+        catalogItemId = sel.value;
+        description = opt?.dataset?.name || '';
+      }
+    }
     lines.push({
-      description: tr.querySelector('.line-desc')?.value || '',
+      catalogItemId,
+      description,
       qty: Number(tr.querySelector('.line-qty')?.value) || 0,
       price: Number(tr.querySelector('.line-price')?.value) || 0,
       taxPercent: Number(tr.querySelector('.line-tax')?.value) || 0
@@ -63,26 +129,96 @@ function getLinesFromDom() {
   return lines.length ? lines : [emptyLine()];
 }
 
-function renderLines(lines) {
+function renderLines(lines, readOnly = false) {
   if (!tbody) return;
   tbody.innerHTML = '';
   lines.forEach((line, idx) => {
     const tr = document.createElement('tr');
     tr.dataset.line = String(idx);
-    const { taxable, tax, total } = computeLine(line.qty, line.price, line.taxPercent);
+    const L = normalizeSavedLine(line);
+    const { taxable, tax, total } = computeLine(L.qty, L.price, L.taxPercent);
+
+    if (readOnly) {
+      tr.dataset.qty = String(L.qty);
+      tr.dataset.price = String(L.price);
+      tr.dataset.taxPercent = String(L.taxPercent);
+      if (L.catalogItemId) tr.dataset.catalogId = L.catalogItemId;
+      tr.innerHTML = `
+        <td>${idx + 1}</td>
+        <td class="line-desc-readonly">${escapeHtml(L.description)}</td>
+        <td class="line-qty-ro">${L.qty}</td>
+        <td class="line-price-ro">${formatINR(L.price)}</td>
+        <td class="line-tax-ro">${L.taxPercent}</td>
+        <td class="line-taxable">${formatINR(taxable)}</td>
+        <td class="line-taxamt">${formatINR(tax)}</td>
+        <td class="line-total">${formatINR(total)}</td>
+        <td></td>
+      `;
+      tbody.appendChild(tr);
+      return;
+    }
+
     tr.innerHTML = `
       <td>${idx + 1}</td>
-      <td><textarea class="line-desc" rows="3" placeholder="Description"></textarea></td>
-      <td><input type="number" class="line-qty" min="0" step="1" value="${line.qty}"></td>
-      <td><input type="number" class="line-price" min="0" step="0.01" value="${line.price}"></td>
-      <td><input type="number" class="line-tax" min="0" step="0.1" value="${line.taxPercent}"></td>
+      <td class="line-item-cell">
+        <select class="line-catalog">
+          <option value="">Choose item…</option>
+        </select>
+        <div class="line-custom-wrap" hidden>
+          <textarea class="line-desc-custom" rows="2" placeholder="Custom line description"></textarea>
+        </div>
+      </td>
+      <td><input type="number" class="line-qty" min="0" step="1" value="${L.qty}"></td>
+      <td><input type="number" class="line-price" min="0" step="0.01" value="${L.price}"></td>
+      <td><input type="number" class="line-tax" min="0" step="0.1" value="${L.taxPercent}"></td>
       <td class="line-taxable">${formatINR(taxable)}</td>
       <td class="line-taxamt">${formatINR(tax)}</td>
       <td class="line-total">${formatINR(total)}</td>
       <td><button type="button" class="btn btn-sm btn-danger-outline line-remove" aria-label="Remove line">×</button></td>
     `;
-    const descTa = tr.querySelector('.line-desc');
-    if (descTa) descTa.value = line.description;
+
+    const sel = tr.querySelector('.line-catalog');
+    catalogItems.forEach((c) => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.dataset.name = c.name;
+      opt.dataset.price = String(Number(c.price) || 0);
+      opt.textContent = `${c.name} — ${formatINR(c.price)}`;
+      sel.appendChild(opt);
+    });
+    const optCustom = document.createElement('option');
+    optCustom.value = '__custom__';
+    optCustom.textContent = 'Custom description…';
+    sel.appendChild(optCustom);
+
+    const selVal = resolveSelectValue(L);
+    sel.value = selVal || '';
+
+    const wrap = tr.querySelector('.line-custom-wrap');
+    const ta = tr.querySelector('.line-desc-custom');
+    if (selVal === '__custom__') {
+      wrap.hidden = false;
+      if (ta) ta.value = L.description;
+    }
+
+    const onCatalogChange = () => {
+      if (sel.value === '__custom__') {
+        wrap.hidden = false;
+      } else if (sel.value) {
+        wrap.hidden = true;
+        const opt = sel.selectedOptions[0];
+        const p = tr.querySelector('.line-price');
+        if (p && opt?.dataset?.price != null) p.value = opt.dataset.price;
+        if (ta) ta.value = '';
+      } else {
+        wrap.hidden = true;
+        if (ta) ta.value = '';
+      }
+      refreshLineTotals();
+    };
+    sel.addEventListener('change', onCatalogChange);
+    if (ta) ta.addEventListener('input', () => refreshLineTotals());
+
     tbody.appendChild(tr);
   });
 
@@ -91,9 +227,9 @@ function renderLines(lines) {
   });
   tbody.querySelectorAll('.line-remove').forEach((btn) => {
     btn.addEventListener('click', () => {
-      const tr = btn.closest('tr');
+      const row = btn.closest('tr');
       if (tbody.querySelectorAll('tr[data-line]').length <= 1) return;
-      tr.remove();
+      row.remove();
       renumberLines();
       refreshLineTotals();
     });
@@ -161,7 +297,13 @@ async function persistDraft() {
   const payload = {
     billToName: billToEl?.value?.trim() || '',
     invoiceDate: dateEl?.value || new Date().toISOString().slice(0, 10),
-    lineItems: lines,
+    lineItems: lines.map((l) => ({
+      catalogItemId: l.catalogItemId || null,
+      description: l.description,
+      qty: l.qty,
+      price: l.price,
+      taxPercent: l.taxPercent
+    })),
     totals: { taxable: sums.taxable, tax: sums.tax, grand: sums.grand },
     updatedAt: serverTimestamp()
   };
@@ -173,7 +315,7 @@ async function createDraftAndRedirect() {
     status: 'draft',
     billToName: '',
     invoiceDate: new Date().toISOString().slice(0, 10),
-    lineItems: [emptyLine()],
+    lineItems: [{ ...emptyLine() }],
     totals: { taxable: 0, tax: 0, grand: 0 },
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp()
@@ -194,9 +336,12 @@ async function loadInvoice(id) {
 
   if (billToEl) billToEl.value = d.billToName || '';
   if (dateEl) dateEl.value = d.invoiceDate || new Date().toISOString().slice(0, 10);
-  renderLines(Array.isArray(d.lineItems) && d.lineItems.length ? d.lineItems : [emptyLine()]);
 
+  await fetchCatalog();
+  const rawLines = Array.isArray(d.lineItems) && d.lineItems.length ? d.lineItems : [emptyLine()];
   const completed = currentStatus === 'completed';
+  renderLines(rawLines.map(normalizeSavedLine), completed);
+
   setReadOnly(completed);
 }
 
@@ -235,7 +380,13 @@ async function markComplete() {
         invoiceNumber: `INV-${nextNum}`,
         billToName: bill,
         invoiceDate: dateEl?.value || new Date().toISOString().slice(0, 10),
-        lineItems: lines,
+        lineItems: lines.map((l) => ({
+          catalogItemId: l.catalogItemId ?? null,
+          description: l.description,
+          qty: l.qty,
+          price: l.price,
+          taxPercent: l.taxPercent
+        })),
         totals: { taxable: sums.taxable, tax: sums.tax, grand: sums.grand },
         updatedAt: serverTimestamp()
       });
@@ -243,7 +394,10 @@ async function markComplete() {
 
     currentStatus = 'completed';
     const refreshed = await getDoc(invRef);
-    currentInvoiceNumber = refreshed.data()?.invoiceNumber || null;
+    const d = refreshed.data();
+    currentInvoiceNumber = d?.invoiceNumber || null;
+    const savedLines = (d?.lineItems || lines).map(normalizeSavedLine);
+    renderLines(savedLines, true);
     setReadOnly(true);
   } catch (e) {
     console.error(e);
