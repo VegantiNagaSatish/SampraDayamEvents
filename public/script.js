@@ -304,19 +304,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
     showMarriageFolders();
 
-    // Gallery lightbox: click photo to view full size
+    // Gallery lightbox: click photo to view full size; prev/next among visible (filtered) images
     const lightbox = document.getElementById('galleryLightbox');
     const lightboxImg = document.querySelector('.gallery-lightbox__img');
     const lightboxOverlay = document.querySelector('.gallery-lightbox__overlay');
     const lightboxClose = document.querySelector('.gallery-lightbox__close');
+    const lightboxPrev = document.getElementById('galleryLightboxPrev');
+    const lightboxNext = document.getElementById('galleryLightboxNext');
 
-    function openLightbox(src, alt) {
+    var lightboxIndex = 0;
+
+    function getVisibleGalleryItems() {
+        return Array.prototype.slice.call(document.querySelectorAll('.gallery-photo-item')).filter(function (el) {
+            return !el.classList.contains('hidden');
+        });
+    }
+
+    function updateLightboxNav(count) {
+        var show = count > 1;
+        if (lightboxPrev) {
+            lightboxPrev.hidden = !show;
+            lightboxPrev.setAttribute('aria-hidden', show ? 'false' : 'true');
+        }
+        if (lightboxNext) {
+            lightboxNext.hidden = !show;
+            lightboxNext.setAttribute('aria-hidden', show ? 'false' : 'true');
+        }
+    }
+
+    function showLightboxAt(index) {
         if (!lightbox || !lightboxImg) return;
-        lightboxImg.src = src;
-        lightboxImg.alt = alt || 'Gallery photo';
+        var items = getVisibleGalleryItems();
+        if (!items.length) return;
+        var len = items.length;
+        var i = index % len;
+        if (i < 0) i += len;
+        lightboxIndex = i;
+        var img = items[i].querySelector('img');
+        if (!img || !img.src) return;
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt || 'Gallery photo';
         lightbox.setAttribute('aria-hidden', 'false');
         lightbox.classList.add('is-open');
         document.body.style.overflow = 'hidden';
+        updateLightboxNav(len);
+    }
+
+    function stepLightbox(delta) {
+        if (!lightbox || !lightbox.classList.contains('is-open')) return;
+        var items = getVisibleGalleryItems();
+        if (items.length <= 1) return;
+        showLightboxAt(lightboxIndex + delta);
     }
 
     function closeLightbox() {
@@ -327,19 +365,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (photoItems.length && lightbox) {
-        photoItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                const img = item.querySelector('img');
+        photoItems.forEach(function (item) {
+            item.addEventListener('click', function (e) {
+                var img = item.querySelector('img');
                 if (img && img.src) {
                     e.preventDefault();
-                    openLightbox(img.src, img.alt);
+                    var items = getVisibleGalleryItems();
+                    var idx = items.indexOf(item);
+                    if (idx === -1) return;
+                    showLightboxAt(idx);
                 }
             });
         });
         if (lightboxOverlay) lightboxOverlay.addEventListener('click', closeLightbox);
         if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && lightbox.classList.contains('is-open')) closeLightbox();
+        if (lightboxPrev) {
+            lightboxPrev.addEventListener('click', function (e) {
+                e.stopPropagation();
+                stepLightbox(-1);
+            });
+        }
+        if (lightboxNext) {
+            lightboxNext.addEventListener('click', function (e) {
+                e.stopPropagation();
+                stepLightbox(1);
+            });
+        }
+        document.addEventListener('keydown', function (e) {
+            if (!lightbox || !lightbox.classList.contains('is-open')) return;
+            if (e.key === 'Escape') {
+                closeLightbox();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                stepLightbox(-1);
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                stepLightbox(1);
+            }
         });
     }
 
