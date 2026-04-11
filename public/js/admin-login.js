@@ -2,7 +2,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword
 } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
-import { auth, normalizePhoneDigits, phoneToEmail } from './invoice-shared.js';
+import { auth, normalizePhoneDigits, phoneToEmail } from './admin-shared.js';
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
@@ -10,8 +10,8 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-const form = document.getElementById('invoiceLoginForm');
-const errEl = document.getElementById('invoiceLoginError');
+const form = document.getElementById('adminLoginForm');
+const errEl = document.getElementById('adminLoginError');
 
 function showError(msg) {
   if (errEl) {

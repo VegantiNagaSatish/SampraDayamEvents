@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edit invoice | SampraDayam Events</title>
+  <title>Edit estimation | SampraDayam Events</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="invoice.css">
+  <link rel="stylesheet" href="admin.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
@@ -36,9 +36,38 @@
 
   <main class="invoice-app-main">
     <div class="invoice-card">
+      <header class="invoice-letterhead invoice-letterhead--estimation" aria-label="Business letterhead">
+        <div class="invoice-letterhead__left">
+          <div class="invoice-letterhead__logo-bg">
+            <img src="sdLogo.jpeg" alt="" class="invoice-letterhead__logo" width="80" height="80">
+          </div>
+        </div>
+        <div class="invoice-letterhead__center">
+          <div id="printSellerName" class="invoice-letterhead__name"></div>
+          <div id="printSellerContact" class="invoice-letterhead__contact"></div>
+        </div>
+        <div class="invoice-letterhead__right">
+          <div class="invoice-letterhead__doc-type">ESTIMATION</div>
+          <div class="invoice-letterhead__doc-sub">Estimation document</div>
+        </div>
+      </header>
+
+      <section class="invoice-doc invoice-doc--masthead" aria-label="Estimation details">
+        <div class="invoice-doc__meta">
+          <div>
+            <strong>Bill to</strong><br>
+            <span id="previewBillTo">—</span>
+          </div>
+          <div>
+            <strong>Estimation #</strong> <span id="invoicePreviewNum">—</span><br>
+            <strong>Date</strong> <span id="previewDate">—</span>
+          </div>
+        </div>
+      </section>
+
       <div class="invoice-toolbar invoice-toolbar--compact no-print">
         <a class="btn btn-outline btn--toolbar" href="admin-dashboard.html">Admin home</a>
-        <a class="btn btn-outline btn--toolbar" href="invoice-admin.html">Invoices</a>
+        <a class="btn btn-outline btn--toolbar" href="estimations.html">Estimations</a>
         <a class="btn btn-outline btn--toolbar" href="catalog.html">Catalog</a>
         <button type="button" class="btn btn-primary btn--toolbar" id="saveDraftBtn">Save draft</button>
         <button type="button" class="btn btn-outline btn--toolbar" id="completeInvoiceBtn">Mark complete</button>
@@ -48,13 +77,13 @@
 
       <div id="invoiceFormError" class="invoice-alert" hidden></div>
 
-      <div class="invoice-form">
+      <div class="invoice-form no-print">
         <div class="form-row">
           <label for="billToName">Bill to</label>
           <input type="text" id="billToName" placeholder="Customer name" style="max-width:480px;">
         </div>
         <div class="form-row">
-          <label for="invoiceDate">Invoice date</label>
+          <label for="invoiceDate">Estimation date</label>
           <input type="date" id="invoiceDate">
         </div>
       </div>
@@ -71,10 +100,7 @@
               <th>Item</th>
               <th>Qty</th>
               <th>Price (₹)</th>
-              <th>Tax %</th>
-              <th>Taxable</th>
-              <th>Tax</th>
-              <th>Total</th>
+              <th>Amount</th>
               <th class="no-print"></th>
             </tr>
           </thead>
@@ -82,25 +108,9 @@
         </table>
       </div>
 
-      <section class="invoice-doc" aria-label="Invoice preview">
-        <div id="printSellerName" style="font-weight:700; color:var(--primary-color);"></div>
-        <div id="printSellerContact" class="invoice-muted" style="margin-bottom:0.5rem;"></div>
-        <div class="invoice-doc__title">TAX INVOICE</div>
-        <div class="invoice-doc__meta">
-          <div>
-            <strong>Bill to</strong><br>
-            <span id="previewBillTo">—</span>
-          </div>
-          <div>
-            <strong>Invoice #</strong> <span id="invoicePreviewNum">—</span><br>
-            <strong>Date</strong> <span id="previewDate">—</span>
-          </div>
-        </div>
-
+      <section class="invoice-doc invoice-doc--footer" aria-label="Estimation totals">
         <div class="invoice-doc__totals">
-          <div><span>Taxable amount</span><span id="previewTaxable">₹0.00</span></div>
-          <div><span>Tax</span><span id="previewTax">₹0.00</span></div>
-          <div><strong>Grand total</strong><strong id="previewGrand">₹0.00</strong></div>
+          <div><strong>Total</strong><strong id="previewGrand">₹0.00</strong></div>
         </div>
         <p class="invoice-doc__words"><strong>Amount in words:</strong> <span id="previewAmountWords">Zero Rupees Only</span></p>
         <p class="invoice-doc__sign">For, SAMPRADAYAM EVENTS<br><strong>Authorized signature</strong></p>
@@ -108,7 +118,7 @@
     </div>
   </main>
 
-  <script type="module" src="js/invoice-edit.js"></script>
+  <script type="module" src="js/estimation-edit.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

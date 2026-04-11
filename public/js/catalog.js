@@ -10,8 +10,8 @@ import {
   serverTimestamp,
   updateDoc
 } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
-import { auth, db } from './invoice-shared.js';
-import { formatINR } from './invoice-utils.js';
+import { auth, db } from './admin-shared.js';
+import { formatINR } from './admin-utils.js';
 
 const tbody = document.getElementById('catalogBody');
 const errEl = document.getElementById('catalogError');
@@ -153,7 +153,7 @@ document.getElementById('catalogShareWhatsappBtn')?.addEventListener('click', ()
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
-    window.location.href = 'invoice-login.html';
+    window.location.href = 'admin-login.html';
     return;
   }
   loadCatalog().catch(console.error);

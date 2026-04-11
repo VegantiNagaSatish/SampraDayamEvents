@@ -8,17 +8,17 @@ import {
   query,
   where
 } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
-import { auth, db } from './invoice-shared.js';
-import { formatINR } from './invoice-utils.js';
+import { auth, db } from './admin-shared.js';
+import { formatINR } from './admin-utils.js';
 
-const listEl = document.getElementById('invoiceList');
-const filterEl = document.getElementById('invoiceFilter');
-const emptyEl = document.getElementById('invoiceListEmpty');
-const logoutBtn = document.getElementById('invoiceLogout');
+const listEl = document.getElementById('estimationList');
+const filterEl = document.getElementById('estimationFilter');
+const emptyEl = document.getElementById('estimationListEmpty');
+const logoutBtn = document.getElementById('estimationLogout');
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
-    window.location.href = 'invoice-login.html';
+    window.location.href = 'admin-login.html';
   }
 });
 
@@ -47,7 +47,13 @@ function renderRows(rows) {
         ? d.invoiceNumber
         : '— (draft)';
     const dateStr = d.invoiceDate || (d.updatedAt?.toDate?.()?.toISOString?.().slice(0, 10) ?? '—');
-    const total = d.totals?.grand != null ? formatINR(d.totals.grand) : '—';
+    const grand =
+      d.totals?.grand != null
+        ? d.totals.grand
+        : d.totals?.taxable != null
+          ? Number(d.totals.taxable) + Number(d.totals.tax || 0)
+          : null;
+    const total = grand != null ? formatINR(grand) : '—';
     const confirmTag =
       d.status === 'completed' && d.invoiceNumber ? d.invoiceNumber : 'draft';
     tr.innerHTML = `
@@ -57,21 +63,21 @@ function renderRows(rows) {
       <td>${escapeHtml(String(dateStr))}</td>
       <td>${total}</td>
       <td class="invoice-table__actions">
-        <a class="btn btn-sm btn-outline btn--toolbar" href="invoice-edit.html?id=${row.id}">Open</a>
-        <button type="button" class="btn btn-sm btn-danger-outline btn--toolbar invoice-delete-inv" data-id="${row.id}" data-status="${d.status}" data-confirm-tag="${escapeHtml(confirmTag)}">Delete</button>
+        <a class="btn btn-sm btn-outline btn--toolbar" href="estimation-edit.html?id=${row.id}">Open</a>
+        <button type="button" class="btn btn-sm btn-danger-outline btn--toolbar estimation-delete" data-id="${row.id}" data-status="${d.status}" data-confirm-tag="${escapeHtml(confirmTag)}">Delete</button>
       </td>
     `;
     listEl.appendChild(tr);
   }
 
-  listEl.querySelectorAll('.invoice-delete-inv').forEach((btn) => {
+  listEl.querySelectorAll('.estimation-delete').forEach((btn) => {
     btn.addEventListener('click', async () => {
       const id = btn.getAttribute('data-id');
       const st = btn.getAttribute('data-status');
       const tag = btn.getAttribute('data-confirm-tag') || '';
       const msg =
         st === 'completed'
-          ? `Delete completed invoice ${tag}? This cannot be undone.`
+          ? `Delete completed estimation ${tag}? This cannot be undone.`
           : 'Delete this draft permanently?';
       if (!id || !confirm(msg)) return;
       try {
@@ -112,7 +118,7 @@ async function load() {
     if (emptyEl) {
       emptyEl.hidden = false;
       emptyEl.textContent =
-        'Could not load invoices. Deploy Firestore indexes if prompted in the browser console, or check rules.';
+        'Could not load estimations. Deploy Firestore indexes if prompted in the browser console, or check rules.';
     }
   }
 }

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin — Sign in | SampraDayam Events</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="invoice.css">
+  <link rel="stylesheet" href="admin.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
@@ -28,7 +28,7 @@
           <li><a href="gallery.html" class="nav-link">Gallery</a></li>
           <li><a href="about.html" class="nav-link">About</a></li>
           <li><a href="contact.html" class="nav-link">Contact</a></li>
-          <li><a href="invoice-login.html" class="nav-link active">Admin</a></li>
+          <li><a href="admin-login.html" class="nav-link active">Admin</a></li>
         </ul>
       </div>
     </div>
@@ -39,9 +39,9 @@
       <h1>Admin sign in</h1>
       <p class="invoice-muted">Sign in with your admin phone number and password. Configure Firebase first — see <code>invoice_requirement.md</code> §11.</p>
 
-      <div id="invoiceLoginError" class="invoice-alert" hidden></div>
+      <div id="adminLoginError" class="invoice-alert" hidden></div>
 
-      <form id="invoiceLoginForm" class="invoice-form">
+      <form id="adminLoginForm" class="invoice-form">
         <div class="form-row">
           <label for="adminPhone">Phone (10 digits)</label>
           <input type="text" id="adminPhone" name="phone" inputmode="numeric" autocomplete="username" maxlength="15" placeholder="10-digit mobile" required>
@@ -55,7 +55,7 @@
     </div>
   </main>
 
-  <script type="module" src="js/invoice-login.js"></script>
+  <script type="module" src="js/admin-login.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

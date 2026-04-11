@@ -2,6 +2,8 @@
 
 **Project context (today):** Static site deployed to **Firebase Hosting** (`public/`, SPA rewrites). There is **no server or database** in the current Firebase config—only file hosting. Browsers cannot safely hold “source of truth” business data by themselves.
 
+**Customer-facing document:** The printable/shareable document is titled **ESTIMATION** (quotes for customers), not a tax invoice. Firestore collection names and some field names still use `invoices` / `invoiceDate` / `invoiceNumber` for implementation continuity.
+
 **Purpose of this document:** Capture what the invoice feature should do, what data you will provide later, and which backend approach fits—so you can approve direction before implementation.
 
 ---
@@ -13,17 +15,17 @@
 
 ### 0.1 Access from the website (implemented)
 
-- **Navigation:** The main site header uses **Admin** (not “Invoices”) linking to `admin-dashboard.html`. If the user is not signed in, they are sent to **Admin sign in** (`invoice-login.html`). After login, **Admin** opens `admin-dashboard.html` with two choices: **Catalog** (`catalog.html`) and **Invoices** (`invoice-admin.html`).
+- **Navigation:** The main site header uses **Admin** linking to `admin-dashboard.html`. If the user is not signed in, they are sent to **Admin sign in** (`admin-login.html`). After login, **Admin** opens `admin-dashboard.html` with two choices: **Catalog** (`catalog.html`) and **Estimations** (`estimations.html`). Create/edit one estimation at `estimation-edit.html?id=…` (new drafts redirect there after creation).
 - **Admin sign-in:** **Phone number + password** on the login form. Firebase does not support “phone + password” as one native type, so the app maps the **10-digit phone** to a synthetic **email** for **Email/Password** auth:  
   `{10-digit-phone}@invoice.sampradayam.events`  
   You must create **that exact user** in Firebase Console (Authentication → Email/Password) with the password you want. **Do not put the password in the website source code**—only you type it at login; it lives in Firebase Auth.
-- **After login:** Admin can **list** invoices, **create** new ones, **save drafts**, **edit drafts**, and **mark complete** (assigns the next `INV-n` number and locks status to **completed** in v1).
-- **Catalog (`catalog.html`):** Admin maintains **catalog items** (name + default unit price) in Firestore collection `catalogItems`. On the invoice editor, each line **chooses an item** from that list (label shows *name — ₹price*); **Custom description…** still allows one-off lines. Saved invoice lines store `description`, `price`, `qty`, `taxPercent`, and optional `catalogItemId`. Catalog supports **Print** and **Share** (WhatsApp with prefilled text). **Completed** invoices remain **editable** and **deletable** from the list (v1; tighten later if needed).
+- **After login:** Admin can **list** estimations, **create** new ones, **save drafts**, **edit drafts**, and **mark complete** (assigns the next `INV-n` reference number and locks status to **completed** in v1).
+- **Catalog (`catalog.html`):** Admin maintains **catalog items** (name + default unit price) in Firestore collection `catalogItems`. On the estimation editor, each line **chooses an item** from that list (label shows *name — ₹price*); **Custom description…** still allows one-off lines. Saved lines store `description`, `price`, `qty`, and optional `catalogItemId`. Line amount is **qty × price** only (no tax fields). Catalog supports **Print** and **Share** (WhatsApp with prefilled text). **Completed** estimations remain **editable** and **deletable** from the list (v1; tighten later if needed).
 
 ### 0.2 Status model (v1)
 
 - **Draft:** Saved in Firestore; editable; no final invoice number (or optional working title only).
-- **Completed:** Stored with assigned **Invoice#** (`INV-1`, `INV-2`, … via a counter in Firestore); treated as final for v1 (editing completed invoices can be added later).
+- **Completed:** Stored with assigned **Estimation#** (`INV-1`, `INV-2`, … via a counter in Firestore); treated as final for v1 (editing completed estimations can be added later).
 
 ---
 
@@ -180,20 +182,20 @@ Please prepare (can be pasted in a follow-up message or doc):
 
 ## 10. Reference sample: `INV-7.pdf` (your file)
 
-This mirrors the structure observed in your sample tax invoice so the eventual PDF/HTML matches your current format.
+This mirrors the layout observed in your sample PDF; the **live app** prints **ESTIMATION** as the document title (customer quote), not “tax invoice.”
 
 ### 10.1 Header (seller)
 
 - Business name (Telugu + Latin branding as on letterhead)
 - Phone: multiple numbers (e.g. `+91 …`, `+91 …`)
 - Email: e.g. `sampradayam.events393@gmail.com`
-- Document title: **TAX INVOICE**
+- Document title in app: **ESTIMATION** (sample PDF used **TAX INVOICE**)
 
 ### 10.2 Bill to & meta
 
 - **BILL TO:** customer name (sample: *ugandra yelamati*)
-- **Invoice#** (e.g. `INV-7`)
-- **Invoice Date:** `DD/MM/YYYY` (sample: `27/01/2026`)
+- **Estimation#** / reference (e.g. `INV-7` in the app after “Mark complete”)
+- **Date:** `DD/MM/YYYY` (sample: `27/01/2026`)
 
 ### 10.3 Line items (table)
 
@@ -203,17 +205,12 @@ This mirrors the structure observed in your sample tax invoice so the eventual P
 | **DESCRIPTION** | Long free text; can include multi-line scope (quantities of people, what’s included, which day) |
 | **QTY** | Integer quantity |
 | **PRICE** | Unit price in **₹** with thousands separators (e.g. `₹2,00,000.00`) |
-| **TAXABLE AMOUNT** | Line extended amount before tax |
-| **TAX** | Amount (sample lines show **₹0.00**) |
-| Tax rate column | Shown as **0.0%** per line in sample |
-| **TOTAL** | Line total (matches taxable when tax is zero) |
+| **AMOUNT** | Line total = qty × price (the live app has no tax columns) |
 
 ### 10.4 Footer / totals
 
 - **AMOUNT IN WORDS:** (e.g. *Seven Lakh Two Hundred Ninety Rupees Only/-*)
-- **TAXABLE AMOUNT** → sum of taxable column
-- **TAX** → total tax (sample: **₹0.00**)
-- **GRAND TOTAL** → final rupee total
+- **TOTAL** → sum of line amounts (sample PDF had separate taxable/tax rows; the app omits tax entirely)
 - Closing line: *For, [business name]*
 - **AUTHORIZED SIGNATURE** area
 - **Pagination:** “Page X of Y” (sample spans 2 pages due to long descriptions)
@@ -221,6 +218,6 @@ This mirrors the structure observed in your sample tax invoice so the eventual P
 ### 10.5 Implementation notes from sample
 
 - Currency: **INR (₹)**; Indian-style **lakhs grouping** in displayed numbers (`2,00,000`).
-- Tax is **0%** in this sample but columns exist—model should support non-zero GST later.
+- The sample PDF used tax columns at **0%**; the implemented app does **not** include tax on estimations.
 - Descriptions are **very long**; PDF generator must wrap text and allow multi-page tables.
 - **Amount in words** should be generated from the grand total (Indian English wording).

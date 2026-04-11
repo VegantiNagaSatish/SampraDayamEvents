@@ -56,25 +56,22 @@ export function rupeesToWords(num) {
   return parts.join(' ') + ' Rupees Only';
 }
 
-export function computeLine(qty, price, taxPercent) {
+/** Line amount: quantity × unit price (no tax). */
+export function computeLine(qty, price) {
   const q = Number(qty) || 0;
   const p = Number(price) || 0;
-  const t = Number(taxPercent) || 0;
-  const taxable = q * p;
-  const tax = taxable * (t / 100);
-  const total = taxable + tax;
-  return { taxable, tax, total };
+  const lineTotal = q * p;
+  return { lineTotal };
 }
 
-export function sumInvoiceLines(lines) {
+/** Sum line totals for estimation documents. */
+export function sumLineTotals(lines) {
   return lines.reduce(
     (acc, line) => {
-      const { taxable, tax, total } = computeLine(line.qty, line.price, line.taxPercent);
-      acc.taxable += taxable;
-      acc.tax += tax;
-      acc.grand += total;
+      const { lineTotal } = computeLine(line.qty, line.price);
+      acc.grand += lineTotal;
       return acc;
     },
-    { taxable: 0, tax: 0, grand: 0 }
+    { grand: 0 }
   );
 }

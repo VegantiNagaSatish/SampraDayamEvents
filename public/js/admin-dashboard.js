@@ -1,11 +1,11 @@
 import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
-import { auth } from './invoice-shared.js';
+import { auth } from './admin-shared.js';
 
 const signOutBtn = document.getElementById('adminDashboardSignOut');
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
-    window.location.replace('invoice-login.html');
+    window.location.replace('admin-login.html');
   }
 });
 
