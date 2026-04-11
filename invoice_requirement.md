@@ -13,12 +13,12 @@
 
 ### 0.1 Access from the website (implemented)
 
-- **Navigation:** The main site header uses **Admin** (not “Invoices”) linking to `admin-dashboard.html`. If the user is not signed in, they are sent to **Admin sign in** (`invoice-login.html`). After login, **Admin** opens `admin-dashboard.html` with two choices: **Items list** (`invoice-catalog.html`) and **Invoices** (`invoice-admin.html`).
+- **Navigation:** The main site header uses **Admin** (not “Invoices”) linking to `admin-dashboard.html`. If the user is not signed in, they are sent to **Admin sign in** (`invoice-login.html`). After login, **Admin** opens `admin-dashboard.html` with two choices: **Catalog** (`invoice-catalog.html`) and **Invoices** (`invoice-admin.html`).
 - **Admin sign-in:** **Phone number + password** on the login form. Firebase does not support “phone + password” as one native type, so the app maps the **10-digit phone** to a synthetic **email** for **Email/Password** auth:  
   `{10-digit-phone}@invoice.sampradayam.events`  
   You must create **that exact user** in Firebase Console (Authentication → Email/Password) with the password you want. **Do not put the password in the website source code**—only you type it at login; it lives in Firebase Auth.
 - **After login:** Admin can **list** invoices, **create** new ones, **save drafts**, **edit drafts**, and **mark complete** (assigns the next `INV-n` number and locks status to **completed** in v1).
-- **Price list (`invoice-catalog.html`):** Admin maintains **catalog items** (name + default unit price) in Firestore collection `catalogItems`. On the invoice editor, each line **chooses an item** from that list (label shows *name — ₹price*); **Custom description…** still allows one-off lines. Saved invoice lines store `description`, `price`, `qty`, `taxPercent`, and optional `catalogItemId`.
+- **Catalog (`invoice-catalog.html`):** Admin maintains **catalog items** (name + default unit price) in Firestore collection `catalogItems`. On the invoice editor, each line **chooses an item** from that list (label shows *name — ₹price*); **Custom description…** still allows one-off lines. Saved invoice lines store `description`, `price`, `qty`, `taxPercent`, and optional `catalogItemId`. Catalog supports **Print** and **Share** (WhatsApp with prefilled text). **Completed** invoices remain **editable** and **deletable** from the list (v1; tighten later if needed).
 
 ### 0.2 Status model (v1)
 

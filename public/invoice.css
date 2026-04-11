@@ -81,6 +81,167 @@ body.invoice-app-body {
   margin-bottom: 1.25rem;
 }
 
+.invoice-toolbar--compact {
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.btn--toolbar {
+  padding: 0.32rem 0.65rem !important;
+  font-size: 0.78rem !important;
+  line-height: 1.25;
+  border-width: 1.5px !important;
+}
+
+@media (min-width: 769px) {
+  .btn--toolbar {
+    padding: 0.4rem 0.85rem !important;
+    font-size: 0.82rem !important;
+  }
+}
+
+.catalog-toolbar {
+  align-items: flex-start;
+}
+
+.catalog-page-title {
+  margin: 0 0 0.5rem 0 !important;
+  flex: 1 1 100%;
+  font-family: 'Playfair Display', serif;
+  color: var(--primary-color);
+  font-size: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .catalog-toolbar {
+    align-items: center;
+  }
+  .catalog-page-title {
+    flex: 1 1 auto;
+    margin: 0 !important;
+    font-size: 1.65rem;
+  }
+}
+
+.catalog-toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .catalog-toolbar-actions {
+    width: auto;
+    justify-content: flex-end;
+  }
+}
+
+.catalog-print-header {
+  display: none;
+}
+
+.catalog-print-title {
+  margin: 0 0 0.25rem;
+  font-size: 1.1rem;
+  color: var(--primary-color);
+}
+
+.catalog-print-sub {
+  margin: 0 0 1rem;
+  font-size: 0.85rem;
+  color: var(--text-light);
+}
+
+.catalog-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.catalog-table .cat-name,
+.catalog-table .cat-name-new {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0.45rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.catalog-table .cat-price,
+.catalog-table .cat-price-new {
+  width: 100%;
+  max-width: 8rem;
+  box-sizing: border-box;
+  padding: 0.45rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.catalog-actions-cell::before {
+  display: none !important;
+}
+
+@media (max-width: 640px) {
+  .catalog-table thead {
+    display: none;
+  }
+
+  .catalog-table tr.catalog-row,
+  .catalog-table tr.catalog-new-row {
+    display: block;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 0.65rem 0.75rem;
+    margin-bottom: 0.75rem;
+    background: #fafbfc;
+  }
+
+  .catalog-table tr.catalog-row td,
+  .catalog-table tr.catalog-new-row td {
+    display: block;
+    width: 100% !important;
+    border: none;
+    padding: 0.4rem 0;
+  }
+
+  .catalog-table tr.catalog-row td::before,
+  .catalog-table tr.catalog-new-row td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-light);
+    margin-bottom: 0.2rem;
+  }
+
+  .catalog-table .cat-price,
+  .catalog-table .cat-price-new {
+    max-width: none;
+  }
+
+  .catalog-row-actions {
+    justify-content: flex-start;
+  }
+}
+
+.invoice-lines-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 900px) {
+  .invoice-lines-table {
+    min-width: 720px;
+  }
+
+  .invoice-list-table--min {
+    min-width: 560px;
+  }
+}
+
 .btn-sm {
   padding: 0.45rem 0.9rem;
   font-size: 0.875rem;
@@ -95,20 +256,6 @@ body.invoice-app-body {
 .btn-danger-outline:hover {
   background: #dc3545;
   color: #fff;
-}
-
-.invoice-banner {
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  font-size: 0.95rem;
-  background: rgba(108, 92, 231, 0.12);
-  color: var(--primary-color);
-}
-
-.invoice-banner--done {
-  background: rgba(40, 167, 69, 0.12);
-  color: #155724;
 }
 
 .invoice-table-wrap {
@@ -354,6 +501,47 @@ a.admin-dashboard-card:hover {
     background: #fff;
   }
 
+  .catalog-print-header {
+    display: block;
+  }
+
+  .catalog-table thead {
+    display: table-header-group !important;
+  }
+
+  .catalog-table tr.catalog-row,
+  .catalog-table tr.catalog-new-row {
+    display: table-row !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .catalog-table tr.catalog-row td,
+  .catalog-table tr.catalog-new-row td {
+    display: table-cell !important;
+    border-bottom: 1px solid #eee !important;
+    padding: 0.5rem !important;
+  }
+
+  .catalog-table tr.catalog-row td::before,
+  .catalog-table tr.catalog-new-row td::before {
+    display: none !important;
+  }
+
+  .catalog-table .cat-name,
+  .catalog-table .cat-price,
+  .catalog-table .cat-name-new,
+  .catalog-table .cat-price-new {
+    border: none !important;
+    background: transparent !important;
+  }
+
+  .catalog-new-row {
+    display: none !important;
+  }
+
   .invoice-lines-table textarea,
   .invoice-lines-table input,
   .invoice-lines-table select {
@@ -364,5 +552,13 @@ a.admin-dashboard-card:hover {
 
   .line-remove {
     display: none !important;
+  }
+
+  .invoice-lines-scroll {
+    overflow: visible !important;
+  }
+
+  .invoice-lines-table {
+    min-width: 0 !important;
   }
 }

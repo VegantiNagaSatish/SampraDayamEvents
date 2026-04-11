@@ -36,16 +36,16 @@
 
   <main class="invoice-app-main">
     <div class="invoice-card">
-      <div class="invoice-toolbar no-print">
-        <a class="btn btn-outline" href="admin-dashboard.html">Admin home</a>
-        <a class="btn btn-outline" href="invoice-admin.html">← Invoices</a>
-        <a class="btn btn-outline" href="invoice-catalog.html">Items list</a>
-        <button type="button" class="btn btn-primary" id="saveDraftBtn">Save draft</button>
-        <button type="button" class="btn btn-outline" id="completeInvoiceBtn">Mark complete</button>
-        <button type="button" class="btn btn-outline" id="printInvoiceBtn" hidden>Print</button>
+      <div class="invoice-toolbar invoice-toolbar--compact no-print">
+        <a class="btn btn-outline btn--toolbar" href="admin-dashboard.html">Admin home</a>
+        <a class="btn btn-outline btn--toolbar" href="invoice-admin.html">Invoices</a>
+        <a class="btn btn-outline btn--toolbar" href="invoice-catalog.html">Catalog</a>
+        <button type="button" class="btn btn-primary btn--toolbar" id="saveDraftBtn">Save draft</button>
+        <button type="button" class="btn btn-outline btn--toolbar" id="completeInvoiceBtn">Mark complete</button>
+        <button type="button" class="btn btn-outline btn--toolbar" id="printInvoiceBtn" hidden>Print</button>
+        <button type="button" class="btn btn-outline btn--toolbar" id="invoiceShareWhatsappBtn" hidden>Share</button>
       </div>
 
-      <div id="invoiceStatusBanner" class="invoice-banner">Loading…</div>
       <div id="invoiceFormError" class="invoice-alert" hidden></div>
 
       <div class="invoice-form">
@@ -59,11 +59,11 @@
         </div>
       </div>
 
-      <div class="invoice-toolbar no-print">
-        <button type="button" class="btn btn-outline" id="addLineBtn">Add line</button>
+      <div class="invoice-toolbar invoice-toolbar--compact no-print">
+        <button type="button" class="btn btn-outline btn--toolbar" id="addLineBtn">Add line</button>
       </div>
 
-      <div class="invoice-table-wrap">
+      <div class="invoice-table-wrap invoice-lines-scroll">
         <table class="invoice-lines-table">
           <thead>
             <tr>

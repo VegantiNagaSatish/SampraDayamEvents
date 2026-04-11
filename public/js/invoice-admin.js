@@ -48,6 +48,8 @@ function renderRows(rows) {
         : '— (draft)';
     const dateStr = d.invoiceDate || (d.updatedAt?.toDate?.()?.toISOString?.().slice(0, 10) ?? '—');
     const total = d.totals?.grand != null ? formatINR(d.totals.grand) : '—';
+    const confirmTag =
+      d.status === 'completed' && d.invoiceNumber ? d.invoiceNumber : 'draft';
     tr.innerHTML = `
       <td><span class="invoice-status invoice-status--${d.status}">${d.status}</span></td>
       <td>${num}</td>
@@ -55,21 +57,23 @@ function renderRows(rows) {
       <td>${escapeHtml(String(dateStr))}</td>
       <td>${total}</td>
       <td class="invoice-table__actions">
-        <a class="btn btn-sm btn-outline" href="invoice-edit.html?id=${row.id}">Open</a>
-        ${
-          d.status === 'draft'
-            ? `<button type="button" class="btn btn-sm btn-danger-outline invoice-delete-draft" data-id="${row.id}">Delete</button>`
-            : ''
-        }
+        <a class="btn btn-sm btn-outline btn--toolbar" href="invoice-edit.html?id=${row.id}">Open</a>
+        <button type="button" class="btn btn-sm btn-danger-outline btn--toolbar invoice-delete-inv" data-id="${row.id}" data-status="${d.status}" data-confirm-tag="${escapeHtml(confirmTag)}">Delete</button>
       </td>
     `;
     listEl.appendChild(tr);
   }
 
-  listEl.querySelectorAll('.invoice-delete-draft').forEach((btn) => {
+  listEl.querySelectorAll('.invoice-delete-inv').forEach((btn) => {
     btn.addEventListener('click', async () => {
       const id = btn.getAttribute('data-id');
-      if (!id || !confirm('Delete this draft permanently?')) return;
+      const st = btn.getAttribute('data-status');
+      const tag = btn.getAttribute('data-confirm-tag') || '';
+      const msg =
+        st === 'completed'
+          ? `Delete completed invoice ${tag}? This cannot be undone.`
+          : 'Delete this draft permanently?';
+      if (!id || !confirm(msg)) return;
       try {
         await deleteDoc(doc(db, 'invoices', id));
         await load();

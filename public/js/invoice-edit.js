@@ -30,7 +30,7 @@ const addLineBtn = document.getElementById('addLineBtn');
 const saveDraftBtn = document.getElementById('saveDraftBtn');
 const completeBtn = document.getElementById('completeInvoiceBtn');
 const printBtn = document.getElementById('printInvoiceBtn');
-const statusBanner = document.getElementById('invoiceStatusBanner');
+const shareWaBtn = document.getElementById('invoiceShareWhatsappBtn');
 const formError = document.getElementById('invoiceFormError');
 const previewSub = document.getElementById('previewTaxable');
 const previewTax = document.getElementById('previewTax');
@@ -47,12 +47,6 @@ async function fetchCatalog() {
   const q = query(collection(db, 'catalogItems'), orderBy('name'));
   const snap = await getDocs(q);
   catalogItems = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-}
-
-function escapeHtml(s) {
-  const div = document.createElement('div');
-  div.textContent = s == null ? '' : String(s);
-  return div.innerHTML;
 }
 
 function showFormError(msg) {
@@ -91,19 +85,6 @@ function getLinesFromDom() {
   const rows = tbody?.querySelectorAll('tr[data-line]') || [];
   const lines = [];
   rows.forEach((tr) => {
-    const ro = tr.querySelector('.line-desc-readonly');
-    if (ro) {
-      lines.push(
-        normalizeSavedLine({
-          catalogItemId: tr.dataset.catalogId || null,
-          description: ro.textContent?.trim() || '',
-          qty: tr.dataset.qty,
-          price: tr.dataset.price,
-          taxPercent: tr.dataset.taxPercent
-        })
-      );
-      return;
-    }
     const sel = tr.querySelector('.line-catalog');
     const ta = tr.querySelector('.line-desc-custom');
     let description = '';
@@ -129,7 +110,7 @@ function getLinesFromDom() {
   return lines.length ? lines : [emptyLine()];
 }
 
-function renderLines(lines, readOnly = false) {
+function renderLines(lines) {
   if (!tbody) return;
   tbody.innerHTML = '';
   lines.forEach((line, idx) => {
@@ -137,26 +118,6 @@ function renderLines(lines, readOnly = false) {
     tr.dataset.line = String(idx);
     const L = normalizeSavedLine(line);
     const { taxable, tax, total } = computeLine(L.qty, L.price, L.taxPercent);
-
-    if (readOnly) {
-      tr.dataset.qty = String(L.qty);
-      tr.dataset.price = String(L.price);
-      tr.dataset.taxPercent = String(L.taxPercent);
-      if (L.catalogItemId) tr.dataset.catalogId = L.catalogItemId;
-      tr.innerHTML = `
-        <td>${idx + 1}</td>
-        <td class="line-desc-readonly">${escapeHtml(L.description)}</td>
-        <td class="line-qty-ro">${L.qty}</td>
-        <td class="line-price-ro">${formatINR(L.price)}</td>
-        <td class="line-tax-ro">${L.taxPercent}</td>
-        <td class="line-taxable">${formatINR(taxable)}</td>
-        <td class="line-taxamt">${formatINR(tax)}</td>
-        <td class="line-total">${formatINR(total)}</td>
-        <td></td>
-      `;
-      tbody.appendChild(tr);
-      return;
-    }
 
     tr.innerHTML = `
       <td>${idx + 1}</td>
@@ -268,27 +229,37 @@ function refreshLineTotals() {
   if (pDate) pDate.textContent = dateEl?.value || '—';
 }
 
-function setReadOnly(completed) {
-  const ro = completed;
-  [billToEl, dateEl, addLineBtn, saveDraftBtn, completeBtn].forEach((el) => {
-    if (el) el.disabled = ro;
-  });
-  if (tbody) {
-    tbody.querySelectorAll('input, textarea, .line-remove').forEach((el) => {
-      el.disabled = ro;
-      if (el.classList?.contains('line-remove')) el.style.visibility = ro ? 'hidden' : '';
-    });
-  }
+function updateInvoiceChrome() {
+  const completed = currentStatus === 'completed';
+  if (completeBtn) completeBtn.hidden = completed;
   if (printBtn) printBtn.hidden = !completed;
-  if (statusBanner) {
-    statusBanner.textContent = completed
-      ? `Completed ${currentInvoiceNumber || ''} — print or return to list.`
-      : 'Draft — save as you go, then mark complete to assign an invoice number.';
-    statusBanner.classList.toggle('invoice-banner--done', completed);
-  }
+  if (shareWaBtn) shareWaBtn.hidden = !completed;
+  if (saveDraftBtn) saveDraftBtn.textContent = completed ? 'Save' : 'Save draft';
   if (invoicePreviewNum) {
     invoicePreviewNum.textContent = completed && currentInvoiceNumber ? currentInvoiceNumber : '—';
   }
+}
+
+function buildInvoiceShareText() {
+  const bill = billToEl?.value?.trim() || '—';
+  const date = dateEl?.value || '—';
+  const num = currentInvoiceNumber || '—';
+  const lines = getLinesFromDom().filter((l) => l.description.trim() && l.qty > 0);
+  const sums = sumInvoiceLines(lines);
+  const lineText = lines
+    .map((l, i) => `${i + 1}. ${l.description} × ${l.qty} @ ${formatINR(l.price)} → ${formatINR(computeLine(l.qty, l.price, l.taxPercent).total)}`)
+    .join('\n');
+  return (
+    `*SAMPRADAYAM EVENTS* — Tax invoice\n` +
+    `Invoice #: *${num}*\n` +
+    `Bill to: ${bill}\n` +
+    `Date: ${date}\n\n` +
+    `${lineText || '(no lines)'}\n\n` +
+    `Taxable: ${formatINR(sums.taxable)}\n` +
+    `Tax: ${formatINR(sums.tax)}\n` +
+    `*Grand total: ${formatINR(sums.grand)}*\n` +
+    `${rupeesToWords(sums.grand)}`
+  );
 }
 
 async function persistDraft() {
@@ -339,10 +310,8 @@ async function loadInvoice(id) {
 
   await fetchCatalog();
   const rawLines = Array.isArray(d.lineItems) && d.lineItems.length ? d.lineItems : [emptyLine()];
-  const completed = currentStatus === 'completed';
-  renderLines(rawLines.map(normalizeSavedLine), completed);
-
-  setReadOnly(completed);
+  renderLines(rawLines.map(normalizeSavedLine));
+  updateInvoiceChrome();
 }
 
 async function markComplete() {
@@ -366,7 +335,9 @@ async function markComplete() {
     await runTransaction(db, async (transaction) => {
       const invSnap = await transaction.get(invRef);
       if (!invSnap.exists()) throw new Error('Missing invoice');
-      if (invSnap.data().status === 'completed') throw new Error('Already completed');
+      if (invSnap.data().status === 'completed') {
+        throw new Error('This invoice is already completed. Use Save to update.');
+      }
 
       const cSnap = await transaction.get(counterRef);
       let nextNum = 1;
@@ -397,8 +368,8 @@ async function markComplete() {
     const d = refreshed.data();
     currentInvoiceNumber = d?.invoiceNumber || null;
     const savedLines = (d?.lineItems || lines).map(normalizeSavedLine);
-    renderLines(savedLines, true);
-    setReadOnly(true);
+    renderLines(savedLines);
+    updateInvoiceChrome();
   } catch (e) {
     console.error(e);
     showFormError(e.message || 'Could not complete invoice. Try again.');
@@ -424,7 +395,6 @@ onAuthStateChanged(auth, async (user) => {
 
 if (addLineBtn) {
   addLineBtn.addEventListener('click', () => {
-    if (currentStatus === 'completed') return;
     const lines = getLinesFromDom();
     lines.push(emptyLine());
     renderLines(lines);
@@ -433,13 +403,14 @@ if (addLineBtn) {
 
 if (saveDraftBtn) {
   saveDraftBtn.addEventListener('click', async () => {
-    if (currentStatus === 'completed') return;
     showFormError('');
     try {
       await persistDraft();
+      const label = currentStatus === 'completed' ? 'Save' : 'Save draft';
       saveDraftBtn.textContent = 'Saved';
       setTimeout(() => {
-        saveDraftBtn.textContent = 'Save draft';
+        saveDraftBtn.textContent = label;
+        updateInvoiceChrome();
       }, 1500);
     } catch (e) {
       console.error(e);
@@ -454,6 +425,14 @@ if (completeBtn) {
 
 if (printBtn) {
   printBtn.addEventListener('click', () => window.print());
+}
+
+if (shareWaBtn) {
+  shareWaBtn.addEventListener('click', () => {
+    const text = buildInvoiceShareText();
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  });
 }
 
 if (billToEl) billToEl.addEventListener('input', () => refreshLineTotals());

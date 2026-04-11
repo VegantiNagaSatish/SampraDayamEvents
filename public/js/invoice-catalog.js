@@ -11,8 +11,13 @@ import {
   updateDoc
 } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 import { auth, db } from './invoice-shared.js';
+import { formatINR } from './invoice-utils.js';
+
 const tbody = document.getElementById('catalogBody');
 const errEl = document.getElementById('catalogError');
+
+/** Latest items for Share / Print text (excludes the “add” row). */
+let catalogSnapshotItems = [];
 
 function showError(msg) {
   if (errEl) {
@@ -21,26 +26,41 @@ function showError(msg) {
   }
 }
 
+function buildCatalogShareText() {
+  if (!catalogSnapshotItems.length) {
+    return '*SAMPRADAYAM EVENTS* — Catalog\n\n(no items yet)';
+  }
+  const lines = catalogSnapshotItems.map(
+    (i, n) => `${n + 1}. ${i.name} — ${formatINR(Number(i.price) || 0)}`
+  );
+  return `*SAMPRADAYAM EVENTS* — Catalog (price list)\n\n${lines.join('\n')}`;
+}
+
 async function loadCatalog() {
   showError('');
   const q = query(collection(db, 'catalogItems'), orderBy('name'));
   const snap = await getDocs(q);
-  render(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+  const items = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  render(items);
 }
 
 function render(items) {
   if (!tbody) return;
   tbody.innerHTML = '';
+  catalogSnapshotItems = items;
 
   items.forEach((item) => {
     const tr = document.createElement('tr');
+    tr.className = 'catalog-row';
     tr.dataset.id = item.id;
     tr.innerHTML = `
-      <td><input type="text" class="cat-name" value="" maxlength="500"></td>
-      <td><input type="number" class="cat-price" min="0" step="0.01" value="0"></td>
-      <td class="invoice-table__actions">
-        <button type="button" class="btn btn-sm btn-primary cat-save">Save</button>
-        <button type="button" class="btn btn-sm btn-danger-outline cat-delete">Delete</button>
+      <td data-label="Item name"><input type="text" class="cat-name" value="" maxlength="500"></td>
+      <td data-label="Price (₹)"><input type="number" class="cat-price" min="0" step="0.01" value="0"></td>
+      <td data-label="Actions" class="catalog-actions-cell no-print">
+        <div class="catalog-row-actions">
+          <button type="button" class="btn btn-sm btn-primary cat-save btn--toolbar">Save</button>
+          <button type="button" class="btn btn-sm btn-danger-outline cat-delete btn--toolbar">Delete</button>
+        </div>
       </td>
     `;
     tr.querySelector('.cat-name').value = item.name || '';
@@ -51,11 +71,13 @@ function render(items) {
   });
 
   const addTr = document.createElement('tr');
-  addTr.className = 'catalog-new-row';
+  addTr.className = 'catalog-new-row no-print';
   addTr.innerHTML = `
-    <td><input type="text" class="cat-name-new" placeholder="New item name" maxlength="500"></td>
-    <td><input type="number" class="cat-price-new" min="0" step="0.01" placeholder="Price" value=""></td>
-    <td><button type="button" class="btn btn-sm btn-outline catalog-add-btn">Add item</button></td>
+    <td data-label="New item"><input type="text" class="cat-name-new" placeholder="New item name" maxlength="500"></td>
+    <td data-label="Price (₹)"><input type="number" class="cat-price-new" min="0" step="0.01" placeholder="Price" value=""></td>
+    <td class="catalog-actions-cell no-print">
+      <button type="button" class="btn btn-sm btn-outline catalog-add-btn btn--toolbar">Add item</button>
+    </td>
   `;
   tbody.appendChild(addTr);
   addTr.querySelector('.catalog-add-btn').addEventListener('click', () => addNew(addTr));
@@ -121,6 +143,13 @@ async function addNew(addTr) {
 }
 
 document.getElementById('catalogRefresh')?.addEventListener('click', () => loadCatalog().catch(console.error));
+
+document.getElementById('catalogPrintBtn')?.addEventListener('click', () => window.print());
+
+document.getElementById('catalogShareWhatsappBtn')?.addEventListener('click', () => {
+  const url = `https://wa.me/?text=${encodeURIComponent(buildCatalogShareText())}`;
+  window.open(url, '_blank', 'noopener,noreferrer');
+});
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
