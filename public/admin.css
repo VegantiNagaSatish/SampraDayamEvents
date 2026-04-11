@@ -440,16 +440,11 @@ body.invoice-app-body {
   opacity: 1;
 }
 
-.invoice-letterhead--estimation .invoice-letterhead__phones {
-  white-space: nowrap;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  max-width: 100%;
-}
-
+/* overflow-x: auto was drawing scrollbar / gutter chrome that looked like two grey vertical bars (phones + email rows). */
+.invoice-letterhead--estimation .invoice-letterhead__phones,
 .invoice-letterhead--estimation .invoice-letterhead__email {
   white-space: nowrap;
-  overflow-x: auto;
+  /* overflow-x: hidden; */
   max-width: 100%;
 }
 
@@ -467,8 +462,7 @@ body.invoice-app-body {
   font-size: clamp(0.82rem, min(3.8vw, 3.4vmin), 1.65rem);
   width: 100%;
   min-width: 0;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
 }
 
 .invoice-letterhead__contact {
