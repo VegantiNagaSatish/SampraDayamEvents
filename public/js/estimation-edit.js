@@ -28,19 +28,31 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-function renderLetterheadContact(el) {
+/** Catalog `name` values often include a trailing " — ₹…" from admin copy/paste; strip for dropdown + saved descriptions. */
+function stripCatalogPriceLabel(name) {
+  return String(name || '')
+    .replace(/\s*[—–-]\s*₹[\d,.]+\s*$/u, '')
+    .trim();
+}
+
+const PHONE_ICON_SVG =
+  '<svg class="invoice-letterhead__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>';
+
+const EMAIL_ICON_SVG =
+  '<svg class="invoice-letterhead__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 2v.01L12 13 4 6.01V6l8 7 8-7z"/></svg>';
+
+function renderLetterheadPhones(el) {
   if (!el) return;
-  el.classList.add('invoice-letterhead__contact--icons');
   const p = escapeHtml(SELLER.phones);
+  el.innerHTML =
+    '<span class="invoice-letterhead__contact-row">' + PHONE_ICON_SVG + `<span>${p}</span></span>`;
+}
+
+function renderLetterheadEmail(el) {
+  if (!el) return;
   const e = escapeHtml(SELLER.email);
   el.innerHTML =
-    '<span class="invoice-letterhead__contact-row">' +
-    '<svg class="invoice-letterhead__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>' +
-    `<span>${p}</span></span>` +
-    '<span class="invoice-letterhead__contact-sep" aria-hidden="true">·</span>' +
-    '<span class="invoice-letterhead__contact-row">' +
-    '<svg class="invoice-letterhead__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 2v.01L12 13 4 6.01V6l8 7 8-7z"/></svg>' +
-    `<span>${e}</span></span>`;
+    '<span class="invoice-letterhead__contact-row">' + EMAIL_ICON_SVG + `<span>${e}</span></span>`;
 }
 
 const params = new URLSearchParams(window.location.search);
@@ -95,9 +107,16 @@ function resolveSelectValue(line) {
   if (line.catalogItemId && catalogItems.some((c) => c.id === line.catalogItemId)) {
     return line.catalogItemId;
   }
-  const byName = catalogItems.find((c) => c.name === line.description);
-  if (byName && Number(byName.price) === Number(line.price)) return byName.id;
-  if (line.description?.trim()) return '__custom__';
+  const desc = line.description || '';
+  const descStripped = stripCatalogPriceLabel(desc);
+  const byName = catalogItems.find((c) => {
+    const nameMatch =
+      c.name === desc ||
+      (descStripped.length > 0 && stripCatalogPriceLabel(c.name) === descStripped);
+    return nameMatch && Number(c.price) === Number(line.price);
+  });
+  if (byName) return byName.id;
+  if (desc.trim()) return '__custom__';
   return '';
 }
 
@@ -158,9 +177,10 @@ function renderLines(lines) {
     catalogItems.forEach((c) => {
       const opt = document.createElement('option');
       opt.value = c.id;
-      opt.dataset.name = c.name;
+      const displayName = stripCatalogPriceLabel(c.name);
+      opt.dataset.name = displayName;
       opt.dataset.price = String(Number(c.price) || 0);
-      opt.textContent = `${c.name} — ${formatINR(c.price)}`;
+      opt.textContent = displayName;
       sel.appendChild(opt);
     });
     const optCustom = document.createElement('option');
@@ -445,13 +465,15 @@ if (billToEl) billToEl.addEventListener('input', () => refreshLineTotals());
 if (dateEl) dateEl.addEventListener('input', () => refreshLineTotals());
 
 const printSellerName = document.getElementById('printSellerName');
-const printSellerContact = document.getElementById('printSellerContact');
+const printSellerPhones = document.getElementById('printSellerPhones');
+const printSellerEmail = document.getElementById('printSellerEmail');
 const printSignFor = document.getElementById('printSignFor');
 if (printSellerName) {
   printSellerName.textContent = SELLER.name;
   printSellerName.setAttribute('lang', 'te');
 }
-renderLetterheadContact(printSellerContact);
+renderLetterheadPhones(printSellerPhones);
+renderLetterheadEmail(printSellerEmail);
 if (printSignFor) {
   printSignFor.textContent = SELLER.name;
   printSignFor.setAttribute('lang', 'te');
