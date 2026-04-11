@@ -170,7 +170,7 @@ function renderLines(lines) {
       <td><input type="number" class="line-qty" min="0" step="1" value="${L.qty}"></td>
       <td><input type="number" class="line-price" min="0" step="0.01" value="${L.price}"></td>
       <td class="line-total">${formatINR(lineTotal)}</td>
-      <td><button type="button" class="btn btn-sm btn-danger-outline line-remove" aria-label="Remove line">×</button></td>
+      <td class="no-print"><button type="button" class="btn btn-sm btn-danger-outline line-remove" aria-label="Remove line">×</button></td>
     `;
 
     const sel = tr.querySelector('.line-catalog');

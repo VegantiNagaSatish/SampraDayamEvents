@@ -60,9 +60,9 @@ body.invoice-app-body {
 }
 
 .invoice-alert {
-  background: #fff3cd;
-  border: 1px solid #ffc107;
-  color: #856404;
+  background: #f1f3f5;
+  border: 1px solid #495057;
+  color: #212529;
   padding: 0.75rem 1rem;
   border-radius: 8px;
   margin-bottom: 1rem;
@@ -539,10 +539,20 @@ body.invoice-app-body {
 }
 
 .invoice-lines-table th {
-  background: var(--primary-color);
-  color: var(--gold);
+  background: #e9ecef;
+  color: #111;
   font-weight: 600;
   text-align: left;
+  border: 1px solid #adb5bd;
+}
+
+/* Stronger than any stray global rules; keeps # / Item / Qty / Price / Amount black on admin pages. */
+body.invoice-app-body .invoice-lines-table thead th {
+  background: #e9ecef;
+  color: #000;
+  border: 1px solid #adb5bd;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 
 .invoice-lines-table textarea {
@@ -563,6 +573,15 @@ body.invoice-app-body {
   padding: 0.4rem 0.5rem;
   border-radius: 6px;
   border: 1px solid #ced4da;
+}
+
+/* Keep the remove-button column only as wide as the control (avoids a wide empty strip on screen). */
+.invoice-lines-table th.no-print,
+.invoice-lines-table td.no-print {
+  width: 1%;
+  white-space: nowrap;
+  vertical-align: middle;
+  text-align: center;
 }
 
 .line-custom-wrap {
@@ -592,8 +611,8 @@ a.admin-dashboard-card {
 }
 
 a.admin-dashboard-card:hover {
-  border-color: var(--orange);
-  box-shadow: 0 8px 24px rgba(255, 107, 53, 0.12);
+  border-color: #495057;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .admin-dashboard-card__label {
@@ -604,7 +623,7 @@ a.admin-dashboard-card:hover {
   text-align: center;
   border-radius: 8px;
   background: var(--primary-color);
-  color: var(--gold);
+  color: #fff;
   font-weight: 700;
   font-size: 0.9rem;
   margin-bottom: 0.75rem;
@@ -641,8 +660,8 @@ a.admin-dashboard-card:hover {
 }
 
 .invoice-status--draft {
-  background: #fff3cd;
-  color: #856404;
+  background: #e9ecef;
+  color: #343a40;
 }
 
 .invoice-status--completed {
@@ -898,6 +917,25 @@ a.admin-dashboard-card:hover {
     resize: none !important;
   }
 
+  /* Print/PDF: no native dropdown chevron — show selected text like plain copy. */
+  .invoice-lines-table select.line-catalog,
+  .invoice-lines-table .line-item-cell select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: none !important;
+    padding-inline: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    color: #000 !important;
+    font: inherit !important;
+  }
+
+  .invoice-lines-table select.line-catalog::-ms-expand,
+  .invoice-lines-table .line-item-cell select::-ms-expand {
+    display: none;
+  }
+
   .line-remove {
     display: none !important;
   }
@@ -909,4 +947,90 @@ a.admin-dashboard-card:hover {
   .invoice-lines-table {
     min-width: 0 !important;
   }
+
+  body.invoice-app-body .invoice-lines-table thead th {
+    background: #e9ecef !important;
+    color: #000 !important;
+    border: 1px solid #adb5bd !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body.invoice-app-body .invoice-lines-table td {
+    color: #000 !important;
+  }
+
+  /* Collapse the actions column in print/PDF (display:none often still reserves column width). */
+  .invoice-lines-table col.invoice-lines-col--actions {
+    visibility: collapse !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+  }
+
+  .invoice-lines-table th.no-print,
+  .invoice-lines-table td.no-print {
+    visibility: collapse !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .invoice-lines-table td.no-print * {
+    display: none !important;
+  }
+}
+
+/* Admin / estimation / catalog: black & neutrals only (no gold / yellow / orange accents). */
+body.invoice-app-body .invoice-form input:focus,
+body.invoice-app-body .invoice-form select:focus,
+body.invoice-app-body .invoice-form input[type='date']:focus,
+body.invoice-app-body .invoice-form input[type='number']:focus {
+  outline: none;
+  border-color: #111;
+  box-shadow: 0 0 0 1px #111;
+}
+
+body.invoice-app-body .invoice-lines-table textarea:focus,
+body.invoice-app-body .invoice-lines-table input:focus,
+body.invoice-app-body .invoice-lines-table select:focus,
+body.invoice-app-body .line-item-cell .line-catalog:focus {
+  outline: none;
+  border-color: #111;
+  box-shadow: 0 0 0 1px #111;
+}
+
+body.invoice-app-body .catalog-table input:focus {
+  outline: none;
+  border-color: #111;
+  box-shadow: 0 0 0 1px #111;
+}
+
+body.invoice-app-body .btn-primary {
+  background: #111;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+body.invoice-app-body .btn-primary:hover {
+  background: #000;
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+}
+
+body.invoice-app-body .btn-outline {
+  border-color: #222;
+  color: #222;
+}
+
+body.invoice-app-body .btn-outline:hover {
+  background: #111;
+  border-color: #111;
+  color: #fff;
 }
