@@ -136,6 +136,17 @@
             ]
         },
         {
+            id: 'chips-items',
+            title: 'Chips items',
+            titleTe: 'చిప్స్ ఐటమ్స్',
+            items: [
+                'అప్పడాలు — Appadalu',
+                'నాలుక అప్పడాలు — Naaluka Appadalu',
+                'ట్రయాంగిల్ చిప్స్ — Triangle chips',
+                'ఆవిర వడియాలు — Aavira vadiyalu'
+            ]
+        },
+        {
             id: 'avakaya',
             title: 'Avakaya (pickle) items',
             titleTe: 'ఆవకాయ ఐటమ్స్',
