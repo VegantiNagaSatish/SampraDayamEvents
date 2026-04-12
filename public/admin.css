@@ -584,8 +584,87 @@ body.invoice-app-body .invoice-lines-table thead th {
   text-align: center;
 }
 
+.line-note-wrap,
 .line-custom-wrap {
   margin-top: 0.4rem;
+  display: none !important;
+}
+
+.line-item-note-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #444;
+  margin: 0 0 0.25rem;
+}
+
+.line-item-note-optional {
+  font-weight: 500;
+  color: #666;
+}
+
+/* Only one extra field at a time: catalog → optional details; “Custom…” → single description box. */
+@media screen {
+  .invoice-lines-table td.line-item-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+  }
+
+  .invoice-lines-table td.line-item-cell .line-note-wrap,
+  .invoice-lines-table td.line-item-cell .line-custom-wrap {
+    margin-top: 0;
+  }
+
+  .line-note-wrap.line-note-wrap--active {
+    display: block !important;
+  }
+
+  .line-custom-wrap.line-custom-wrap--active {
+    display: block !important;
+  }
+}
+
+.invoice-print-dialog {
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  max-width: calc(100vw - 2rem);
+}
+
+.invoice-print-dialog::backdrop {
+  background: rgba(15, 19, 40, 0.45);
+}
+
+.invoice-print-dialog__panel {
+  padding: 1.35rem 1.5rem;
+  min-width: min(100vw - 2rem, 320px);
+}
+
+.invoice-print-dialog__title {
+  margin: 0 0 0.35rem;
+  font-size: 1.15rem;
+  font-family: 'Playfair Display', serif;
+  color: var(--primary-color);
+}
+
+.invoice-print-dialog__hint {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.invoice-print-dialog__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.invoice-print-dialog__actions .btn {
+  width: 100%;
+  justify-content: center;
 }
 
 .line-desc-readonly {
@@ -984,5 +1063,67 @@ a.admin-dashboard-card:hover {
 
   .invoice-lines-table td.no-print * {
     display: none !important;
+  }
+
+  /* Optional line descriptions: omit from print when empty; show when admin entered text. */
+  .line-item-note-label {
+    display: none !important;
+  }
+
+  .line-note-wrap:not(.line-note-wrap--filled),
+  .line-custom-wrap:not(.line-custom-wrap--filled) {
+    display: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .line-note-wrap.line-note-wrap--filled,
+  .line-custom-wrap.line-custom-wrap--filled {
+    display: block !important;
+    margin-top: 0.35rem !important;
+  }
+
+  .line-note-wrap.line-note-wrap--filled .line-item-note,
+  .line-custom-wrap.line-custom-wrap--filled .line-desc-custom {
+    min-height: 0 !important;
+  }
+
+  /*
+   * Delivery note: drop price + amount columns. Flag on <html> and <body> (set before print);
+   * collapse <col> like the actions column, and strip cells + inputs so WebKit print preview matches.
+   */
+  :is(html.print-mode-delivery, body.print-mode-delivery) .invoice-lines-table col.invoice-col--price,
+  :is(html.print-mode-delivery, body.print-mode-delivery) .invoice-lines-table col.invoice-col--amount {
+    visibility: collapse !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+  }
+
+  :is(html.print-mode-delivery, body.print-mode-delivery) .invoice-lines-table th.invoice-col--price,
+  :is(html.print-mode-delivery, body.print-mode-delivery) .invoice-lines-table th.invoice-col--amount,
+  :is(html.print-mode-delivery, body.print-mode-delivery) .invoice-lines-table td.invoice-col--price,
+  :is(html.print-mode-delivery, body.print-mode-delivery) .invoice-lines-table td.invoice-col--amount {
+    display: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    visibility: hidden !important;
+  }
+
+  :is(html.print-mode-delivery, body.print-mode-delivery)
+    .invoice-lines-table
+    td.invoice-col--price
+    .line-price {
+    display: none !important;
+    visibility: hidden !important;
   }
 }

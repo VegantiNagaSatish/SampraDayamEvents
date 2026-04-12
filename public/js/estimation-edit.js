@@ -90,13 +90,14 @@ function showFormError(msg) {
 }
 
 function emptyLine() {
-  return { catalogItemId: null, description: '', qty: 1, price: 0 };
+  return { catalogItemId: null, description: '', lineNote: '', qty: 1, price: 0 };
 }
 
 function normalizeSavedLine(raw) {
   return {
     catalogItemId: raw.catalogItemId || null,
     description: raw.description || '',
+    lineNote: raw.lineNote || '',
     qty: Number(raw.qty) || 0,
     price: Number(raw.price) || 0
   };
@@ -126,26 +127,63 @@ function getLinesFromDom() {
   rows.forEach((tr) => {
     const sel = tr.querySelector('.line-catalog');
     const ta = tr.querySelector('.line-desc-custom');
+    const noteTa = tr.querySelector('.line-item-note');
     let description = '';
     let catalogItemId = null;
+    let lineNote = '';
     if (sel) {
       if (sel.value === '__custom__') {
         description = ta?.value?.trim() || '';
         catalogItemId = null;
+        lineNote = '';
       } else if (sel.value) {
         const opt = sel.selectedOptions[0];
         catalogItemId = sel.value;
         description = opt?.dataset?.name || '';
+        lineNote = noteTa?.value?.trim() || '';
       }
     }
     lines.push({
       catalogItemId,
       description,
+      lineNote,
       qty: Number(tr.querySelector('.line-qty')?.value) || 0,
       price: Number(tr.querySelector('.line-price')?.value) || 0
     });
   });
   return lines.length ? lines : [emptyLine()];
+}
+
+/** Show catalog line-note vs custom description based on the row's <select> value (not only on `change`, so UI stays in sync). */
+function syncLineItemFieldVisibility(tr) {
+  const sel = tr.querySelector('.line-catalog');
+  const customWrap = tr.querySelector('.line-custom-wrap');
+  const noteWrap = tr.querySelector('.line-note-wrap');
+  if (!sel || !noteWrap) return;
+  const v = sel.value;
+  const showCustom = v === '__custom__';
+  const showNote = Boolean(v && v !== '__custom__');
+  noteWrap.classList.toggle('line-note-wrap--active', showNote);
+  if (customWrap) customWrap.classList.toggle('line-custom-wrap--active', showCustom);
+  syncOptionalLineDescPrintClasses(tr);
+}
+
+/** Marks rows that have optional description text so print/PDF can omit empty blocks. */
+function syncOptionalLineDescPrintClasses(tr) {
+  const noteWrap = tr.querySelector('.line-note-wrap');
+  const noteTa = tr.querySelector('.line-item-note');
+  const customWrap = tr.querySelector('.line-custom-wrap');
+  const ta = tr.querySelector('.line-desc-custom');
+  if (noteWrap && noteTa) {
+    noteWrap.classList.toggle('line-note-wrap--filled', Boolean(noteTa.value.trim()));
+  }
+  if (customWrap && ta) {
+    customWrap.classList.toggle('line-custom-wrap--filled', Boolean(ta.value.trim()));
+  }
+}
+
+function syncAllOptionalLineDescPrintClasses() {
+  tbody?.querySelectorAll('tr[data-line]').forEach((tr) => syncOptionalLineDescPrintClasses(tr));
 }
 
 function renderLines(lines) {
@@ -163,13 +201,13 @@ function renderLines(lines) {
         <select class="line-catalog">
           <option value="">Choose item…</option>
         </select>
-        <div class="line-custom-wrap" hidden>
-          <textarea class="line-desc-custom" rows="2" placeholder="Custom line description"></textarea>
+        <div class="line-custom-wrap">
+          <textarea class="line-desc-custom" rows="2" placeholder="Describe the line item…"></textarea>
         </div>
       </td>
       <td><input type="number" class="line-qty" min="0" step="1" value="${L.qty}"></td>
-      <td><input type="number" class="line-price" min="0" step="0.01" value="${L.price}"></td>
-      <td class="line-total">${formatINR(lineTotal)}</td>
+      <td class="invoice-col--price"><input type="number" class="line-price" min="0" step="0.01" value="${L.price}"></td>
+      <td class="line-total invoice-col--amount">${formatINR(lineTotal)}</td>
       <td class="no-print"><button type="button" class="btn btn-sm btn-danger-outline line-remove" aria-label="Remove line">×</button></td>
     `;
 
@@ -191,32 +229,37 @@ function renderLines(lines) {
     const selVal = resolveSelectValue(L);
     sel.value = selVal || '';
 
-    const wrap = tr.querySelector('.line-custom-wrap');
     const ta = tr.querySelector('.line-desc-custom');
+    const noteTa = tr.querySelector('.line-item-note');
     if (selVal === '__custom__') {
-      wrap.hidden = false;
       if (ta) ta.value = L.description;
+    } else if (selVal) {
+      if (noteTa) noteTa.value = L.lineNote || '';
     }
 
     const onCatalogChange = () => {
       if (sel.value === '__custom__') {
-        wrap.hidden = false;
+        if (noteTa) noteTa.value = '';
       } else if (sel.value) {
-        wrap.hidden = true;
         const opt = sel.selectedOptions[0];
         const p = tr.querySelector('.line-price');
         if (p && opt?.dataset?.price != null) p.value = opt.dataset.price;
         if (ta) ta.value = '';
+        if (noteTa) noteTa.value = '';
       } else {
-        wrap.hidden = true;
         if (ta) ta.value = '';
+        if (noteTa) noteTa.value = '';
       }
+      syncLineItemFieldVisibility(tr);
       refreshLineTotals();
     };
     sel.addEventListener('change', onCatalogChange);
     if (ta) ta.addEventListener('input', () => refreshLineTotals());
+    if (noteTa) noteTa.addEventListener('input', () => refreshLineTotals());
 
     tbody.appendChild(tr);
+    syncLineItemFieldVisibility(tr);
+    requestAnimationFrame(() => syncLineItemFieldVisibility(tr));
   });
 
   tbody.querySelectorAll('input, textarea').forEach((el) => {
@@ -257,6 +300,7 @@ function refreshLineTotals() {
   const pDate = document.getElementById('previewDate');
   if (pBill) pBill.textContent = billToEl?.value?.trim() || '—';
   if (pDate) pDate.textContent = dateEl?.value || '—';
+  syncAllOptionalLineDescPrintClasses();
 }
 
 function updateInvoiceChrome() {
@@ -277,7 +321,11 @@ function buildInvoiceShareText() {
   const lines = getLinesFromDom().filter((l) => l.description.trim() && l.qty > 0);
   const sums = sumLineTotals(lines);
   const lineText = lines
-    .map((l, i) => `${i + 1}. ${l.description} × ${l.qty} @ ${formatINR(l.price)} → ${formatINR(computeLine(l.qty, l.price).lineTotal)}`)
+    .map((l, i) => {
+      let t = `${i + 1}. ${l.description} × ${l.qty} @ ${formatINR(l.price)} → ${formatINR(computeLine(l.qty, l.price).lineTotal)}`;
+      if (l.lineNote?.trim()) t += `\n   ${l.lineNote.trim()}`;
+      return t;
+    })
     .join('\n');
   return (
     `*${SELLER.name}* — Estimation\n` +
@@ -299,6 +347,7 @@ async function persistDraft() {
     lineItems: lines.map((l) => ({
       catalogItemId: l.catalogItemId || null,
       description: l.description,
+      lineNote: l.lineNote || '',
       qty: l.qty,
       price: l.price
     })),
@@ -381,6 +430,7 @@ async function markComplete() {
         lineItems: lines.map((l) => ({
           catalogItemId: l.catalogItemId ?? null,
           description: l.description,
+          lineNote: l.lineNote || '',
           qty: l.qty,
           price: l.price
         })),
@@ -449,8 +499,71 @@ if (completeBtn) {
   completeBtn.addEventListener('click', () => markComplete());
 }
 
+const printFormatDialog = document.getElementById('printFormatDialog');
+const printDeliveryNoteBtn = document.getElementById('printDeliveryNoteBtn');
+const printEstimationNoteBtn = document.getElementById('printEstimationNoteBtn');
+const printFormatCancelBtn = document.getElementById('printFormatCancelBtn');
+const docKickerEl = document.querySelector('.invoice-letterhead__doc-kicker');
+const DOC_KICKER_DEFAULT = 'ESTIMATION';
+
+function setPrintDeliveryMode(on) {
+  const v = Boolean(on);
+  document.documentElement.classList.toggle('print-mode-delivery', v);
+  document.body.classList.toggle('print-mode-delivery', v);
+}
+
+function runPrintWithMode(mode) {
+  syncAllOptionalLineDescPrintClasses();
+  if (mode === 'delivery') {
+    setPrintDeliveryMode(true);
+    if (docKickerEl) docKickerEl.textContent = 'DELIVERY NOTE';
+  } else {
+    setPrintDeliveryMode(false);
+    if (docKickerEl) docKickerEl.textContent = DOC_KICKER_DEFAULT;
+  }
+  const doPrint = () => window.print();
+  if (typeof requestAnimationFrame === 'function') {
+    requestAnimationFrame(() => requestAnimationFrame(doPrint));
+  } else {
+    setTimeout(doPrint, 0);
+  }
+}
+
+window.addEventListener('beforeprint', () => {
+  syncAllOptionalLineDescPrintClasses();
+});
+
+window.addEventListener('afterprint', () => {
+  setPrintDeliveryMode(false);
+  if (docKickerEl) docKickerEl.textContent = DOC_KICKER_DEFAULT;
+});
+
 if (printBtn) {
-  printBtn.addEventListener('click', () => window.print());
+  printBtn.addEventListener('click', () => {
+    if (printFormatDialog && typeof printFormatDialog.showModal === 'function') {
+      printFormatDialog.showModal();
+    } else {
+      runPrintWithMode('estimation');
+    }
+  });
+}
+
+if (printDeliveryNoteBtn && printFormatDialog) {
+  printDeliveryNoteBtn.addEventListener('click', () => {
+    printFormatDialog.close();
+    requestAnimationFrame(() => runPrintWithMode('delivery'));
+  });
+}
+
+if (printEstimationNoteBtn && printFormatDialog) {
+  printEstimationNoteBtn.addEventListener('click', () => {
+    printFormatDialog.close();
+    requestAnimationFrame(() => runPrintWithMode('estimation'));
+  });
+}
+
+if (printFormatCancelBtn && printFormatDialog) {
+  printFormatCancelBtn.addEventListener('click', () => printFormatDialog.close());
 }
 
 if (shareWaBtn) {
