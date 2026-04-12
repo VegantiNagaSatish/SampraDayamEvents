@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Menu - SampraDayam Events | Every Celebration is Memory</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="food-menu-page">
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a href="index.html" class="logo">
+                    <img src="sdLogoBlack.jpeg" alt="SampraDayam Events Logo" class="logo-icon">
+                    <div class="logo-main">
+                        <span class="logo-text"><span class="logo-letter-large">S</span>AMPRA<span class="logo-letter-large">D</span>AYAM EVENTS</span>
+                        <span class="logo-tagline">Every Celebration is Memory</span>
+                    </div>
+                </a>
+                <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="services.html" class="nav-link">Services</a></li>
+                    <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+                    <li><a href="about.html" class="nav-link">About</a></li>
+                    <li><a href="contact.html" class="nav-link">Contact</a></li>
+                    <li><a href="admin-dashboard.html" class="nav-link">Admin</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-header page-header--food-menu">
+        <div class="container">
+            <h1 class="page-title">Our Food Menu</h1>
+            <p class="page-subtitle">Select the dishes you are interested in—we will share your choices on WhatsApp</p>
+        </div>
+    </section>
+
+    <main class="food-menu-main">
+        <div class="container">
+            <p class="food-menu-intro">Tick the items you want, then tap <strong>Finalise</strong> to send your selection to us on WhatsApp.</p>
+            <div id="food-menu-sections" class="food-menu-sections" aria-live="polite"></div>
+            <div class="food-menu-actions">
+                <div class="food-menu-selection-summary" aria-live="polite">
+                    <h3 id="food-menu-selection-heading" class="food-menu-selection-heading">Your selection</h3>
+                    <div id="food-menu-selection-preview" class="food-menu-selection-preview"></div>
+                </div>
+                <button type="button" id="food-menu-finalise" class="btn btn-primary btn-large food-menu-finalise-btn">Finalise</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 SAMPRADAYAM EVENTS. All rights reserved. | Every Celebration is Memory</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="js/food-menu.js"></script>
+</body>
+</html>
