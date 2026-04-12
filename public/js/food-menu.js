@@ -1,6 +1,12 @@
 (function () {
     var WHATSAPP_E164 = '918309133572';
 
+    var TIME_SLOT_WHATSAPP = {
+        udayam: 'Udayam / ఉదయం (morning)',
+        madyanam: 'Madyanam / మధ్యాహ్నం (midday)',
+        sayantram: 'Sayantram / సాయంత్రం (evening)'
+    };
+
     var MENU_SECTIONS = [
         {
             id: 'sweets',
@@ -309,11 +315,31 @@
         });
     }
 
-    function buildMessage(selectedBySection) {
+    function formatEventDateForMessage(iso) {
+        if (!iso) return '';
+        var parts = iso.split('-');
+        if (parts.length !== 3) return iso;
+        var y = parseInt(parts[0], 10);
+        var mo = parseInt(parts[1], 10) - 1;
+        var d = parseInt(parts[2], 10);
+        if (isNaN(y) || isNaN(mo) || isNaN(d)) return iso;
+        var dt = new Date(y, mo, d);
+        return dt.toLocaleDateString('en-IN', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+    }
+
+    function buildMessage(selectedBySection, eventDateIso, timeSlot) {
         var lines = [];
         lines.push('Hello SAMPRADAYAM EVENTS,');
         lines.push('');
         lines.push('I would like to enquire about these food menu selections:');
+        lines.push('');
+        lines.push('*Event date (ఈవెంట్ తేదీ):* ' + formatEventDateForMessage(eventDateIso));
+        lines.push('*Time of day (రోజు సమయం):* ' + (TIME_SLOT_WHATSAPP[timeSlot] || timeSlot));
         lines.push('');
 
         MENU_SECTIONS.forEach(function (sec) {
@@ -397,7 +423,28 @@
             return;
         }
 
-        var message = buildMessage(selectedBySection);
+        var dateInput = document.getElementById('food-menu-event-date');
+        var eventDateIso = dateInput && dateInput.value ? dateInput.value.trim() : '';
+        if (!eventDateIso) {
+            window.alert('Please choose the event date before finalising.');
+            if (dateInput) {
+                dateInput.focus();
+            }
+            return;
+        }
+
+        var timeRadio = document.querySelector('input[name="food-menu-time-slot"]:checked');
+        var timeSlot = timeRadio ? timeRadio.value : '';
+        if (!timeSlot) {
+            window.alert('Please choose a time of day: Udayam, Madyanam, or Sayantram.');
+            var firstTime = document.querySelector('input[name="food-menu-time-slot"]');
+            if (firstTime) {
+                firstTime.focus();
+            }
+            return;
+        }
+
+        var message = buildMessage(selectedBySection, eventDateIso, timeSlot);
         var url = 'https://wa.me/' + WHATSAPP_E164 + '?text=' + encodeURIComponent(message);
 
         if (url.length > 8000) {
@@ -410,9 +457,20 @@
         window.open(url, '_blank', 'noopener,noreferrer');
     }
 
+    function setEventDateInputMinToday() {
+        var el = document.getElementById('food-menu-event-date');
+        if (!el) return;
+        var t = new Date();
+        var y = t.getFullYear();
+        var m = String(t.getMonth() + 1).padStart(2, '0');
+        var d = String(t.getDate()).padStart(2, '0');
+        el.min = y + '-' + m + '-' + d;
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         render();
         updateSelectionSummary();
+        setEventDateInputMinToday();
 
         var btn = document.getElementById('food-menu-finalise');
         if (btn) {

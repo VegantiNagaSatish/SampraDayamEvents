@@ -46,13 +46,40 @@
 
     <main class="food-menu-main">
         <div class="container">
-            <p class="food-menu-intro">Tick the items you want, then tap <strong>Finalise</strong> to send your selection to us on WhatsApp.</p>
+            <p class="food-menu-intro">Choose your <strong>event date</strong> and <strong>time of day</strong> (Udayam / Madyanam / Sayantram), tick the dishes you want, then tap <strong>Finalise</strong> to send everything to us on WhatsApp.</p>
             <div id="food-menu-sections" class="food-menu-sections" aria-live="polite"></div>
             <div class="food-menu-actions">
                 <div class="food-menu-selection-summary" aria-live="polite">
                     <h3 id="food-menu-selection-heading" class="food-menu-selection-heading">Your selection</h3>
                     <div id="food-menu-selection-preview" class="food-menu-selection-preview"></div>
                 </div>
+                <div class="food-menu-date-row">
+                    <label for="food-menu-event-date" class="food-menu-date-label">
+                        Event date <span class="food-menu-date-label-te" lang="te">ఈవెంట్ తేదీ</span>
+                        <abbr class="food-menu-date-required" title="required">*</abbr>
+                    </label>
+                    <input type="date" id="food-menu-event-date" class="food-menu-date-input" name="event-date" required autocomplete="off" aria-required="true">
+                </div>
+                <fieldset class="food-menu-time-fieldset">
+                    <legend class="food-menu-time-legend">
+                        Time of day <span class="food-menu-time-legend-te" lang="te">రోజు సమయం</span>
+                        <abbr class="food-menu-date-required" title="required">*</abbr>
+                    </legend>
+                    <div class="food-menu-time-options">
+                        <label class="food-menu-time-option">
+                            <input type="radio" name="food-menu-time-slot" value="udayam" class="food-menu-time-radio">
+                            <span class="food-menu-time-option__label"><span class="food-menu-time-option__en">Udayam</span> <span class="food-menu-time-option__te" lang="te">ఉదయం</span> <span class="food-menu-time-option__hint">(morning)</span></span>
+                        </label>
+                        <label class="food-menu-time-option">
+                            <input type="radio" name="food-menu-time-slot" value="madyanam" class="food-menu-time-radio">
+                            <span class="food-menu-time-option__label"><span class="food-menu-time-option__en">Madyanam</span> <span class="food-menu-time-option__te" lang="te">మధ్యాహ్నం</span> <span class="food-menu-time-option__hint">(midday)</span></span>
+                        </label>
+                        <label class="food-menu-time-option">
+                            <input type="radio" name="food-menu-time-slot" value="sayantram" class="food-menu-time-radio">
+                            <span class="food-menu-time-option__label"><span class="food-menu-time-option__en">Sayantram</span> <span class="food-menu-time-option__te" lang="te">సాయంత్రం</span> <span class="food-menu-time-option__hint">(evening)</span></span>
+                        </label>
+                    </div>
+                </fieldset>
                 <button type="button" id="food-menu-finalise" class="btn btn-primary btn-large food-menu-finalise-btn">Finalise</button>
             </div>
         </div>

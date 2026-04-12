@@ -2327,6 +2327,146 @@ body.food-menu-page {
     padding-left: 0.35rem;
 }
 
+.food-menu-date-row {
+    margin-top: 1rem;
+    padding-top: 1.15rem;
+    border-top: 1px solid rgba(26, 31, 58, 0.1);
+    text-align: center;
+}
+
+.food-menu-date-label {
+    display: block;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.food-menu-date-label-te {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--orange);
+    margin-left: 0.35rem;
+}
+
+.food-menu-date-required {
+    color: var(--orange);
+    text-decoration: none;
+    margin-left: 0.15rem;
+    font-weight: 700;
+    border: none;
+    cursor: help;
+}
+
+.food-menu-date-input {
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
+    display: block;
+    padding: 12px 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    background: var(--white);
+    color: var(--text-dark);
+}
+
+.food-menu-date-input:focus {
+    outline: none;
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.food-menu-time-fieldset {
+    margin: 1.15rem auto 0;
+    padding: 0 0.5rem;
+    max-width: 420px;
+    border: none;
+    text-align: left;
+}
+
+.food-menu-time-legend {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 0.95rem;
+    padding: 0;
+    margin-bottom: 0.65rem;
+    text-align: center;
+    float: none;
+    width: 100%;
+}
+
+.food-menu-time-legend-te {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--orange);
+    margin-left: 0.35rem;
+}
+
+.food-menu-time-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    align-items: stretch;
+}
+
+.food-menu-time-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 10px;
+    border: 2px solid #e8e4dc;
+    background: #fdfcfa;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.food-menu-time-option:hover {
+    border-color: rgba(255, 107, 53, 0.45);
+    background: var(--white);
+}
+
+.food-menu-time-option:has(.food-menu-time-radio:checked) {
+    border-color: var(--orange);
+    background: rgba(255, 107, 53, 0.08);
+    box-shadow: 0 0 0 1px rgba(255, 107, 53, 0.2);
+}
+
+.food-menu-time-radio {
+    margin-top: 0.2rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--orange);
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.food-menu-time-option__label {
+    flex: 1;
+    line-height: 1.45;
+    font-size: 0.95rem;
+    cursor: pointer;
+    color: var(--text-dark);
+}
+
+.food-menu-time-option__en {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.food-menu-time-option__te {
+    font-weight: 600;
+    color: var(--orange);
+}
+
+.food-menu-time-option__hint {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-light);
+}
+
 .food-menu-finalise-btn {
     min-width: 200px;
     align-self: center;
