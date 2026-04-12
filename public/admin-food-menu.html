@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Accessibilities | SampraDayam Events</title>
+  <title>Food menu (admin) | SampraDayam Events</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="admin.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 </head>
 <body class="invoice-app-body">
-  <nav class="navbar">
+  <nav class="navbar no-print">
     <div class="container">
       <div class="nav-wrapper">
         <a href="index.html" class="logo">
@@ -36,33 +36,29 @@
 
   <main class="invoice-app-main">
     <div class="invoice-card">
-      <div class="invoice-toolbar no-print" style="margin-bottom:0.5rem;">
-        <h1 style="margin:0; flex:1; font-family:'Playfair Display',serif; color:var(--primary-color);">Admin Accessibilities</h1>
-        <button type="button" class="btn btn-outline btn--toolbar" id="adminDashboardSignOut">Sign out</button>
+      <div class="invoice-toolbar invoice-toolbar--compact no-print catalog-toolbar">
+        <h1 class="catalog-page-title">Food menu</h1>
+        <div class="catalog-toolbar-actions">
+          <a class="btn btn-outline btn--toolbar" href="admin-dashboard.html">Admin home</a>
+          <a class="btn btn-outline btn--toolbar" href="catalog.html">Catalog</a>
+          <a class="btn btn-outline btn--toolbar" href="estimations.html">Estimations</a>
+          <a class="btn btn-outline btn--toolbar" href="food-menu.html" target="_blank" rel="noopener noreferrer">View public page</a>
+          <button type="button" class="btn btn-outline btn--toolbar" id="foodMenuAdminRefresh">Refresh</button>
+        </div>
       </div>
-      <p class="invoice-muted" style="margin-bottom:1.5rem;">Choose where to go next.</p>
-
-      <div class="admin-dashboard-grid">
-        <a class="admin-dashboard-card" href="catalog.html">
-          <span class="admin-dashboard-card__label">1</span>
-          <h2 class="admin-dashboard-card__title">Catalog</h2>
-          <p class="admin-dashboard-card__desc">Add or edit catalog items and default prices used on estimations.</p>
-        </a>
-        <a class="admin-dashboard-card" href="estimations.html">
-          <span class="admin-dashboard-card__label">2</span>
-          <h2 class="admin-dashboard-card__title">Estimations</h2>
-          <p class="admin-dashboard-card__desc">View drafts and completed estimations, create new ones.</p>
-        </a>
-        <a class="admin-dashboard-card" href="admin-food-menu.html">
-          <span class="admin-dashboard-card__label">3</span>
-          <h2 class="admin-dashboard-card__title">Food menu</h2>
-          <p class="admin-dashboard-card__desc">Edit sections and dishes shown on the public food menu page.</p>
-        </a>
+      <p class="invoice-muted no-print">Sections and dishes here are stored in Firebase and appear on <strong>Our food menu</strong> for customers. One line per dish (Telugu — English works well). Section <strong>order</strong> is automatic: unique numbers starting at 1 (duplicates are fixed when you load or save).</p>
+      <div id="foodMenuAdminError" class="invoice-alert no-print" hidden></div>
+      <div class="no-print food-menu-admin-actions">
+        <button type="button" class="btn btn-primary btn--toolbar" id="foodMenuAdminAddSection">Add section</button>
+        <button type="button" class="btn btn-outline btn--toolbar" id="foodMenuAdminSeedDefaults">Replace all with default menu</button>
       </div>
+      <div id="foodMenuAdminList" class="food-menu-admin-list no-print"></div>
     </div>
   </main>
 
-  <script type="module" src="js/admin-dashboard.js"></script>
+  <div id="adminToastHost" class="admin-toast-host" aria-live="polite" aria-relevant="additions text"></div>
+
+  <script type="module" src="js/admin-food-menu.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

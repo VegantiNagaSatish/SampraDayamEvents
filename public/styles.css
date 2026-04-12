@@ -2169,6 +2169,13 @@ body.food-menu-page {
     opacity: 1;
 }
 
+.food-menu-loading {
+    text-align: center;
+    padding: 1rem 1rem 0.5rem;
+    font-size: 0.95rem;
+    color: var(--text-light);
+}
+
 .food-menu-sections {
     display: flex;
     flex-direction: column;
