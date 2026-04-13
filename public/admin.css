@@ -1290,3 +1290,317 @@ a.admin-dashboard-card:hover {
   gap: 0.5rem;
   margin-top: 0.25rem;
 }
+
+/* ——— Admin schedules ——— */
+.schedules-intro {
+  max-width: 42rem;
+}
+
+.schedules-req {
+  color: #c0392b;
+  font-weight: 700;
+}
+
+.schedules-add {
+  background: linear-gradient(180deg, #faf8f5 0%, #fff 100%);
+  border: 1px solid #ece8e1;
+  border-radius: 12px;
+  padding: 1.25rem 1.35rem 1.35rem;
+  margin-bottom: 1.5rem;
+}
+
+.schedules-add__title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  color: var(--primary-color);
+  margin: 0 0 0.35rem;
+}
+
+.schedules-add__hint {
+  margin: 0 0 1rem;
+  font-size: 0.88rem;
+  color: var(--text-light);
+  line-height: 1.45;
+}
+
+.schedules-add-form__grid {
+  display: grid;
+  gap: 0.75rem 1.25rem;
+  grid-template-columns: 1fr;
+}
+
+.schedules-add-form__span-full {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 720px) {
+  .schedules-add-form__grid {
+    grid-template-columns: minmax(10rem, 12rem) minmax(12rem, 1fr) 1fr;
+    align-items: end;
+  }
+}
+
+@media (min-width: 960px) {
+  .schedules-add-form__grid {
+    grid-template-columns: minmax(10rem, 12rem) minmax(14rem, 1.1fr) 1fr;
+  }
+}
+
+.schedules-add-form__grid .form-row {
+  margin-bottom: 0;
+}
+
+.schedules-add-form__grid .form-row label {
+  margin-bottom: 0.3rem;
+}
+
+.schedules-add-form__grid input[type='date'],
+.schedules-add-form__grid input[type='text'],
+.schedules-add-form__grid input[type='tel'] {
+  max-width: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.schedules-textarea {
+  display: block;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.45;
+  resize: vertical;
+  min-height: 2.75rem;
+}
+
+.schedules-contact-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 100%;
+}
+
+.schedules-pick-contact-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 0.32rem 0.55rem !important;
+  font-size: 0.74rem !important;
+}
+
+.schedules-add-form__grid .schedules-contact-inline input[type='tel'],
+.schedules-table .schedules-input--contact {
+  max-width: 10.25rem;
+  min-width: 7.5rem;
+  width: auto;
+  flex: 0 1 auto;
+  padding: 0.35rem 0.45rem !important;
+  font-size: 0.85rem !important;
+}
+
+@media (max-width: 380px) {
+  .schedules-add-form__grid .schedules-contact-inline input[type='tel'] {
+    max-width: 100%;
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+.schedules-contact-quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.45rem;
+}
+
+.schedules-contact-quick[hidden] {
+  display: none !important;
+}
+
+a.schedules-contact-link {
+  text-decoration: none;
+  text-align: center;
+}
+
+.schedules-add-form__actions {
+  margin-top: 1rem;
+}
+
+.schedules-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 0.5rem;
+}
+
+.schedules-tab {
+  appearance: none;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  border: 2px solid #e9ecef;
+  background: var(--white);
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+
+.schedules-tab:hover {
+  border-color: #ced4da;
+}
+
+.schedules-tab.is-active {
+  border-color: var(--orange);
+  background: rgba(255, 107, 53, 0.08);
+  color: var(--primary-color);
+}
+
+.schedules-tab__count {
+  display: inline-block;
+  min-width: 1.35rem;
+  padding: 0.1rem 0.4rem;
+  margin-left: 0.25rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: #e9ecef;
+  color: var(--text-dark);
+  vertical-align: middle;
+}
+
+.schedules-tab.is-active .schedules-tab__count {
+  background: var(--primary-color);
+  color: var(--gold);
+}
+
+.schedules-panel[hidden] {
+  display: none !important;
+}
+
+.schedules-empty {
+  margin: 0 0 1rem;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  font-size: 0.92rem;
+  color: var(--text-light);
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px dashed #dee2e6;
+}
+
+.schedules-table-wrap {
+  margin-top: 0.25rem;
+}
+
+.schedules-table .schedules-input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0.45rem 0.5rem;
+  font-size: 0.9rem;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-family: inherit;
+}
+
+.schedules-table .schedules-input--date {
+  max-width: 11rem;
+}
+
+.schedules-table .schedules-input--type,
+.schedules-table .schedules-input--venue {
+  max-width: 100%;
+  min-width: 0;
+  min-height: 3rem;
+  resize: vertical;
+}
+
+.schedules-contact-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: flex-start;
+}
+
+.schedules-contact-cell .schedules-contact-quick {
+  margin-top: 0;
+}
+
+.schedules-contact-cell .schedules-contact-inline {
+  align-items: flex-start;
+}
+
+.schedules-date-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: flex-start;
+}
+
+.schedules-when__hint {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--orange);
+  text-transform: capitalize;
+}
+
+.schedules-actions-col {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.schedules-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.schedules-actions-cell::before {
+  display: none !important;
+}
+
+@media (max-width: 640px) {
+  .schedules-table thead {
+    display: none;
+  }
+
+  .schedules-table tr.schedules-row {
+    display: block;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 0.65rem 0.75rem;
+    margin-bottom: 0.75rem;
+    background: #fafbfc;
+  }
+
+  .schedules-table tr.schedules-row td {
+    display: block;
+    width: 100% !important;
+    padding: 0.35rem 0 !important;
+    border: none !important;
+  }
+
+  .schedules-table tr.schedules-row td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-light);
+    margin-bottom: 0.2rem;
+  }
+
+  .schedules-table .schedules-input--date {
+    max-width: none;
+  }
+}

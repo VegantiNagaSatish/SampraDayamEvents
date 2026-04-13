@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedules | SampraDayam Events</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+</head>
+<body class="invoice-app-body">
+  <nav class="navbar no-print">
+    <div class="container">
+      <div class="nav-wrapper">
+        <a href="index.html" class="logo">
+          <img src="sdLogoBlack.jpeg" alt="SampraDayam Events Logo" class="logo-icon">
+          <div class="logo-main">
+            <span class="logo-text"><span class="logo-letter-large">S</span>AMPRA<span class="logo-letter-large">D</span>AYAM EVENTS</span>
+            <span class="logo-tagline">Every Celebration is Memory</span>
+          </div>
+        </a>
+        <button class="mobile-menu-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="services.html" class="nav-link">Services</a></li>
+          <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+          <li><a href="about.html" class="nav-link">About</a></li>
+          <li><a href="contact.html" class="nav-link">Contact</a></li>
+          <li><a href="admin-dashboard.html" class="nav-link active">Admin</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="invoice-app-main">
+    <div class="invoice-card">
+      <div class="invoice-toolbar invoice-toolbar--compact no-print catalog-toolbar">
+        <h1 class="catalog-page-title">Schedules</h1>
+        <div class="catalog-toolbar-actions">
+          <a class="btn btn-outline btn--toolbar" href="admin-dashboard.html">Admin home</a>
+          <a class="btn btn-outline btn--toolbar" href="catalog.html">Catalog</a>
+          <a class="btn btn-outline btn--toolbar" href="estimations.html">Estimations</a>
+          <a class="btn btn-outline btn--toolbar" href="admin-food-menu.html">Food menu</a>
+          <button type="button" class="btn btn-outline btn--toolbar" id="schedulesRefresh">Refresh</button>
+          <button type="button" class="btn btn-outline btn--toolbar" id="schedulesSignOut">Sign out</button>
+        </div>
+      </div>
+
+      <p class="invoice-muted no-print schedules-intro">Track booked event dates with customer details. <strong>Upcoming</strong> and <strong>past</strong> lists update automatically from each event date (today’s date is the divider).</p>
+      <div id="schedulesError" class="invoice-alert no-print" hidden></div>
+
+      <section class="schedules-add no-print" aria-labelledby="schedulesAddHeading">
+        <h2 id="schedulesAddHeading" class="schedules-add__title">Add a schedule</h2>
+        <p class="schedules-add__hint">Save a quick entry for the calendar. On supported phones (often <strong>Chrome on Android</strong>), use <strong>From contacts</strong> to pick a number from your device. <strong>Call</strong> and <strong>WhatsApp</strong> appear when a valid mobile number is entered. On iPhone, type the number or use keyboard suggestions from your contacts.</p>
+        <form id="schedulesAddForm" class="schedules-add-form invoice-form">
+          <div class="schedules-add-form__grid">
+            <div class="form-row">
+              <label for="scheduleNewDate">Event date <span class="schedules-req" aria-hidden="true">*</span></label>
+              <input type="date" id="scheduleNewDate" name="eventDate" required>
+            </div>
+            <div class="form-row schedules-add-form__span-full">
+              <label for="scheduleNewEventType">Event type <span class="schedules-req" aria-hidden="true">*</span></label>
+              <textarea id="scheduleNewEventType" name="eventType" class="schedules-textarea" rows="2" maxlength="500" required placeholder="e.g. Marriage, reception, haldi, house warming…"></textarea>
+            </div>
+            <div class="form-row">
+              <label for="scheduleNewCustomer">Customer name <span class="schedules-req" aria-hidden="true">*</span></label>
+              <input type="text" id="scheduleNewCustomer" name="customerName" autocomplete="name" maxlength="200" placeholder="e.g. Family — Venkat" required>
+            </div>
+            <div class="form-row schedules-add-form__span-full">
+              <label for="scheduleNewVenue">Venue / location</label>
+              <textarea id="scheduleNewVenue" name="venueLocation" class="schedules-textarea" rows="3" maxlength="600" placeholder="Hall name, full address, landmarks (optional)" autocomplete="street-address"></textarea>
+            </div>
+            <div class="form-row">
+              <label for="scheduleNewContact">Contact <span class="schedules-req" aria-hidden="true">*</span></label>
+              <div class="schedules-contact-inline">
+                <input type="tel" id="scheduleNewContact" name="contact" inputmode="tel" autocomplete="tel" maxlength="120" placeholder="Mobile number" required>
+                <button type="button" class="btn btn-outline btn--toolbar schedules-pick-contact-btn" id="schedulePickContact" hidden title="Pick number from your phone contacts">Contacts</button>
+              </div>
+              <div class="schedules-contact-quick no-print" id="scheduleNewContactQuick" hidden>
+                <a class="schedules-contact-link btn btn-outline btn--toolbar" id="scheduleNewCall" href="#" hidden>Call</a>
+                <a class="schedules-contact-link btn btn-outline btn--toolbar" id="scheduleNewWa" href="#" target="_blank" rel="noopener noreferrer" hidden>WhatsApp</a>
+              </div>
+            </div>
+          </div>
+          <div class="schedules-add-form__actions">
+            <button type="submit" class="btn btn-primary btn--toolbar" id="scheduleAddSubmit">Save schedule</button>
+          </div>
+        </form>
+      </section>
+
+      <div class="schedules-tabs no-print" role="tablist" aria-label="Schedule lists">
+        <button type="button" class="schedules-tab is-active" role="tab" id="tabUpcoming" aria-selected="true" aria-controls="panelUpcoming" data-tab="upcoming">
+          Upcoming events <span class="schedules-tab__count" id="countUpcoming">0</span>
+        </button>
+        <button type="button" class="schedules-tab" role="tab" id="tabCompleted" aria-selected="false" aria-controls="panelCompleted" data-tab="completed">
+          Completed events <span class="schedules-tab__count" id="countCompleted">0</span>
+        </button>
+      </div>
+
+      <div id="panelUpcoming" class="schedules-panel is-active" role="tabpanel" aria-labelledby="tabUpcoming">
+        <p class="schedules-empty" id="emptyUpcoming" hidden>No upcoming events yet. Add one above, or move an event here by setting its date to today or later.</p>
+        <div class="invoice-table-wrap schedules-table-wrap">
+          <table class="invoice-list-table schedules-table" id="tableUpcoming" hidden>
+            <thead>
+              <tr>
+                <th scope="col">When</th>
+                <th scope="col">Type</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Venue</th>
+                <th scope="col">Contact</th>
+                <th scope="col" class="schedules-actions-col no-print"></th>
+              </tr>
+            </thead>
+            <tbody id="tbodyUpcoming"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="panelCompleted" class="schedules-panel" role="tabpanel" aria-labelledby="tabCompleted" hidden>
+        <p class="schedules-empty" id="emptyCompleted" hidden>No completed events in the archive yet.</p>
+        <div class="invoice-table-wrap schedules-table-wrap">
+          <table class="invoice-list-table schedules-table" id="tableCompleted" hidden>
+            <thead>
+              <tr>
+                <th scope="col">Event date</th>
+                <th scope="col">Type</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Venue</th>
+                <th scope="col">Contact</th>
+                <th scope="col" class="schedules-actions-col no-print"></th>
+              </tr>
+            </thead>
+            <tbody id="tbodyCompleted"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="js/admin-schedules.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

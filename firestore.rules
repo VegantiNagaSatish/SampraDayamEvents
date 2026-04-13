@@ -10,6 +10,9 @@ service cloud.firestore {
     match /catalogItems/{itemId} {
       allow read, write: if request.auth != null;
     }
+    match /eventSchedules/{scheduleId} {
+      allow read, write: if request.auth != null;
+    }
     /* Public food menu: anyone can read; only signed-in admins can edit */
     match /foodMenuSections/{sectionId} {
       allow read: if true;
