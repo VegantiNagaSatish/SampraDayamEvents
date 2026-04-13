@@ -48,7 +48,7 @@
         </div>
       </div>
 
-      <p class="invoice-muted no-print schedules-intro">Track booked event dates with customer details. <strong>Upcoming</strong> and <strong>past</strong> lists update automatically from each event date (today’s date is the divider).</p>
+      <p class="invoice-muted no-print schedules-intro">Track booked event dates with customer details. <strong>Upcoming</strong> and <strong>past</strong> lists update automatically from each event date (today’s date is the divider). For venue, type a place or address to open it in <strong>Google Maps</strong> or <strong>Apple Maps</strong> and see an optional preview.</p>
       <div id="schedulesError" class="invoice-alert no-print" hidden></div>
 
       <section class="schedules-add no-print" aria-labelledby="schedulesAddHeading">
@@ -71,6 +71,16 @@
             <div class="form-row schedules-add-form__span-full">
               <label for="scheduleNewVenue">Venue / location</label>
               <textarea id="scheduleNewVenue" name="venueLocation" class="schedules-textarea" rows="3" maxlength="600" placeholder="Hall name, full address, landmarks (optional)" autocomplete="street-address"></textarea>
+              <div class="schedules-venue-maps no-print" id="scheduleVenueMapsWrap" hidden>
+                <div class="schedules-venue-maps__bar">
+                  <span class="schedules-venue-maps__label">Maps</span>
+                  <a class="btn btn-outline btn--toolbar schedules-venue-map-link" id="scheduleVenueGoogle" href="#" target="_blank" rel="noopener noreferrer">Google Maps</a>
+                  <a class="btn btn-outline btn--toolbar schedules-venue-map-link" id="scheduleVenueApple" href="#" target="_blank" rel="noopener noreferrer">Apple Maps</a>
+                </div>
+                <div class="schedules-venue-maps__embed-wrap">
+                  <iframe class="schedules-venue-maps__embed" id="scheduleVenueMapEmbed" title="Venue location preview on map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" hidden></iframe>
+                </div>
+              </div>
             </div>
             <div class="form-row">
               <label for="scheduleNewContact">Contact <span class="schedules-req" aria-hidden="true">*</span></label>
@@ -102,15 +112,15 @@
       <div id="panelUpcoming" class="schedules-panel is-active" role="tabpanel" aria-labelledby="tabUpcoming">
         <p class="schedules-empty" id="emptyUpcoming" hidden>No upcoming events yet. Add one above, or move an event here by setting its date to today or later.</p>
         <div class="invoice-table-wrap schedules-table-wrap">
-          <table class="invoice-list-table schedules-table" id="tableUpcoming" hidden>
+          <table class="invoice-list-table schedules-table schedules-table--editor" id="tableUpcoming" hidden>
             <thead>
               <tr>
-                <th scope="col">When</th>
-                <th scope="col">Type</th>
-                <th scope="col">Customer</th>
-                <th scope="col">Venue</th>
-                <th scope="col">Contact</th>
-                <th scope="col" class="schedules-actions-col no-print"></th>
+                <th scope="col" class="schedules-col schedules-col--when">When</th>
+                <th scope="col" class="schedules-col schedules-col--type">Type</th>
+                <th scope="col" class="schedules-col schedules-col--customer">Customer</th>
+                <th scope="col" class="schedules-col schedules-col--venue">Venue</th>
+                <th scope="col" class="schedules-col schedules-col--contact">Contact</th>
+                <th scope="col" class="schedules-actions-col schedules-col--actions no-print"></th>
               </tr>
             </thead>
             <tbody id="tbodyUpcoming"></tbody>
@@ -121,15 +131,15 @@
       <div id="panelCompleted" class="schedules-panel" role="tabpanel" aria-labelledby="tabCompleted" hidden>
         <p class="schedules-empty" id="emptyCompleted" hidden>No completed events in the archive yet.</p>
         <div class="invoice-table-wrap schedules-table-wrap">
-          <table class="invoice-list-table schedules-table" id="tableCompleted" hidden>
+          <table class="invoice-list-table schedules-table schedules-table--editor" id="tableCompleted" hidden>
             <thead>
               <tr>
-                <th scope="col">Event date</th>
-                <th scope="col">Type</th>
-                <th scope="col">Customer</th>
-                <th scope="col">Venue</th>
-                <th scope="col">Contact</th>
-                <th scope="col" class="schedules-actions-col no-print"></th>
+                <th scope="col" class="schedules-col schedules-col--when">Event date</th>
+                <th scope="col" class="schedules-col schedules-col--type">Type</th>
+                <th scope="col" class="schedules-col schedules-col--customer">Customer</th>
+                <th scope="col" class="schedules-col schedules-col--venue">Venue</th>
+                <th scope="col" class="schedules-col schedules-col--contact">Contact</th>
+                <th scope="col" class="schedules-actions-col schedules-col--actions no-print"></th>
               </tr>
             </thead>
             <tbody id="tbodyCompleted"></tbody>

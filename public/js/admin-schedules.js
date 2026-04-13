@@ -22,6 +22,12 @@ const contactWaBtn = document.getElementById('scheduleNewWa');
 const refreshBtn = document.getElementById('schedulesRefresh');
 const signOutBtn = document.getElementById('schedulesSignOut');
 
+const venueInput = document.getElementById('scheduleNewVenue');
+const scheduleVenueMapsWrap = document.getElementById('scheduleVenueMapsWrap');
+const scheduleVenueGoogle = document.getElementById('scheduleVenueGoogle');
+const scheduleVenueApple = document.getElementById('scheduleVenueApple');
+const scheduleVenueMapEmbed = document.getElementById('scheduleVenueMapEmbed');
+
 const tabButtons = document.querySelectorAll('.schedules-tab');
 const panelUpcoming = document.getElementById('panelUpcoming');
 const panelCompleted = document.getElementById('panelCompleted');
@@ -35,6 +41,51 @@ const countUpcoming = document.getElementById('countUpcoming');
 const countCompleted = document.getElementById('countCompleted');
 
 let allItems = [];
+let venueEmbedDebounceTimer;
+let lastVenueEmbedQuery = '';
+
+const MIN_VENUE_MAP_CHARS = 3;
+const MIN_VENUE_EMBED_CHARS = 12;
+
+function syncVenueMapLinks(text, googleEl, appleEl, containerEl) {
+  const q = String(text).trim();
+  const ok = q.length >= MIN_VENUE_MAP_CHARS;
+  if (containerEl) containerEl.hidden = !ok;
+  if (googleEl && ok) {
+    googleEl.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+  }
+  if (appleEl && ok) {
+    appleEl.href = `https://maps.apple.com/?q=${encodeURIComponent(q)}`;
+  }
+}
+
+function debouncedVenueMapEmbed(text, iframeEl) {
+  clearTimeout(venueEmbedDebounceTimer);
+  venueEmbedDebounceTimer = setTimeout(() => {
+    const q = String(text).trim();
+    if (!iframeEl) return;
+    if (q.length < MIN_VENUE_EMBED_CHARS) {
+      lastVenueEmbedQuery = '';
+      iframeEl.hidden = true;
+      iframeEl.removeAttribute('src');
+      return;
+    }
+    if (q === lastVenueEmbedQuery) return;
+    lastVenueEmbedQuery = q;
+    iframeEl.hidden = false;
+    iframeEl.src = `https://maps.google.com/maps?q=${encodeURIComponent(q)}&z=16&output=embed&iwloc=near`;
+  }, 500);
+}
+
+function resetAddFormVenueMaps() {
+  clearTimeout(venueEmbedDebounceTimer);
+  lastVenueEmbedQuery = '';
+  if (scheduleVenueMapEmbed) {
+    scheduleVenueMapEmbed.hidden = true;
+    scheduleVenueMapEmbed.removeAttribute('src');
+  }
+  if (scheduleVenueMapsWrap) scheduleVenueMapsWrap.hidden = true;
+}
 
 function showError(msg) {
   if (errEl) {
@@ -198,21 +249,29 @@ function renderRow(item, todayIso, isUpcomingSection) {
       <input type="text" class="schedules-input schedules-input--name" maxlength="200" value="${escapeAttr(item.customerName || '')}" aria-label="Customer name">
     </td>
     <td data-label="Venue">
-      <textarea class="schedules-input schedules-input--venue schedules-textarea" rows="2" maxlength="600" aria-label="Venue or location" placeholder="Venue">${escapeHtml(venue)}</textarea>
-    </td>
-    <td data-label="Contact">
-      <div class="schedules-contact-cell">
-        <div class="schedules-contact-inline">
-          <input type="tel" class="schedules-input schedules-input--contact" maxlength="120" value="${escapeAttr(contact)}" aria-label="Contact" inputmode="tel" autocomplete="tel" placeholder="Mobile">
-          <button type="button" class="btn btn-sm btn-outline sched-pick-contact schedules-pick-contact-btn btn--toolbar" aria-label="Pick from device contacts">Contacts</button>
-        </div>
-        <div class="schedules-contact-quick no-print">
-          <a class="sched-contact-call schedules-contact-link btn btn-outline btn--toolbar" href="#" hidden>Call</a>
-          <a class="sched-contact-wa schedules-contact-link btn btn-outline btn--toolbar" href="#" target="_blank" rel="noopener noreferrer" hidden>WhatsApp</a>
+      <div class="schedules-venue-cell">
+        <textarea class="schedules-input schedules-input--venue schedules-textarea" rows="2" maxlength="600" aria-label="Venue or location" placeholder="Venue">${escapeHtml(venue)}</textarea>
+        <div class="schedules-venue-maps-bar schedules-venue-maps-bar--row no-print" hidden>
+          <a class="sched-venue-google schedules-venue-map-link--row" target="_blank" rel="noopener noreferrer" href="#">Google Maps</a>
+          <a class="sched-venue-apple schedules-venue-map-link--row" target="_blank" rel="noopener noreferrer" href="#">Apple</a>
         </div>
       </div>
     </td>
-    <td data-label="Actions" class="schedules-actions-cell no-print">
+    <td data-label="Contact">
+      <div class="schedules-contact-cell">
+        <div class="schedules-contact-stack">
+          <div class="schedules-contact-inline">
+            <input type="tel" class="schedules-input schedules-input--contact" maxlength="120" value="${escapeAttr(contact)}" aria-label="Contact" inputmode="tel" autocomplete="tel" placeholder="Mobile">
+            <button type="button" class="btn btn-sm btn-outline sched-pick-contact schedules-pick-contact-btn btn--toolbar" aria-label="Pick from device contacts">Contacts</button>
+          </div>
+          <div class="schedules-contact-quick no-print">
+            <a class="sched-contact-call schedules-contact-link btn btn-outline btn--toolbar" href="#" hidden>Call</a>
+            <a class="sched-contact-wa schedules-contact-link btn btn-outline btn--toolbar" href="#" target="_blank" rel="noopener noreferrer" hidden>WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </td>
+    <td data-label="Actions" class="schedules-actions-cell schedules-actions-cell--row no-print">
       <div class="schedules-row-actions">
         <button type="button" class="btn btn-sm btn-primary sched-save btn--toolbar">Save</button>
         <button type="button" class="btn btn-sm btn-danger-outline sched-delete btn--toolbar">Delete</button>
@@ -231,6 +290,22 @@ function renderRow(item, todayIso, isUpcomingSection) {
   }
   inp?.addEventListener('input', () => syncContactQuickActions(inp, callEl, waEl, wrap));
   syncContactQuickActions(inp, callEl, waEl, wrap);
+
+  const venueTa = tr.querySelector('.schedules-input--venue');
+  const venueBar = tr.querySelector('.schedules-venue-maps-bar--row');
+  const vg = tr.querySelector('.sched-venue-google');
+  const va = tr.querySelector('.sched-venue-apple');
+  const syncRowVenueMaps = () => {
+    const q = String(venueTa?.value || '').trim();
+    const ok = q.length >= MIN_VENUE_MAP_CHARS;
+    if (venueBar) venueBar.hidden = !ok;
+    if (ok && vg && va) {
+      vg.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+      va.href = `https://maps.apple.com/?q=${encodeURIComponent(q)}`;
+    }
+  };
+  venueTa?.addEventListener('input', syncRowVenueMaps);
+  syncRowVenueMaps();
 
   tr.querySelector('.sched-save')?.addEventListener('click', () => saveRow(tr));
   tr.querySelector('.sched-delete')?.addEventListener('click', () => deleteRow(tr));
@@ -363,6 +438,18 @@ if (schedulePickContact) {
   );
 }
 
+if (venueInput) {
+  venueInput.addEventListener('input', () => {
+    syncVenueMapLinks(
+      venueInput.value,
+      scheduleVenueGoogle,
+      scheduleVenueApple,
+      scheduleVenueMapsWrap
+    );
+    debouncedVenueMapEmbed(venueInput.value, scheduleVenueMapEmbed);
+  });
+}
+
 if (form) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -388,6 +475,7 @@ if (form) {
         updatedAt: serverTimestamp()
       });
       form.reset();
+      resetAddFormVenueMaps();
       if (dateInput) dateInput.value = localDateISO();
       syncContactQuickActions(contactInput, contactCallBtn, contactWaBtn, contactQuickWrap);
       await loadSchedules();
@@ -418,6 +506,15 @@ onAuthStateChanged(auth, (user) => {
   if (dateInput && !dateInput.value) dateInput.value = localDateISO();
   syncContactPickerButtonVisibility();
   syncContactQuickActions(contactInput, contactCallBtn, contactWaBtn, contactQuickWrap);
+  if (venueInput?.value) {
+    syncVenueMapLinks(
+      venueInput.value,
+      scheduleVenueGoogle,
+      scheduleVenueApple,
+      scheduleVenueMapsWrap
+    );
+    debouncedVenueMapEmbed(venueInput.value, scheduleVenueMapEmbed);
+  }
   loadSchedules();
 });
 
