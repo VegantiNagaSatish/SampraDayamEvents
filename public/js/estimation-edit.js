@@ -506,14 +506,16 @@ const printFormatCancelBtn = document.getElementById('printFormatCancelBtn');
 const docKickerEl = document.querySelector('.invoice-letterhead__doc-kicker');
 const DOC_KICKER_DEFAULT = 'ESTIMATION';
 
+/** Last format chosen in the print dialog; reapplied in `beforeprint` for correct layout. */
+let pendingPrintFormat = 'estimation';
+
 function setPrintDeliveryMode(on) {
   const v = Boolean(on);
   document.documentElement.classList.toggle('print-mode-delivery', v);
   document.body.classList.toggle('print-mode-delivery', v);
 }
 
-function runPrintWithMode(mode) {
-  syncAllOptionalLineDescPrintClasses();
+function applyPrintFormatAppearance(mode) {
   if (mode === 'delivery') {
     setPrintDeliveryMode(true);
     if (docKickerEl) docKickerEl.textContent = 'DELIVERY NOTE';
@@ -521,6 +523,17 @@ function runPrintWithMode(mode) {
     setPrintDeliveryMode(false);
     if (docKickerEl) docKickerEl.textContent = DOC_KICKER_DEFAULT;
   }
+}
+
+function resetPrintFormatAppearance() {
+  pendingPrintFormat = 'estimation';
+  applyPrintFormatAppearance('estimation');
+}
+
+function runPrintWithMode(mode) {
+  pendingPrintFormat = mode === 'delivery' ? 'delivery' : 'estimation';
+  syncAllOptionalLineDescPrintClasses();
+  applyPrintFormatAppearance(pendingPrintFormat);
   const doPrint = () => window.print();
   if (typeof requestAnimationFrame === 'function') {
     requestAnimationFrame(() => requestAnimationFrame(doPrint));
@@ -531,12 +544,30 @@ function runPrintWithMode(mode) {
 
 window.addEventListener('beforeprint', () => {
   syncAllOptionalLineDescPrintClasses();
+  applyPrintFormatAppearance(pendingPrintFormat);
 });
 
-window.addEventListener('afterprint', () => {
-  setPrintDeliveryMode(false);
-  if (docKickerEl) docKickerEl.textContent = DOC_KICKER_DEFAULT;
-});
+/*
+ * WebKit (Safari / iPadOS) often fires `afterprint` as soon as the print UI opens, not when it
+ * closes. Clearing delivery classes there removed `print-mode-delivery` before the PDF/snapshot,
+ * so tablets saved a full estimation. Reset when print media ends instead.
+ */
+(function attachPrintSessionEndCleanup() {
+  const mq = typeof window.matchMedia === 'function' ? window.matchMedia('print') : null;
+  if (mq && typeof mq.addEventListener === 'function') {
+    mq.addEventListener('change', () => {
+      if (!mq.matches) resetPrintFormatAppearance();
+    });
+    return;
+  }
+  if (mq && typeof mq.addListener === 'function') {
+    mq.addListener(() => {
+      if (!mq.matches) resetPrintFormatAppearance();
+    });
+    return;
+  }
+  window.addEventListener('afterprint', resetPrintFormatAppearance);
+})();
 
 if (printBtn) {
   printBtn.addEventListener('click', () => {
