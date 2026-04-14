@@ -43,9 +43,13 @@ const countCompleted = document.getElementById('countCompleted');
 let allItems = [];
 let venueEmbedDebounceTimer;
 let lastVenueEmbedQuery = '';
+let venueAutocompleteTimer;
+let currentVenueSuggestions = [];
+let activeVenueInput = null;
 
 const MIN_VENUE_MAP_CHARS = 3;
 const MIN_VENUE_EMBED_CHARS = 12;
+const MIN_VENUE_AUTOCOMPLETE_CHARS = 3;
 
 function syncVenueMapLinks(text, googleEl, appleEl, containerEl) {
   const q = String(text).trim();
@@ -85,6 +89,92 @@ function resetAddFormVenueMaps() {
     scheduleVenueMapEmbed.removeAttribute('src');
   }
   if (scheduleVenueMapsWrap) scheduleVenueMapsWrap.hidden = true;
+  hideVenueAutocomplete();
+}
+
+function getUniqueVenues() {
+  const venues = new Set();
+  allItems.forEach(item => {
+    const venue = String(item.venueLocation || '').trim();
+    if (venue.length >= MIN_VENUE_AUTOCOMPLETE_CHARS) {
+      venues.add(venue);
+    }
+  });
+  return Array.from(venues).sort();
+}
+
+function filterVenueSuggestions(query) {
+  const q = query.toLowerCase().trim();
+  if (q.length < MIN_VENUE_AUTOCOMPLETE_CHARS) return [];
+  
+  const venues = getUniqueVenues();
+  return venues.filter(venue => 
+    venue.toLowerCase().includes(q) && venue.toLowerCase() !== q
+  ).slice(0, 5); // Limit to 5 suggestions
+}
+
+function createVenueAutocompleteDropdown() {
+  let dropdown = document.getElementById('venueAutocompleteDropdown');
+  if (!dropdown) {
+    dropdown = document.createElement('div');
+    dropdown.id = 'venueAutocompleteDropdown';
+    dropdown.className = 'venue-autocomplete-dropdown';
+    dropdown.hidden = true;
+    document.body.appendChild(dropdown);
+  }
+  return dropdown;
+}
+
+function showVenueAutocomplete(inputEl, suggestions) {
+  if (!suggestions.length || !inputEl) {
+    hideVenueAutocomplete();
+    return;
+  }
+
+  const dropdown = createVenueAutocompleteDropdown();
+  const rect = inputEl.getBoundingClientRect();
+  
+  dropdown.style.left = rect.left + 'px';
+  dropdown.style.top = (rect.bottom + window.scrollY) + 'px';
+  dropdown.style.width = rect.width + 'px';
+  
+  dropdown.innerHTML = suggestions
+    .map(venue => `<div class="venue-autocomplete-item" data-venue="${escapeAttr(venue)}">${escapeHtml(venue)}</div>`)
+    .join('');
+  
+  dropdown.hidden = false;
+  activeVenueInput = inputEl;
+  currentVenueSuggestions = suggestions;
+
+  // Add click handlers to suggestion items
+  dropdown.querySelectorAll('.venue-autocomplete-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const venue = item.dataset.venue;
+      if (venue && activeVenueInput) {
+        activeVenueInput.value = venue;
+        activeVenueInput.dispatchEvent(new Event('input', { bubbles: true }));
+        hideVenueAutocomplete();
+      }
+    });
+  });
+}
+
+function hideVenueAutocomplete() {
+  const dropdown = document.getElementById('venueAutocompleteDropdown');
+  if (dropdown) {
+    dropdown.hidden = true;
+    dropdown.innerHTML = '';
+  }
+  activeVenueInput = null;
+  currentVenueSuggestions = [];
+}
+
+function debouncedVenueAutocomplete(inputEl, query) {
+  clearTimeout(venueAutocompleteTimer);
+  venueAutocompleteTimer = setTimeout(() => {
+    const suggestions = filterVenueSuggestions(query);
+    showVenueAutocomplete(inputEl, suggestions);
+  }, 300);
 }
 
 function showError(msg) {
@@ -304,7 +394,55 @@ function renderRow(item, todayIso, isUpcomingSection) {
       va.href = `https://maps.apple.com/?q=${encodeURIComponent(q)}`;
     }
   };
-  venueTa?.addEventListener('input', syncRowVenueMaps);
+  
+  if (venueTa) {
+    venueTa.addEventListener('input', () => {
+      syncRowVenueMaps();
+      debouncedVenueAutocomplete(venueTa, venueTa.value);
+    });
+
+    // Hide autocomplete when input loses focus
+    venueTa.addEventListener('blur', () => {
+      setTimeout(() => {
+        if (activeVenueInput === venueTa) {
+          hideVenueAutocomplete();
+        }
+      }, 200);
+    });
+
+    // Handle keyboard navigation
+    venueTa.addEventListener('keydown', (e) => {
+      const dropdown = document.getElementById('venueAutocompleteDropdown');
+      if (!dropdown || dropdown.hidden) return;
+
+      const items = dropdown.querySelectorAll('.venue-autocomplete-item');
+      let currentIndex = -1;
+      
+      items.forEach((item, index) => {
+        if (item.classList.contains('selected')) {
+          currentIndex = index;
+        }
+      });
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const nextIndex = currentIndex + 1 < items.length ? currentIndex + 1 : 0;
+        selectAutocompleteItem(items, nextIndex);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const nextIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : items.length - 1;
+        selectAutocompleteItem(items, nextIndex);
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (currentIndex >= 0 && items[currentIndex]) {
+          items[currentIndex].click();
+        }
+      } else if (e.key === 'Escape') {
+        hideVenueAutocomplete();
+      }
+    });
+  }
+  
   syncRowVenueMaps();
 
   tr.querySelector('.sched-save')?.addEventListener('click', () => saveRow(tr));
@@ -440,13 +578,63 @@ if (schedulePickContact) {
 
 if (venueInput) {
   venueInput.addEventListener('input', () => {
+    const value = venueInput.value;
     syncVenueMapLinks(
-      venueInput.value,
+      value,
       scheduleVenueGoogle,
       scheduleVenueApple,
       scheduleVenueMapsWrap
     );
-    debouncedVenueMapEmbed(venueInput.value, scheduleVenueMapEmbed);
+    debouncedVenueMapEmbed(value, scheduleVenueMapEmbed);
+    debouncedVenueAutocomplete(venueInput, value);
+  });
+
+  // Hide autocomplete when input loses focus (with delay to allow clicks)
+  venueInput.addEventListener('blur', () => {
+    setTimeout(() => {
+      if (activeVenueInput === venueInput) {
+        hideVenueAutocomplete();
+      }
+    }, 200);
+  });
+
+  // Handle keyboard navigation in autocomplete
+  venueInput.addEventListener('keydown', (e) => {
+    const dropdown = document.getElementById('venueAutocompleteDropdown');
+    if (!dropdown || dropdown.hidden) return;
+
+    const items = dropdown.querySelectorAll('.venue-autocomplete-item');
+    let currentIndex = -1;
+    
+    // Find currently selected item
+    items.forEach((item, index) => {
+      if (item.classList.contains('selected')) {
+        currentIndex = index;
+      }
+    });
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const nextIndex = currentIndex + 1 < items.length ? currentIndex + 1 : 0;
+      selectAutocompleteItem(items, nextIndex);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const nextIndex = currentIndex - 1 >= 0 ? currentIndex - 1 : items.length - 1;
+      selectAutocompleteItem(items, nextIndex);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (currentIndex >= 0 && items[currentIndex]) {
+        items[currentIndex].click();
+      }
+    } else if (e.key === 'Escape') {
+      hideVenueAutocomplete();
+    }
+  });
+}
+
+function selectAutocompleteItem(items, index) {
+  items.forEach((item, i) => {
+    item.classList.toggle('selected', i === index);
   });
 }
 
@@ -497,6 +685,20 @@ if (signOutBtn) {
     window.location.href = 'index.html';
   });
 }
+
+// Hide autocomplete when clicking outside
+document.addEventListener('click', (e) => {
+  const dropdown = document.getElementById('venueAutocompleteDropdown');
+  if (!dropdown || dropdown.hidden) return;
+  
+  // Check if click is on a venue input or the dropdown
+  const isVenueInput = e.target.matches('textarea[name="venueLocation"], .schedules-input--venue');
+  const isDropdown = dropdown.contains(e.target);
+  
+  if (!isVenueInput && !isDropdown) {
+    hideVenueAutocomplete();
+  }
+});
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {

@@ -1806,3 +1806,40 @@ a.schedules-contact-link {
     min-height: 2.75rem;
   }
 }
+
+/* ========================================
+   Venue Autocomplete Dropdown
+======================================== */
+
+.venue-autocomplete-dropdown {
+  position: absolute;
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(15, 19, 40, 0.15);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  font-size: 0.9rem;
+}
+
+.venue-autocomplete-item {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-light);
+  transition: all 0.2s ease;
+}
+
+.venue-autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+.venue-autocomplete-item:hover,
+.venue-autocomplete-item.selected {
+  background: var(--light-gray);
+  color: var(--primary-color);
+}
+
+.venue-autocomplete-item.selected {
+  background: #f0f4ff;
+}
