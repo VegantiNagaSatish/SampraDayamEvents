@@ -2385,6 +2385,59 @@ body.food-menu-page {
     box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
 }
 
+.food-menu-persons-row {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.food-menu-persons-label {
+    display: block;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.food-menu-persons-label-te {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--orange);
+    margin-left: 0.35rem;
+}
+
+.food-menu-persons-input {
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
+    display: block;
+    padding: 12px 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    background: var(--white);
+    color: var(--text-dark);
+    text-align: center;
+}
+
+.food-menu-persons-input:focus {
+    outline: none;
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.food-menu-persons-input::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+@media (max-width: 480px) {
+    .food-menu-persons-input {
+        max-width: 240px;
+        font-size: 0.95rem;
+    }
+}
+
 .food-menu-time-fieldset {
     margin: 1.15rem auto 0;
     padding: 0 0.5rem;

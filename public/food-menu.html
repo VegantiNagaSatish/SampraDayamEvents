@@ -46,7 +46,7 @@
 
     <main class="food-menu-main">
         <div class="container">
-            <p class="food-menu-intro">Choose your <strong>event date</strong> and <strong>time of day</strong> (Udayam / Madyanam / Sayantram), tick the dishes you want, then tap <strong>Finalise</strong> to send everything to us on WhatsApp.</p>
+            <p class="food-menu-intro">Choose your <strong>event date</strong>, <strong>number of persons</strong>, and <strong>time of day</strong> (Udayam / Madyanam / Sayantram), tick the dishes you want, then tap <strong>Finalise</strong> to send everything to us on WhatsApp.</p>
             <p id="food-menu-loading" class="food-menu-loading">Loading menu…</p>
             <div id="food-menu-sections" class="food-menu-sections" aria-live="polite"></div>
             <div class="food-menu-actions">
@@ -60,6 +60,13 @@
                         <abbr class="food-menu-date-required" title="required">*</abbr>
                     </label>
                     <input type="date" id="food-menu-event-date" class="food-menu-date-input" name="event-date" required autocomplete="off" aria-required="true">
+                </div>
+                <div class="food-menu-persons-row">
+                    <label for="food-menu-persons-count" class="food-menu-persons-label">
+                        Number of persons <span class="food-menu-persons-label-te" lang="te">వ్యక్తుల సంఖ్య</span>
+                        <abbr class="food-menu-date-required" title="required">*</abbr>
+                    </label>
+                    <input type="number" id="food-menu-persons-count" class="food-menu-persons-input" name="persons-count" required min="1" max="10000" placeholder="e.g. 100" aria-required="true">
                 </div>
                 <fieldset class="food-menu-time-fieldset">
                     <legend class="food-menu-time-legend">

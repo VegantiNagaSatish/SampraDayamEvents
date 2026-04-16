@@ -141,7 +141,7 @@ function formatEventDateForMessage(iso) {
     });
 }
 
-function buildMessage(selectedBySection, eventDateIso, timeSlot) {
+function buildMessage(selectedBySection, eventDateIso, timeSlot, personsCount) {
     const lines = [];
     lines.push('Hello SAMPRADAYAM EVENTS,');
     lines.push('');
@@ -149,6 +149,7 @@ function buildMessage(selectedBySection, eventDateIso, timeSlot) {
     lines.push('');
     lines.push('*Event date (ఈవెంట్ తేదీ):* ' + formatEventDateForMessage(eventDateIso));
     lines.push('*Time of day (రోజు సమయం):* ' + (TIME_SLOT_WHATSAPP[timeSlot] || timeSlot));
+    lines.push('*Number of persons (వ్యక్తుల సంఖ్య):* ' + personsCount);
     lines.push('');
 
     MENU_SECTIONS.forEach((sec) => {
@@ -245,6 +246,16 @@ function finalise() {
         return;
     }
 
+    const personsInput = document.getElementById('food-menu-persons-count');
+    const personsCount = personsInput && personsInput.value ? parseInt(personsInput.value.trim(), 10) : 0;
+    if (!personsCount || personsCount < 1) {
+        window.alert('Please enter the number of persons before finalising.');
+        if (personsInput) {
+            personsInput.focus();
+        }
+        return;
+    }
+
     const timeRadio = document.querySelector('input[name="food-menu-time-slot"]:checked');
     const timeSlot = timeRadio ? timeRadio.value : '';
     if (!timeSlot) {
@@ -256,7 +267,7 @@ function finalise() {
         return;
     }
 
-    const message = buildMessage(selectedBySection, eventDateIso, timeSlot);
+    const message = buildMessage(selectedBySection, eventDateIso, timeSlot, personsCount);
     const url = 'https://wa.me/' + WHATSAPP_E164 + '?text=' + encodeURIComponent(message);
 
     if (url.length > 8000) {
