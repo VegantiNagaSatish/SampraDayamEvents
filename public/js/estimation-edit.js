@@ -499,15 +499,12 @@ if (completeBtn) {
   completeBtn.addEventListener('click', () => markComplete());
 }
 
-const printFormatDialog = document.getElementById('printFormatDialog');
-const printDeliveryNoteBtn = document.getElementById('printDeliveryNoteBtn');
-const printEstimationNoteBtn = document.getElementById('printEstimationNoteBtn');
-const printFormatCancelBtn = document.getElementById('printFormatCancelBtn');
+// Print dialog elements removed - now using direct print
 const docKickerEl = document.querySelector('.invoice-letterhead__doc-kicker');
 const DOC_KICKER_DEFAULT = 'ESTIMATION';
 
 /** Last format chosen in the print dialog; reapplied in `beforeprint` for correct layout. */
-let pendingPrintFormat = 'estimation';
+// Print format is now always delivery mode
 
 function setPrintDeliveryMode(on) {
   const v = Boolean(on);
@@ -528,9 +525,9 @@ function setPrintDeliveryMode(on) {
 }
 
 function hidePriceElementsForDelivery(hide) {
-  // Directly hide price elements for better Android compatibility
+  // Directly hide price elements for better Android compatibility (but keep totals)
   const priceElements = document.querySelectorAll(
-    '.invoice-col--price, .invoice-col--amount, .line-price, .invoice-total, .invoice-total-row'
+    '.invoice-col--price, .invoice-col--amount, .line-price'
   );
   
   priceElements.forEach(el => {
@@ -550,27 +547,24 @@ function hidePriceElementsForDelivery(hide) {
   });
 }
 
-function applyPrintFormatAppearance(mode) {
-  if (mode === 'delivery') {
-    setPrintDeliveryMode(true);
-    hidePriceElementsForDelivery(true);
-    if (docKickerEl) docKickerEl.textContent = 'DELIVERY NOTE';
-  } else {
-    setPrintDeliveryMode(false);
-    hidePriceElementsForDelivery(false);
-    if (docKickerEl) docKickerEl.textContent = DOC_KICKER_DEFAULT;
-  }
+function applyPrintFormatAppearance() {
+  // Always apply delivery mode (no more estimate mode)
+  setPrintDeliveryMode(true);
+  hidePriceElementsForDelivery(true);
+  if (docKickerEl) docKickerEl.textContent = 'DELIVERY NOTE';
 }
 
 function resetPrintFormatAppearance() {
-  pendingPrintFormat = 'estimation';
-  applyPrintFormatAppearance('estimation');
+  // Reset to normal view (no delivery mode styling)
+  setPrintDeliveryMode(false);
+  hidePriceElementsForDelivery(false);
+  if (docKickerEl) docKickerEl.textContent = DOC_KICKER_DEFAULT;
 }
 
-function runPrintWithMode(mode) {
-  pendingPrintFormat = mode === 'delivery' ? 'delivery' : 'estimation';
+function runPrint() {
+  // Always print in delivery mode (hide line prices but show totals)
   syncAllOptionalLineDescPrintClasses();
-  applyPrintFormatAppearance(pendingPrintFormat);
+  applyPrintFormatAppearance();
   
   const doPrint = () => {
     // Extra delay for Android devices to ensure styles are applied
@@ -579,8 +573,8 @@ function runPrintWithMode(mode) {
     
     setTimeout(() => {
       // Reapply formatting just before printing on Android
-      if (isAndroid && pendingPrintFormat === 'delivery') {
-        applyPrintFormatAppearance('delivery');
+      if (isAndroid) {
+        applyPrintFormatAppearance();
       }
       window.print();
     }, delay);
@@ -595,13 +589,13 @@ function runPrintWithMode(mode) {
 
 window.addEventListener('beforeprint', () => {
   syncAllOptionalLineDescPrintClasses();
-  applyPrintFormatAppearance(pendingPrintFormat);
+  applyPrintFormatAppearance();
   
   // Android-specific: Force reapply delivery mode styling
   const isAndroid = /Android/i.test(navigator.userAgent);
-  if (isAndroid && pendingPrintFormat === 'delivery') {
+  if (isAndroid) {
     setTimeout(() => {
-      applyPrintFormatAppearance('delivery');
+      applyPrintFormatAppearance();
     }, 100);
   }
 });
@@ -630,31 +624,11 @@ window.addEventListener('beforeprint', () => {
 
 if (printBtn) {
   printBtn.addEventListener('click', () => {
-    if (printFormatDialog && typeof printFormatDialog.showModal === 'function') {
-      printFormatDialog.showModal();
-    } else {
-      runPrintWithMode('estimation');
-    }
+    runPrint();
   });
 }
 
-if (printDeliveryNoteBtn && printFormatDialog) {
-  printDeliveryNoteBtn.addEventListener('click', () => {
-    printFormatDialog.close();
-    requestAnimationFrame(() => runPrintWithMode('delivery'));
-  });
-}
-
-if (printEstimationNoteBtn && printFormatDialog) {
-  printEstimationNoteBtn.addEventListener('click', () => {
-    printFormatDialog.close();
-    requestAnimationFrame(() => runPrintWithMode('estimation'));
-  });
-}
-
-if (printFormatCancelBtn && printFormatDialog) {
-  printFormatCancelBtn.addEventListener('click', () => printFormatDialog.close());
-}
+// Print dialog removed - print button now directly prints in delivery mode
 
 if (shareWaBtn) {
   shareWaBtn.addEventListener('click', () => {
