@@ -1091,21 +1091,29 @@ a.admin-dashboard-card:hover {
   /*
    * Delivery note: drop price + amount columns. Flag on <html> and <body> (set before print);
    * collapse <col> like the actions column, and strip cells + inputs so WebKit print preview matches.
+   * Using multiple selectors for better Android compatibility instead of :is()
    */
-  :is(html.print-mode-delivery, body.print-mode-delivery) .invoice-lines-table col.invoice-col--price,
-  :is(html.print-mode-delivery, body.print-mode-delivery) .invoice-lines-table col.invoice-col--amount {
-    visibility: collapse !important;
+  html.print-mode-delivery .invoice-lines-table col.invoice-col--price,
+  body.print-mode-delivery .invoice-lines-table col.invoice-col--price,
+  html.print-mode-delivery .invoice-lines-table col.invoice-col--amount,
+  body.print-mode-delivery .invoice-lines-table col.invoice-col--amount {
+    display: none !important;
     width: 0 !important;
     min-width: 0 !important;
     max-width: 0 !important;
     font-size: 0 !important;
     line-height: 0 !important;
+    visibility: hidden !important;
   }
 
-  :is(html.print-mode-delivery, body.print-mode-delivery) .invoice-lines-table th.invoice-col--price,
-  :is(html.print-mode-delivery, body.print-mode-delivery) .invoice-lines-table th.invoice-col--amount,
-  :is(html.print-mode-delivery, body.print-mode-delivery) .invoice-lines-table td.invoice-col--price,
-  :is(html.print-mode-delivery, body.print-mode-delivery) .invoice-lines-table td.invoice-col--amount {
+  html.print-mode-delivery .invoice-lines-table th.invoice-col--price,
+  body.print-mode-delivery .invoice-lines-table th.invoice-col--price,
+  html.print-mode-delivery .invoice-lines-table th.invoice-col--amount,
+  body.print-mode-delivery .invoice-lines-table th.invoice-col--amount,
+  html.print-mode-delivery .invoice-lines-table td.invoice-col--price,
+  body.print-mode-delivery .invoice-lines-table td.invoice-col--price,
+  html.print-mode-delivery .invoice-lines-table td.invoice-col--amount,
+  body.print-mode-delivery .invoice-lines-table td.invoice-col--amount {
     display: none !important;
     width: 0 !important;
     min-width: 0 !important;
@@ -1119,12 +1127,85 @@ a.admin-dashboard-card:hover {
     visibility: hidden !important;
   }
 
-  :is(html.print-mode-delivery, body.print-mode-delivery)
-    .invoice-lines-table
-    td.invoice-col--price
-    .line-price {
+  html.print-mode-delivery .invoice-lines-table td.invoice-col--price .line-price,
+  body.print-mode-delivery .invoice-lines-table td.invoice-col--price .line-price,
+  html.print-mode-delivery .invoice-lines-table td.invoice-col--amount .line-price,
+  body.print-mode-delivery .invoice-lines-table td.invoice-col--amount .line-price {
     display: none !important;
     visibility: hidden !important;
+  }
+
+  /* Additional Android-specific rules for delivery note */
+  html.print-mode-delivery .invoice-lines-table .line-price,
+  body.print-mode-delivery .invoice-lines-table .line-price,
+  html.print-mode-delivery .invoice-lines-table input[readonly][value*="₹"],
+  body.print-mode-delivery .invoice-lines-table input[readonly][value*="₹"],
+  html.print-mode-delivery .invoice-lines-table input[readonly][value*="Rs"],
+  body.print-mode-delivery .invoice-lines-table input[readonly][value*="Rs"] {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Hide totals section in delivery mode */
+  html.print-mode-delivery .invoice-total,
+  body.print-mode-delivery .invoice-total,
+  html.print-mode-delivery .invoice-total-row,
+  body.print-mode-delivery .invoice-total-row {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Ensure price columns are completely hidden on Android */
+  @media screen and (max-device-width: 768px) {
+    html.print-mode-delivery .invoice-col--price,
+    body.print-mode-delivery .invoice-col--price,
+    html.print-mode-delivery .invoice-col--amount,
+    body.print-mode-delivery .invoice-col--amount {
+      display: none !important;
+    }
+  }
+
+  /* Print media rules for delivery note - extra coverage for Android */
+  @media print {
+    html.print-mode-delivery .invoice-lines-table col.invoice-col--price,
+    html.print-mode-delivery .invoice-lines-table col.invoice-col--amount,
+    html.print-mode-delivery .invoice-lines-table th.invoice-col--price,
+    html.print-mode-delivery .invoice-lines-table th.invoice-col--amount,
+    html.print-mode-delivery .invoice-lines-table td.invoice-col--price,
+    html.print-mode-delivery .invoice-lines-table td.invoice-col--amount,
+    html.print-mode-delivery .line-price,
+    html.print-mode-delivery .invoice-total,
+    html.print-mode-delivery .invoice-total-row {
+      display: none !important;
+      visibility: hidden !important;
+      width: 0 !important;
+      height: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      font-size: 0 !important;
+      line-height: 0 !important;
+    }
+    
+    body.print-mode-delivery .invoice-lines-table col.invoice-col--price,
+    body.print-mode-delivery .invoice-lines-table col.invoice-col--amount,
+    body.print-mode-delivery .invoice-lines-table th.invoice-col--price,
+    body.print-mode-delivery .invoice-lines-table th.invoice-col--amount,
+    body.print-mode-delivery .invoice-lines-table td.invoice-col--price,
+    body.print-mode-delivery .invoice-lines-table td.invoice-col--amount,
+    body.print-mode-delivery .line-price,
+    body.print-mode-delivery .invoice-total,
+    body.print-mode-delivery .invoice-total-row {
+      display: none !important;
+      visibility: hidden !important;
+      width: 0 !important;
+      height: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      font-size: 0 !important;
+      line-height: 0 !important;
+    }
   }
 }
 

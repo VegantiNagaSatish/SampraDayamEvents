@@ -513,14 +513,51 @@ function setPrintDeliveryMode(on) {
   const v = Boolean(on);
   document.documentElement.classList.toggle('print-mode-delivery', v);
   document.body.classList.toggle('print-mode-delivery', v);
+  
+  // Additional Android compatibility: Set/remove class more forcefully
+  if (v) {
+    document.documentElement.className = document.documentElement.className.replace('print-mode-delivery', '') + ' print-mode-delivery';
+    document.body.className = document.body.className.replace('print-mode-delivery', '') + ' print-mode-delivery';
+  } else {
+    document.documentElement.className = document.documentElement.className.replace(/\s*print-mode-delivery/g, '');
+    document.body.className = document.body.className.replace(/\s*print-mode-delivery/g, '');
+  }
+  
+  // Debug log for Android troubleshooting
+  console.log('Delivery mode set to:', v, 'HTML class:', document.documentElement.className, 'Body class:', document.body.className);
+}
+
+function hidePriceElementsForDelivery(hide) {
+  // Directly hide price elements for better Android compatibility
+  const priceElements = document.querySelectorAll(
+    '.invoice-col--price, .invoice-col--amount, .line-price, .invoice-total, .invoice-total-row'
+  );
+  
+  priceElements.forEach(el => {
+    if (hide) {
+      el.style.display = 'none';
+      el.style.visibility = 'hidden';
+      el.style.width = '0';
+      el.style.padding = '0';
+      el.style.margin = '0';
+    } else {
+      el.style.display = '';
+      el.style.visibility = '';
+      el.style.width = '';
+      el.style.padding = '';
+      el.style.margin = '';
+    }
+  });
 }
 
 function applyPrintFormatAppearance(mode) {
   if (mode === 'delivery') {
     setPrintDeliveryMode(true);
+    hidePriceElementsForDelivery(true);
     if (docKickerEl) docKickerEl.textContent = 'DELIVERY NOTE';
   } else {
     setPrintDeliveryMode(false);
+    hidePriceElementsForDelivery(false);
     if (docKickerEl) docKickerEl.textContent = DOC_KICKER_DEFAULT;
   }
 }
@@ -534,17 +571,39 @@ function runPrintWithMode(mode) {
   pendingPrintFormat = mode === 'delivery' ? 'delivery' : 'estimation';
   syncAllOptionalLineDescPrintClasses();
   applyPrintFormatAppearance(pendingPrintFormat);
-  const doPrint = () => window.print();
+  
+  const doPrint = () => {
+    // Extra delay for Android devices to ensure styles are applied
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const delay = isAndroid ? 500 : 0;
+    
+    setTimeout(() => {
+      // Reapply formatting just before printing on Android
+      if (isAndroid && pendingPrintFormat === 'delivery') {
+        applyPrintFormatAppearance('delivery');
+      }
+      window.print();
+    }, delay);
+  };
+  
   if (typeof requestAnimationFrame === 'function') {
     requestAnimationFrame(() => requestAnimationFrame(doPrint));
   } else {
-    setTimeout(doPrint, 0);
+    setTimeout(doPrint, 100);
   }
 }
 
 window.addEventListener('beforeprint', () => {
   syncAllOptionalLineDescPrintClasses();
   applyPrintFormatAppearance(pendingPrintFormat);
+  
+  // Android-specific: Force reapply delivery mode styling
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  if (isAndroid && pendingPrintFormat === 'delivery') {
+    setTimeout(() => {
+      applyPrintFormatAppearance('delivery');
+    }, 100);
+  }
 });
 
 /*
