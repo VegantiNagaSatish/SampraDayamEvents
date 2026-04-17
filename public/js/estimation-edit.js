@@ -94,10 +94,13 @@ function emptyLine() {
 }
 
 function normalizeSavedLine(raw) {
+  const lineNote = String(raw.lineNote || '').trim();
+  const legacyDesc = String(raw.itemDescription || '').trim();
+  const mergedNote = lineNote || legacyDesc;
   return {
     catalogItemId: raw.catalogItemId || null,
     description: raw.description || '',
-    lineNote: raw.lineNote || '',
+    lineNote: mergedNote,
     qty: Number(raw.qty) || 0,
     price: Number(raw.price) || 0
   };
@@ -131,6 +134,7 @@ function getLinesFromDom() {
     let description = '';
     let catalogItemId = null;
     let lineNote = '';
+
     if (sel) {
       if (sel.value === '__custom__') {
         description = ta?.value?.trim() || '';
@@ -159,11 +163,12 @@ function syncLineItemFieldVisibility(tr) {
   const sel = tr.querySelector('.line-catalog');
   const customWrap = tr.querySelector('.line-custom-wrap');
   const noteWrap = tr.querySelector('.line-note-wrap');
-  if (!sel || !noteWrap) return;
+  if (!sel) return;
   const v = sel.value;
   const showCustom = v === '__custom__';
   const showNote = Boolean(v && v !== '__custom__');
-  noteWrap.classList.toggle('line-note-wrap--active', showNote);
+
+  if (noteWrap) noteWrap.classList.toggle('line-note-wrap--active', showNote);
   if (customWrap) customWrap.classList.toggle('line-custom-wrap--active', showCustom);
   syncOptionalLineDescPrintClasses(tr);
 }
@@ -204,6 +209,10 @@ function renderLines(lines) {
         <div class="line-custom-wrap">
           <textarea class="line-desc-custom" rows="2" placeholder="Describe the line item…"></textarea>
         </div>
+        <div class="line-note-wrap">
+          <label class="line-item-note-label" for="line-item-note-${idx}">Additional notes (optional):</label>
+          <textarea class="line-item-note" id="line-item-note-${idx}" rows="2" placeholder="Extra details…"></textarea>
+        </div>
       </td>
       <td><input type="number" class="line-qty" min="0" step="1" value="${L.qty}"></td>
       <td class="invoice-col--price"><input type="number" class="line-price" min="0" step="0.01" value="${L.price}"></td>
@@ -231,6 +240,7 @@ function renderLines(lines) {
 
     const ta = tr.querySelector('.line-desc-custom');
     const noteTa = tr.querySelector('.line-item-note');
+
     if (selVal === '__custom__') {
       if (ta) ta.value = L.description;
     } else if (selVal) {
