@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Upload Images | SampraDayam Events</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            padding-top: 120px; /* Add space for fixed navbar */
+        }
+        
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-top: 40px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .admin-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0 20px 0;
+            border-bottom: 2px solid #f0f0f0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px 10px 0 0;
+            margin: -20px -20px 40px -20px;
+            padding: 40px 20px 30px 20px;
+        }
+        
+        .admin-header h1 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .admin-header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 18px;
+            font-weight: 300;
+        }
+        
+        .upload-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px dashed #ddd;
+            text-align: center;
+        }
+        
+        .upload-section.dragover {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 20px 0;
+        }
+        
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-input-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #007bff;
+            color: white;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            border: none;
+            font-size: 16px;
+        }
+        
+        .file-input-button:hover {
+            background: #0056b3;
+        }
+        
+        .category-select {
+            margin: 20px 0;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 200px;
+        }
+        
+        .upload-progress {
+            display: none;
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #007bff, #28a745);
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 10px;
+        }
+        
+        .file-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .preview-item {
+            position: relative;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .preview-img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .preview-info {
+            padding: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .upload-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 20px 10px;
+            transition: background 0.3s;
+        }
+        
+        .upload-btn:hover {
+            background: #1e7e34;
+        }
+        
+        .upload-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .status-message {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .recent-uploads {
+            margin-top: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .recent-uploads h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .recent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .recent-item {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .recent-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        .recent-info {
+            padding: 15px;
+        }
+        
+        .recent-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .recent-info p {
+            margin: 0;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 100px;
+            }
+            
+            .admin-container {
+                margin: 20px 10px;
+                padding: 15px;
+            }
+            
+            .admin-header {
+                margin: -15px -15px 30px -15px;
+                padding: 30px 15px 25px 15px;
+            }
+            
+            .admin-header h1 {
+                font-size: 2rem;
+            }
+            
+            .file-preview {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 10px;
+            }
+            
+            .recent-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a href="index.html" class="logo">
+                    <img src="sdLogoBlack.jpeg" alt="SampraDayam Events Logo" class="logo-icon">
+                    <div class="logo-main">
+                        <span class="logo-text"><span class="logo-letter-large">S</span>AMPRA<span class="logo-letter-large">D</span>AYAM EVENTS</span>
+                        <span class="logo-tagline">Every Celebration is Memory</span>
+                    </div>
+                </a>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="services.html" class="nav-link">Services</a></li>
+                    <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+                    <li><a href="about.html" class="nav-link">About</a></li>
+                    <li><a href="contact.html" class="nav-link">Contact</a></li>
+                    <li><a href="admin-dashboard.html" class="nav-link">Admin</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>🖼️ Upload Images to Gallery</h1>
+            <p>Add new event photos to your Firebase gallery. Images will appear automatically on the website.</p>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="upload-section" id="uploadSection">
+            <h3>📤 Drop Images Here or Click to Select</h3>
+            <p>Supported formats: JPG, PNG, GIF, WebP (Max 5MB per image)</p>
+            
+            <div class="file-input-wrapper">
+                <input type="file" 
+                       id="fileInput" 
+                       class="file-input" 
+                       multiple 
+                       accept="image/*">
+                <button class="file-input-button">
+                    📁 Choose Images
+                </button>
+            </div>
+            
+            <div>
+                <select id="categorySelect" class="category-select">
+                    <option value="">Select Category</option>
+                    <option value="birthday">🎂 Birthday</option>
+                    <option value="haldi">💛 Haldi</option>
+                    <option value="reception">🎉 Reception</option>
+                    <option value="marriagestage">💒 Marriage Stage</option>
+                    <option value="corporate">🏢 Corporate</option>
+                    <option value="dhoti">👕 Dhoti Ceremony</option>
+                    <option value="halfsaree">👗 Half Saree</option>
+                    <option value="housewarming">🏠 House Warming</option>
+                    <option value="gettogether">👥 Get Together</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- File Preview -->
+        <div id="filePreview" class="file-preview"></div>
+
+        <!-- Upload Progress -->
+        <div id="uploadProgress" class="upload-progress">
+            <h4>Uploading Images...</h4>
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill"></div>
+            </div>
+            <p id="progressText">0% Complete</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="text-align: center; margin: 30px 0;">
+            <button id="uploadBtn" class="upload-btn" disabled>
+                🚀 Upload Images to Firebase
+            </button>
+            <button id="clearBtn" class="upload-btn" style="background: #6c757d;">
+                🗑️ Clear All
+            </button>
+        </div>
+
+        <!-- Status Messages -->
+        <div id="statusMessage"></div>
+
+        <!-- Recent Uploads -->
+        <div class="recent-uploads">
+            <h3>📸 Recent Uploads</h3>
+            <div id="recentUploads" class="recent-grid">
+                <p>Loading recent uploads...</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase imports
+        import { firebaseConfig } from './js/firebase-config.js';
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+        // Removed auth import for simplified testing
+        import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+        const db = getFirestore(app);
+
+        // Simplified for testing (no auth required)
+        let isAuthenticated = true;
+
+        // DOM elements
+        const uploadSection = document.getElementById('uploadSection');
+        const fileInput = document.getElementById('fileInput');
+        const categorySelect = document.getElementById('categorySelect');
+        const filePreview = document.getElementById('filePreview');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const statusMessage = document.getElementById('statusMessage');
+        const recentUploads = document.getElementById('recentUploads');
+
+        // State
+        let selectedFiles = [];
+        let isUploading = false;
+
+        // Test Firebase connection
+        async function testFirebaseConnection() {
+            try {
+                console.log('🔍 Testing Firebase connection...');
+                console.log('📋 Firebase config:', firebaseConfig);
+                console.log('🏪 Storage instance:', storage);
+                console.log('💾 Firestore instance:', db);
+                
+                // Test Firestore read
+                console.log('📖 Testing Firestore read...');
+                const testQuery = query(collection(db, 'galleryImages'), limit(1));
+                const testSnapshot = await getDocs(testQuery);
+                console.log('✅ Firestore read successful, docs:', testSnapshot.size);
+                
+                showStatus('✅ Firebase connection successful', 'success');
+                
+            } catch (error) {
+                console.error('❌ Firebase connection test failed:', error);
+                showStatus(`❌ Firebase connection failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Initialize
+        testFirebaseConnection();
+        loadRecentUploads();
+
+        // File input change handler
+        fileInput.addEventListener('change', handleFileSelect);
+
+        // Drag and drop handlers
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.classList.add('dragover');
+        });
+
+        uploadSection.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+        });
+
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files);
+            handleFiles(files);
+        });
+
+        // Category select handler
+        categorySelect.addEventListener('change', updateUploadButton);
+
+        // Button handlers
+        uploadBtn.addEventListener('click', uploadImages);
+        clearBtn.addEventListener('click', clearAll);
+
+        // Handle file selection
+        function handleFileSelect(e) {
+            const files = Array.from(e.target.files);
+            handleFiles(files);
+        }
+
+        // Handle files (from input or drag-drop)
+        function handleFiles(files) {
+            const validFiles = files.filter(file => {
+                const isImage = file.type.startsWith('image/');
+                const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB limit
+                
+                if (!isImage) {
+                    showStatus(`❌ ${file.name} is not an image file`, 'error');
+                    return false;
+                }
+                
+                if (!isValidSize) {
+                    showStatus(`❌ ${file.name} is too large (max 5MB)`, 'error');
+                    return false;
+                }
+                
+                return true;
+            });
+
+            selectedFiles = [...selectedFiles, ...validFiles];
+            displayFilePreview();
+            updateUploadButton();
+        }
+
+        // Display file preview
+        function displayFilePreview() {
+            filePreview.innerHTML = '';
+            
+            selectedFiles.forEach((file, index) => {
+                const previewItem = document.createElement('div');
+                previewItem.className = 'preview-item';
+                
+                const img = document.createElement('img');
+                img.className = 'preview-img';
+                img.src = URL.createObjectURL(file);
+                
+                const info = document.createElement('div');
+                info.className = 'preview-info';
+                info.innerHTML = `
+                    <strong>${file.name}</strong><br>
+                    ${(file.size / 1024 / 1024).toFixed(2)} MB
+                `;
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.innerHTML = '×';
+                removeBtn.onclick = () => removeFile(index);
+                
+                previewItem.appendChild(img);
+                previewItem.appendChild(info);
+                previewItem.appendChild(removeBtn);
+                filePreview.appendChild(previewItem);
+            });
+        }
+
+        // Remove file from selection
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            displayFilePreview();
+            updateUploadButton();
+        }
+
+        // Clear all files
+        function clearAll() {
+            selectedFiles = [];
+            fileInput.value = '';
+            displayFilePreview();
+            updateUploadButton();
+            hideStatus();
+        }
+
+        // Update upload button state
+        function updateUploadButton() {
+            const hasFiles = selectedFiles.length > 0;
+            const hasCategory = categorySelect.value !== '';
+            uploadBtn.disabled = !hasFiles || !hasCategory || isUploading;
+            
+            if (isUploading) {
+                uploadBtn.textContent = '⏳ Uploading...';
+            } else {
+                uploadBtn.textContent = '🚀 Upload Images to Firebase';
+            }
+        }
+
+        // Upload images to Firebase
+        async function uploadImages() {
+            if (!categorySelect.value) {
+                showStatus('❌ Please select a category', 'error');
+                return;
+            }
+
+            if (selectedFiles.length === 0) {
+                showStatus('❌ Please select at least one image', 'error');
+                return;
+            }
+
+            isUploading = true;
+            uploadBtn.disabled = true;
+            uploadProgress.style.display = 'block';
+
+            const category = categorySelect.value;
+            const totalFiles = selectedFiles.length;
+            let completed = 0;
+            let successful = 0;
+            let failed = 0;
+
+            showStatus(`🚀 Uploading ${totalFiles} images...`, 'info');
+
+            for (const file of selectedFiles) {
+                try {
+                    console.log(`🔄 Starting upload for: ${file.name}`);
+                    
+                    // Create unique filename
+                    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                    const fileName = `${timestamp}-${file.name}`;
+                    const storagePath = `gallery/${category}/${fileName}`;
+                    
+                    console.log(`📁 Storage path: ${storagePath}`);
+                    
+                    // Upload to Firebase Storage
+                    const storageRef = ref(storage, storagePath);
+                    console.log(`📤 Uploading to Firebase Storage...`);
+                    
+                    const snapshot = await uploadBytes(storageRef, file);
+                    console.log(`✅ Storage upload complete, getting download URL...`);
+                    
+                    const downloadURL = await getDownloadURL(snapshot.ref);
+                    console.log(`✅ Download URL obtained: ${downloadURL.substring(0, 50)}...`);
+                    
+                    // Save metadata to Firestore
+                    console.log(`💾 Saving metadata to Firestore...`);
+                    await addDoc(collection(db, 'galleryImages'), {
+                        originalName: fileName,
+                        category: category,
+                        imageUrl: downloadURL,
+                        uploadedAt: new Date(),
+                        uploadedBy: 'admin-web',
+                        size: file.size,
+                        type: file.type
+                    });
+
+                    successful++;
+                    console.log(`✅ Complete upload success: ${fileName}`);
+                    
+                } catch (error) {
+                    failed++;
+                    console.error(`❌ Failed to upload ${file.name}:`, error);
+                    console.error(`❌ Error code: ${error.code}`);
+                    console.error(`❌ Error message: ${error.message}`);
+                    console.error(`❌ Full error:`, error);
+                    
+                    // Show specific error details
+                    if (error.code === 'storage/unauthorized') {
+                        showStatus('❌ Storage unauthorized. Checking Firebase Auth...', 'error');
+                    } else if (error.code === 'storage/unknown') {
+                        showStatus('❌ Storage error. Check Firebase configuration.', 'error');
+                    } else if (error.code === 'permission-denied') {
+                        showStatus('❌ Permission denied. Check Storage rules.', 'error');
+                    } else {
+                        showStatus(`❌ Upload error: ${error.message}`, 'error');
+                    }
+                }
+
+                completed++;
+                const percentage = Math.round((completed / totalFiles) * 100);
+                progressFill.style.width = `${percentage}%`;
+                progressText.textContent = `${percentage}% Complete (${completed}/${totalFiles})`;
+            }
+
+            // Upload complete
+            uploadProgress.style.display = 'none';
+            isUploading = false;
+            
+            if (successful === totalFiles) {
+                showStatus(`🎉 Successfully uploaded all ${successful} images!`, 'success');
+                clearAll();
+                loadRecentUploads();
+            } else if (successful > 0) {
+                showStatus(`⚠️ Uploaded ${successful} images, ${failed} failed`, 'error');
+            } else {
+                showStatus(`❌ Failed to upload images. Please try again.`, 'error');
+            }
+            
+            updateUploadButton();
+        }
+
+        // Load recent uploads
+        async function loadRecentUploads() {
+            try {
+                const q = query(
+                    collection(db, 'galleryImages'), 
+                    orderBy('uploadedAt', 'desc'), 
+                    limit(12)
+                );
+                const querySnapshot = await getDocs(q);
+                
+                recentUploads.innerHTML = '';
+                
+                if (querySnapshot.empty) {
+                    recentUploads.innerHTML = '<p>No recent uploads found.</p>';
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const image = doc.data();
+                    const recentItem = document.createElement('div');
+                    recentItem.className = 'recent-item';
+                    recentItem.innerHTML = `
+                        <img src="${image.imageUrl}" alt="${image.originalName}" class="recent-img">
+                        <div class="recent-info">
+                            <h4>${image.originalName}</h4>
+                            <p>Category: ${image.category}</p>
+                            <p>Uploaded: ${image.uploadedAt?.toDate?.()?.toLocaleDateString() || 'Recently'}</p>
+                        </div>
+                    `;
+                    recentUploads.appendChild(recentItem);
+                });
+
+            } catch (error) {
+                console.error('Error loading recent uploads:', error);
+                recentUploads.innerHTML = '<p>Error loading recent uploads.</p>';
+            }
+        }
+
+        // Show status message
+        function showStatus(message, type) {
+            statusMessage.innerHTML = `<div class="status-${type}">${message}</div>`;
+            setTimeout(hideStatus, 5000);
+        }
+
+        // Hide status message
+        function hideStatus() {
+            statusMessage.innerHTML = '';
+        }
+    </script>
+</body>
+</html>

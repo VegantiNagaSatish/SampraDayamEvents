@@ -1,0 +1,18 @@
+{
+  "name": "sampradayam-gallery-migration",
+  "version": "1.0.0",
+  "description": "Migration script for SampraDayam Events gallery images",
+  "main": "migrate-gallery.js",
+  "scripts": {
+    "migrate": "node migrate-gallery.js",
+    "test-migrate": "node migrate-gallery.js --test"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0",
+    "mime-types": "^2.1.35",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  }
+}

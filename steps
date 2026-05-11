@@ -1,0 +1,4 @@
+Phase 1: Set up database schema and migrate existing images
+Phase 2: Build admin interface for image management
+Phase 3: Convert frontend to dynamic loading
+Phase 4: Advanced features like image optimization

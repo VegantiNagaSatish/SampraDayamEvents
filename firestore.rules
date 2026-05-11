@@ -18,5 +18,29 @@ service cloud.firestore {
       allow read: if true;
       allow create, update, delete: if request.auth != null;
     }
+    
+    /* Gallery images: anyone can read (for public gallery); only signed-in admins can write */
+    match /images/{imageId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+    
+    /* Gallery categories: anyone can read; only signed-in admins can write */
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+    
+    /* Legacy gallery collections for backward compatibility */
+    /* TEMPORARY: Allow public writes for testing (change to 'if request.auth != null' for production!) */
+    match /galleryImages/{imageId} {
+      allow read: if true;
+      allow create, update, delete: if true; // TEMPORARY for testing
+    }
+    
+    match /galleryCategories/{categoryId} {
+      allow read: if true;
+      allow create, update, delete: if true; // TEMPORARY for testing
+    }
   }
 }

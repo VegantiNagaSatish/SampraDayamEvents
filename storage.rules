@@ -1,0 +1,11 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Gallery images: anyone can read (for public gallery display)
+    // Temporary: allow unauthenticated writes for testing (change this in production!)
+    match /gallery/{allPaths=**} {
+      allow read: if true;
+      allow write: if true; // TEMPORARY: Change to 'if request.auth != null' for production
+    }
+  }
+}
