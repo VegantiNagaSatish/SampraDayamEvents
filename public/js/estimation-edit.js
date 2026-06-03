@@ -316,7 +316,7 @@ function refreshLineTotals() {
 function updateInvoiceChrome() {
   const completed = currentStatus === 'completed';
   if (completeBtn) completeBtn.hidden = completed;
-  if (printBtn) printBtn.hidden = !completed;
+  if (printBtn) printBtn.hidden = false; // Always show print button
   if (shareWaBtn) shareWaBtn.hidden = !completed;
   if (saveDraftBtn) saveDraftBtn.textContent = completed ? 'Save' : 'Save draft';
   if (invoicePreviewNum) {
@@ -558,10 +558,17 @@ function hidePriceElementsForDelivery(hide) {
 }
 
 function applyPrintFormatAppearance() {
-  // Always apply delivery mode (no more estimate mode)
+  // Apply delivery mode (hide prices)
   setPrintDeliveryMode(true);
   hidePriceElementsForDelivery(true);
   if (docKickerEl) docKickerEl.textContent = 'DELIVERY NOTE';
+}
+
+function applyNormalPrintFormatAppearance() {
+  // Apply normal mode (show all prices)
+  setPrintDeliveryMode(false);
+  hidePriceElementsForDelivery(false);
+  if (docKickerEl) docKickerEl.textContent = 'ESTIMATION';
 }
 
 function resetPrintFormatAppearance() {
@@ -571,10 +578,101 @@ function resetPrintFormatAppearance() {
   if (docKickerEl) docKickerEl.textContent = DOC_KICKER_DEFAULT;
 }
 
-function runPrint() {
-  // Always print in delivery mode (hide line prices but show totals)
+function showPrintOptionsDialog() {
+  // Create modal overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'print-options-overlay';
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  `;
+
+  // Create modal dialog
+  const dialog = document.createElement('div');
+  dialog.className = 'print-options-dialog';
+  dialog.style.cssText = `
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  `;
+
+  dialog.innerHTML = `
+    <h3 style="margin: 0 0 1.5rem 0; color: var(--primary-color); font-family: 'Playfair Display', serif;">Print Options</h3>
+    <p style="margin: 0 0 1.5rem 0; color: #666; line-height: 1.4;">Choose the type of document to print:</p>
+    
+    <div style="margin-bottom: 1.5rem;">
+      <button type="button" class="btn btn-primary" id="printDeliveryNote" style="width: 100%; margin-bottom: 0.75rem;">
+        📋 Delivery Note
+        <small style="display: block; font-weight: normal; opacity: 0.8;">Hide prices (current behavior)</small>
+      </button>
+      
+      <button type="button" class="btn btn-outline" id="printNormalNote" style="width: 100%;">
+        📄 Normal Note
+        <small style="display: block; font-weight: normal; opacity: 0.8;">Show all prices and totals</small>
+      </button>
+    </div>
+    
+    <div style="text-align: right;">
+      <button type="button" class="btn btn-sm btn-outline" id="cancelPrint">Cancel</button>
+    </div>
+  `;
+
+  overlay.appendChild(dialog);
+  document.body.appendChild(overlay);
+
+  // Add event listeners
+  document.getElementById('printDeliveryNote').addEventListener('click', () => {
+    document.body.removeChild(overlay);
+    runPrint(true); // true = delivery mode
+  });
+
+  document.getElementById('printNormalNote').addEventListener('click', () => {
+    document.body.removeChild(overlay);
+    runPrint(false); // false = normal mode
+  });
+
+  document.getElementById('cancelPrint').addEventListener('click', () => {
+    document.body.removeChild(overlay);
+  });
+
+  // Close on overlay click
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      document.body.removeChild(overlay);
+    }
+  });
+
+  // Close on Escape key
+  const handleEscape = (e) => {
+    if (e.key === 'Escape') {
+      document.body.removeChild(overlay);
+      document.removeEventListener('keydown', handleEscape);
+    }
+  };
+  document.addEventListener('keydown', handleEscape);
+}
+
+function runPrint(deliveryMode = true) {
+  // deliveryMode: true = hide prices (delivery note), false = show prices (normal note)
+  currentPrintMode = deliveryMode ? 'delivery' : 'normal';
   syncAllOptionalLineDescPrintClasses();
-  applyPrintFormatAppearance();
+  
+  if (deliveryMode) {
+    applyPrintFormatAppearance();
+  } else {
+    applyNormalPrintFormatAppearance();
+  }
   
   const doPrint = () => {
     // Extra delay for Android devices to ensure styles are applied
@@ -584,7 +682,11 @@ function runPrint() {
     setTimeout(() => {
       // Reapply formatting just before printing on Android
       if (isAndroid) {
-        applyPrintFormatAppearance();
+        if (deliveryMode) {
+          applyPrintFormatAppearance();
+        } else {
+          applyNormalPrintFormatAppearance();
+        }
       }
       window.print();
     }, delay);
@@ -597,15 +699,27 @@ function runPrint() {
   }
 }
 
+// Track the current print mode for beforeprint event
+let currentPrintMode = 'delivery'; // 'delivery' or 'normal'
+
 window.addEventListener('beforeprint', () => {
   syncAllOptionalLineDescPrintClasses();
-  applyPrintFormatAppearance();
   
-  // Android-specific: Force reapply delivery mode styling
+  if (currentPrintMode === 'delivery') {
+    applyPrintFormatAppearance();
+  } else {
+    applyNormalPrintFormatAppearance();
+  }
+  
+  // Android-specific: Force reapply styling
   const isAndroid = /Android/i.test(navigator.userAgent);
   if (isAndroid) {
     setTimeout(() => {
-      applyPrintFormatAppearance();
+      if (currentPrintMode === 'delivery') {
+        applyPrintFormatAppearance();
+      } else {
+        applyNormalPrintFormatAppearance();
+      }
     }, 100);
   }
 });
@@ -634,7 +748,7 @@ window.addEventListener('beforeprint', () => {
 
 if (printBtn) {
   printBtn.addEventListener('click', () => {
-    runPrint();
+    showPrintOptionsDialog();
   });
 }
 
