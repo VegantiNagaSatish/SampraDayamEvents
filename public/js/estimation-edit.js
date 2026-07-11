@@ -17,7 +17,7 @@ import { computeLine, formatINR, rupeesToWords, sumLineTotals } from './admin-ut
 const SELLER = {
   name: 'సంప్రదాయం ఈవెంట్స్',
   phones: '+91 8309133572, +91 7997449444',
-  email: 'sampradayam.events393@gmail.com'
+  email: 'telugintisampradayamevent@gmail.com'
 };
 
 function escapeHtml(str) {

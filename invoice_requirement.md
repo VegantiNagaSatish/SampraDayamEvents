@@ -188,7 +188,7 @@ This mirrors the layout observed in your sample PDF; the **live app** prints **E
 
 - Business name (Telugu + Latin branding as on letterhead)
 - Phone: multiple numbers (e.g. `+91 …`, `+91 …`)
-- Email: e.g. `sampradayam.events393@gmail.com`
+- Email: e.g. `telugintisampradayamevent@gmail.com`
 - Document title in app: **ESTIMATION** (sample PDF used **TAX INVOICE**)
 
 ### 10.2 Bill to & meta
