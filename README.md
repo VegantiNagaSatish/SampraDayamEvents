@@ -25,7 +25,7 @@ We specialize in creating unforgettable experiences for all your special occasio
 
 ## Contact
 
-- **Phone:** 83091 33572 · 79974 49444  
+- **Phone:** 83091 33572
 - **Email:** sampradayam.events393@gmail.com  
 - **Instagram:** [@_sampradayam_events](https://www.instagram.com/_sampradayam_events?igsh=bGJwbXo4bXJtMGho)  
 - **WhatsApp:** [83091 33572](https://wa.me/918309133572)
