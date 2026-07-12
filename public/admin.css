@@ -334,7 +334,23 @@ body.invoice-app-body {
 }
 
 .invoice-letterhead--estimation .te-brand--letterhead .te-brand__title {
-  color: var(--gold);
+  font-family: 'Noto Sans Telugu', 'Noto Serif Telugu', serif;
+  font-weight: 800;
+  font-size: clamp(1.45rem, 3.6vw, 1.9rem);
+  color: #fff200;
+  -webkit-text-stroke: 0;
+  text-shadow:
+    1.5px 0 0 #000,
+    -1.5px 0 0 #000,
+    0 1.5px 0 #000,
+    0 -1.5px 0 #000,
+    1.1px 1.1px 0 #000,
+    -1.1px 1.1px 0 #000,
+    1.1px -1.1px 0 #000,
+    -1.1px -1.1px 0 #000;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  -webkit-font-smoothing: antialiased;
 }
 
 .invoice-letterhead--estimation .te-brand--letterhead .te-brand__tagline {
@@ -967,6 +983,22 @@ a.admin-dashboard-card:hover {
     max-width: 16mm;
     border-radius: 2mm;
     box-shadow: none;
+  }
+
+  .invoice-letterhead--estimation .te-brand--letterhead .te-brand__title {
+    color: #fff200 !important;
+    -webkit-text-stroke: 0;
+    text-shadow:
+      1.5px 0 0 #000,
+      -1.5px 0 0 #000,
+      0 1.5px 0 #000,
+      0 -1.5px 0 #000,
+      1.1px 1.1px 0 #000,
+      -1.1px 1.1px 0 #000,
+      1.1px -1.1px 0 #000,
+      -1.1px -1.1px 0 #000;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   .invoice-doc {
