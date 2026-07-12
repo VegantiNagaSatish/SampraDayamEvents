@@ -1,0 +1,29 @@
+public/js/estimation-edit.js
+  edeb2c4d6cc2fda4 19,38
+public/admin.css
+  edeb2c4d6cc2fda4 276-278,281,284,286,288,294-297,299-302,312,316-343,350,357-358,581-582,954-961,968-969
+public/estimation-edit.html
+  edeb2c4d6cc2fda4 8,43
+public/styles.css
+  edeb2c4d6cc2fda4 53,113-114,1207,2276-2277
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.23",
+  "base_commit_sha": "f39af1770c7cbaa6d2b7a0b5d5561788d7df58a5",
+  "prompts": {
+    "edeb2c4d6cc2fda4": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "1cc71e46-b644-4c83-b205-49fa2f94a92a",
+        "model": "composer-2.5"
+      },
+      "human_author": "Veganti Satish <veganti.satish@gdn-commerce.com>",
+      "messages": [],
+      "total_additions": 199,
+      "total_deletions": 175,
+      "accepted_lines": 83,
+      "overriden_lines": 3
+    }
+  }
+}
