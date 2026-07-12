@@ -27,7 +27,7 @@ We specialize in creating unforgettable experiences for all your special occasio
 
 - **Phone:** 83091 33572
 - **Email:** telugintisampradayamevent@gmail.com  
-- **Instagram:** [@_sampradayam_events](https://www.instagram.com/_sampradayam_events?igsh=bGJwbXo4bXJtMGho)  
+- **Instagram:** [@teluginti_sampradayam](https://www.instagram.com/teluginti_sampradayam?igsh=MWEydTB4OGw1ZGd6OQ%3D%3D)  
 - **WhatsApp:** [83091 33572](https://wa.me/918309133572)
 
 ---
@@ -44,7 +44,7 @@ SampraDayamEvents/
 │   ├── contact.html            # Contact
 │   ├── styles.css              # Main stylesheet
 │   ├── script.js               # Navigation, gallery filters, lightbox, contact
-│   ├── sdLogo.jpeg             # Logo (favicon & nav)
+│   ├── sdLogo.png             # Logo (favicon & nav)
 │   ├── sdLogoBlack.png        # Logo variant
 │   └── SampraDayamGallery/     # Gallery images
 │       ├── Marriage/

@@ -15,8 +15,12 @@ import { auth, db } from './admin-shared.js';
 import { computeLine, formatINR, rupeesToWords, sumLineTotals } from './admin-utils.js';
 
 const SELLER = {
-  name: 'సంప్రదాయం ఈవెంట్స్',
-  phones: '+91 8309133572, +91 7997449444',
+  eyebrow: 'తెలుగింటి',
+  title: 'సంప్రదాయం',
+  tagline: 'మీ వేడుక... మా బాధ్యత...',
+  name: 'తెలుగింటి సంప్రదాయం ఈవెంట్స్',
+  proprietor: 'Siva Immanni',
+  phones: '+91 8309133572',
   email: 'telugintisampradayamevent@gmail.com'
 };
 
@@ -26,6 +30,16 @@ function escapeHtml(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+function renderLetterheadName(el) {
+  if (!el) return;
+  el.innerHTML =
+    '<div class="te-brand te-brand--letterhead" lang="te">' +
+    `<span class="te-brand__eyebrow">${escapeHtml(SELLER.eyebrow)}</span>` +
+    `<span class="te-brand__title">${escapeHtml(SELLER.title)}</span>` +
+    `<span class="te-brand__tagline">${escapeHtml(SELLER.tagline)}</span>` +
+    '</div>';
 }
 
 /** Catalog `name` values often include a trailing " — ₹…" from admin copy/paste; strip for dropdown + saved descriptions. */
@@ -61,7 +75,6 @@ let invoiceId = params.get('id');
 const billToEl = document.getElementById('billToName');
 const dateEl = document.getElementById('invoiceDate');
 const tbody = document.getElementById('lineItemsBody');
-const addLineBtn = document.getElementById('addLineBtn');
 const saveDraftBtn = document.getElementById('saveDraftBtn');
 const completeBtn = document.getElementById('completeInvoiceBtn');
 const printBtn = document.getElementById('printInvoiceBtn');
@@ -479,13 +492,15 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-if (addLineBtn) {
-  addLineBtn.addEventListener('click', () => {
-    const lines = getLinesFromDom();
-    lines.push(emptyLine());
-    renderLines(lines);
-  });
+function addEmptyLine() {
+  const lines = getLinesFromDom();
+  lines.push(emptyLine());
+  renderLines(lines);
 }
+
+document.querySelectorAll('.js-add-line-btn').forEach((btn) => {
+  btn.addEventListener('click', addEmptyLine);
+});
 
 if (saveDraftBtn) {
   saveDraftBtn.addEventListener('click', async () => {
@@ -510,8 +525,8 @@ if (completeBtn) {
 }
 
 // Print dialog elements removed - now using direct print
-const docKickerEl = document.querySelector('.invoice-letterhead__doc-kicker');
-const DOC_KICKER_DEFAULT = 'ESTIMATION';
+const docKickerEl = document.getElementById('printSellerDocType');
+const DOC_KICKER_DEFAULT = 'DELIVERY NOTE';
 
 /** Last format chosen in the print dialog; reapplied in `beforeprint` for correct layout. */
 // Print format is now always delivery mode
@@ -561,21 +576,27 @@ function applyPrintFormatAppearance() {
   // Apply delivery mode (hide prices)
   setPrintDeliveryMode(true);
   hidePriceElementsForDelivery(true);
-  if (docKickerEl) docKickerEl.textContent = 'DELIVERY NOTE';
+  if (docKickerEl) {
+    docKickerEl.textContent = 'DELIVERY NOTE';
+    docKickerEl.hidden = false;
+  }
 }
 
 function applyNormalPrintFormatAppearance() {
   // Apply normal mode (show all prices)
   setPrintDeliveryMode(false);
   hidePriceElementsForDelivery(false);
-  if (docKickerEl) docKickerEl.textContent = 'ESTIMATION';
+  if (docKickerEl) docKickerEl.hidden = true;
 }
 
 function resetPrintFormatAppearance() {
   // Reset to normal view (no delivery mode styling)
   setPrintDeliveryMode(false);
   hidePriceElementsForDelivery(false);
-  if (docKickerEl) docKickerEl.textContent = DOC_KICKER_DEFAULT;
+  if (docKickerEl) {
+    docKickerEl.textContent = DOC_KICKER_DEFAULT;
+    docKickerEl.hidden = true;
+  }
 }
 
 function showPrintOptionsDialog() {
@@ -765,13 +786,16 @@ if (shareWaBtn) {
 if (billToEl) billToEl.addEventListener('input', () => refreshLineTotals());
 if (dateEl) dateEl.addEventListener('input', () => refreshLineTotals());
 
+const printSellerProprietor = document.getElementById('printSellerProprietor');
 const printSellerName = document.getElementById('printSellerName');
 const printSellerPhones = document.getElementById('printSellerPhones');
 const printSellerEmail = document.getElementById('printSellerEmail');
 const printSignFor = document.getElementById('printSignFor');
 if (printSellerName) {
-  printSellerName.textContent = SELLER.name;
-  printSellerName.setAttribute('lang', 'te');
+  renderLetterheadName(printSellerName);
+}
+if (printSellerProprietor) {
+  printSellerProprietor.textContent = SELLER.proprietor;
 }
 renderLetterheadPhones(printSellerPhones);
 renderLetterheadEmail(printSellerEmail);

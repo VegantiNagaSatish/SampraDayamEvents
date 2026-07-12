@@ -8,14 +8,14 @@
   <link rel="stylesheet" href="admin.css?v=line-notes-only-1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@600;700&family=Poppins:wght@400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@600;700&family=Noto+Serif+Telugu:wght@400;600;700&family=Ramabhadra&family=Poppins:wght@400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 </head>
 <body class="invoice-app-body">
   <nav class="navbar">
     <div class="container">
       <div class="nav-wrapper">
         <a href="index.html" class="logo">
-          <img src="sdLogoBlack.jpeg" alt="SampraDayam Events Logo" class="logo-icon">
+          <img src="sdLogoBlack.png" alt="" class="logo-icon" aria-hidden="true">
           <div class="logo-main">
             <div class="te-brand te-brand--nav" lang="te">
 <span class="te-brand__eyebrow">తెలుగింటి</span>
@@ -40,15 +40,17 @@
   <main class="invoice-app-main">
     <div class="invoice-card">
       <header class="invoice-letterhead invoice-letterhead--estimation" aria-label="Business letterhead">
-        <img src="sdLogo.jpeg" alt="" class="invoice-letterhead__logo" width="180" height="180">
+        <img src="sdLogo.png" alt="" class="invoice-letterhead__logo" width="180" height="180">
         <div class="invoice-letterhead__center">
           <div id="printSellerName" class="invoice-letterhead__name"></div>
-          <div id="printSellerPhones" class="invoice-letterhead__phones"></div>
-          <div id="printSellerEmail" class="invoice-letterhead__email"></div>
         </div>
         <div class="invoice-letterhead__right">
-          <div class="invoice-letterhead__doc-stack">
-            <div class="invoice-letterhead__doc-kicker">ESTIMATION</div>
+          <div class="invoice-letterhead__contact-stack">
+            <div id="printSellerDocType" class="invoice-letterhead__doc-kicker invoice-letterhead__doc-kicker--delivery-only" hidden>DELIVERY NOTE</div>
+            <div class="invoice-letterhead__proprietor">
+              <span id="printSellerProprietor">Siva Immanni</span>
+            </div>
+            <div id="printSellerPhones" class="invoice-letterhead__phones"></div>
           </div>
         </div>
       </header>
@@ -91,7 +93,7 @@
       </div>
 
       <div class="invoice-toolbar invoice-toolbar--compact no-print">
-        <button type="button" class="btn btn-outline btn--toolbar" id="addLineBtn">Add line</button>
+        <button type="button" class="btn btn-outline btn--toolbar js-add-line-btn" id="addLineBtn">Add line</button>
       </div>
 
       <div class="invoice-table-wrap invoice-lines-scroll">
@@ -116,6 +118,10 @@
           </thead>
           <tbody id="lineItemsBody"></tbody>
         </table>
+      </div>
+
+      <div class="invoice-toolbar invoice-toolbar--compact no-print invoice-toolbar--after-lines">
+        <button type="button" class="btn btn-outline btn--toolbar js-add-line-btn">Add line</button>
       </div>
 
       <section class="invoice-doc invoice-doc--footer" aria-label="Estimation totals">
