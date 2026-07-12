@@ -16,7 +16,7 @@ import { computeLine, formatINR, rupeesToWords, sumLineTotals } from './admin-ut
 
 const SELLER = {
   eyebrow: 'తెలుగింటి',
-  title: 'సంప్రదాయం',
+  title: 'సంప్రదాయం ఈవెంట్స్',
   tagline: 'మీ వేడుక... మా బాధ్యత...',
   name: 'తెలుగింటి సంప్రదాయం ఈవెంట్స్',
   proprietor: 'Siva Immanni',
@@ -35,7 +35,7 @@ function escapeHtml(str) {
 function renderLetterheadName(el) {
   if (!el) return;
   el.innerHTML =
-    '<div class="te-brand te-brand--letterhead" lang="te">' +
+    '<div class="te-brand te-brand--nav te-brand--letterhead" lang="te">' +
     `<span class="te-brand__eyebrow">${escapeHtml(SELLER.eyebrow)}</span>` +
     `<span class="te-brand__title">${escapeHtml(SELLER.title)}</span>` +
     `<span class="te-brand__tagline">${escapeHtml(SELLER.tagline)}</span>` +
