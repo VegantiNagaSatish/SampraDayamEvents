@@ -45,7 +45,7 @@ SampraDayamEvents/
 │   ├── styles.css              # Main stylesheet
 │   ├── script.js               # Navigation, gallery filters, lightbox, contact
 │   ├── sdLogo.jpeg             # Logo (favicon & nav)
-│   ├── sdLogoBlack.jpeg        # Logo variant
+│   ├── sdLogoBlack.png        # Logo variant
 │   └── SampraDayamGallery/     # Gallery images
 │       ├── Marriage/
 │       │   ├── MarriageStages/ # Marriage stage photos
