@@ -3,548 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Upload Images | SampraDayam Events</title>
+    <title>Gallery upload | SampraDayam Events</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-            padding-top: 120px; /* Add space for fixed navbar */
-        }
-        
-        .admin-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            margin-top: 40px;
-            margin-bottom: 40px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .admin-header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 30px 0 20px 0;
-            border-bottom: 2px solid #f0f0f0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 10px 10px 0 0;
-            margin: -20px -20px 40px -20px;
-            padding: 40px 20px 30px 20px;
-        }
-        
-        .admin-header h1 {
-            color: white;
-            margin-bottom: 10px;
-            font-size: 2.5rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .admin-header p {
-            color: rgba(255,255,255,0.9);
-            font-size: 18px;
-            font-weight: 300;
-        }
-        
-        .upload-section {
-            margin-bottom: 40px;
-            padding: 30px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            border: 2px dashed #ddd;
-            text-align: center;
-        }
-        
-        .upload-section.dragover {
-            border-color: #007bff;
-            background: #e3f2fd;
-        }
-        
-        .file-input-wrapper {
-            position: relative;
-            display: inline-block;
-            margin: 20px 0;
-        }
-        
-        .file-input {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-        
-        .file-input-button {
-            display: inline-block;
-            padding: 15px 30px;
-            background: #007bff;
-            color: white;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-            border: none;
-            font-size: 16px;
-        }
-        
-        .file-input-button:hover {
-            background: #0056b3;
-        }
-        
-        .category-select {
-            margin: 20px 0;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            width: 200px;
-        }
-        
-        .upload-progress {
-            display: none;
-            margin: 20px 0;
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 20px;
-            background: #f0f0f0;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #007bff, #28a745);
-            width: 0%;
-            transition: width 0.3s;
-            border-radius: 10px;
-        }
-        
-        .file-preview {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-        
-        .preview-item {
-            position: relative;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .preview-img {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-            display: block;
-        }
-        
-        .preview-info {
-            padding: 10px;
-            font-size: 12px;
-            color: #666;
-        }
-        
-        .remove-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(255, 0, 0, 0.8);
-            color: white;
-            border: none;
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        .upload-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 20px 10px;
-            transition: background 0.3s;
-        }
-        
-        .upload-btn:hover {
-            background: #1e7e34;
-        }
-        
-        .upload-btn:disabled {
-            background: #6c757d;
-            cursor: not-allowed;
-        }
-        
-        .status-message {
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 8px;
-            font-weight: bold;
-            text-align: center;
-        }
-        
-        .status-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .status-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .status-info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-        
-        .recent-uploads {
-            margin-top: 40px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-        
-        .recent-uploads h3 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-        
-        .recent-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        
-        .recent-item {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .recent-img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-        }
-        
-        .recent-info {
-            padding: 15px;
-        }
-        
-        .recent-info h4 {
-            margin: 0 0 5px 0;
-            font-size: 14px;
-            color: #333;
-        }
-        
-        .recent-info p {
-            margin: 0;
-            font-size: 12px;
-            color: #666;
-        }
-        
-        .delete-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(220, 53, 69, 0.9);
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .recent-item:hover .delete-btn {
-            opacity: 1;
-        }
-        
-        .delete-btn:hover {
-            background: rgba(220, 53, 69, 1);
-            transform: scale(1.1);
-        }
-        
-        .delete-mode {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 8px;
-            text-align: center;
-        }
-        
-        .delete-mode h4 {
-            color: #856404;
-            margin: 0 0 10px 0;
-        }
-        
-        .delete-mode p {
-            color: #856404;
-            margin: 0 0 15px 0;
-        }
-        
-        .toggle-delete-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        
-        .toggle-delete-btn:hover {
-            background: #c82333;
-        }
-        
-        .toggle-delete-btn.active {
-            background: #28a745;
-        }
-        
-        .confirm-delete {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 8px;
-            text-align: center;
-            display: none;
-        }
-        
-        .confirm-delete.show {
-            display: block;
-        }
-        
-        .confirm-delete h4 {
-            margin: 0 0 10px 0;
-        }
-        
-        .confirm-delete p {
-            margin: 0 0 15px 0;
-        }
-        
-        .confirm-delete button {
-            margin: 0 10px;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        .confirm-yes {
-            background: #dc3545;
-            color: white;
-        }
-        
-        .confirm-no {
-            background: #6c757d;
-            color: white;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            body {
-                padding-top: 100px;
-            }
-            
-            .admin-container {
-                margin: 20px 10px;
-                padding: 15px;
-            }
-            
-            .admin-header {
-                margin: -15px -15px 30px -15px;
-                padding: 30px 15px 25px 15px;
-            }
-            
-            .admin-header h1 {
-                font-size: 2rem;
-            }
-            
-            .file-preview {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                gap: 10px;
-            }
-            
-            .recent-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 10px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
+<body class="invoice-app-body">
+    <nav class="navbar no-print">
         <div class="container">
             <div class="nav-wrapper">
                 <a href="index.html" class="logo">
                     <img src="sdLogoBlack.png" alt="" class="logo-icon" aria-hidden="true">
                     <div class="logo-main">
                         <div class="te-brand te-brand--nav" lang="te">
-<span class="te-brand__eyebrow">తెలుగింటి</span>
+                            <span class="te-brand__eyebrow">తెలుగింటి</span>
                             <span class="te-brand__title">సంప్రదాయం ఈవెంట్స్</span>
                             <span class="te-brand__tagline">మీ వేడుక... మా బాధ్యత...</span>
                         </div>
                     </div>
                 </a>
+                <button class="mobile-menu-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
                 <ul class="nav-menu">
                     <li><a href="index.html" class="nav-link">Home</a></li>
                     <li><a href="services.html" class="nav-link">Services</a></li>
                     <li><a href="gallery.html" class="nav-link">Gallery</a></li>
                     <li><a href="about.html" class="nav-link">About</a></li>
                     <li><a href="contact.html" class="nav-link">Contact</a></li>
-                    <li><a href="admin-dashboard.html" class="nav-link">Admin</a></li>
+                    <li><a href="admin-dashboard.html" class="nav-link active">Admin</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="admin-container">
-        <div class="admin-header">
-            <h1>🖼️ Upload Images to Gallery</h1>
-            <p>Add new event photos to your Firebase gallery. Images will appear automatically on the website.</p>
-        </div>
-
-        <!-- Upload Section -->
-        <div class="upload-section" id="uploadSection">
-            <h3>📤 Drop Images Here or Click to Select</h3>
-            <p>Supported formats: JPG, PNG, GIF, WebP (Max 5MB per image)</p>
-            
-            <div class="file-input-wrapper">
-                <input type="file" 
-                       id="fileInput" 
-                       class="file-input" 
-                       multiple 
-                       accept="image/*">
-                <button class="file-input-button">
-                    📁 Choose Images
-                </button>
+    <main class="invoice-app-main">
+        <div class="invoice-card">
+            <div class="invoice-toolbar invoice-toolbar--compact no-print catalog-toolbar">
+                <h1 class="catalog-page-title">Gallery upload</h1>
+                <div class="catalog-toolbar-actions">
+                    <a class="btn btn-outline btn--toolbar" href="admin-dashboard.html">Admin home</a>
+                    <a class="btn btn-outline btn--toolbar" href="gallery.html">View gallery</a>
+                </div>
             </div>
-            
-            <div>
-                <select id="categorySelect" class="category-select">
-                    <option value="">Select Category</option>
-                    <option value="birthday">🎂 Birthday</option>
-                    <option value="haldi">💛 Haldi</option>
-                    <option value="reception">🎉 Reception</option>
-                    <option value="marriagestage">💒 Marriage Stage</option>
-                    <option value="corporate">🏢 Corporate</option>
-                    <option value="dhoti">👕 Dhoti Ceremony</option>
-                    <option value="halfsaree">👗 Half Saree</option>
-                    <option value="housewarming">🏠 House Warming</option>
-                    <option value="gettogether">👥 Get Together</option>
-                </select>
+            <p class="invoice-muted no-print">Add new event photos to Firebase. Images appear automatically on the public gallery page.</p>
+
+            <div class="gallery-upload-dropzone" id="uploadSection">
+                <h2 class="gallery-upload-dropzone__title">Drop images here or click to select</h2>
+                <p class="gallery-upload-dropzone__hint">Supported formats: JPG, PNG, GIF, WebP (max 5MB per image)</p>
+                <div class="gallery-upload-dropzone__actions">
+                    <div class="gallery-upload-file-wrap">
+                        <input type="file" id="fileInput" class="gallery-upload-file-input" multiple accept="image/*">
+                        <button type="button" class="btn btn-outline">Choose images</button>
+                    </div>
+                    <select id="categorySelect" class="gallery-upload-category" aria-label="Image category">
+                        <option value="">Select category</option>
+                        <option value="birthday">Birthday</option>
+                        <option value="haldi">Haldi</option>
+                        <option value="reception">Reception</option>
+                        <option value="marriagestage">Marriage stage</option>
+                        <option value="corporate">Corporate</option>
+                        <option value="dhoti">Dhoti ceremony</option>
+                        <option value="halfsaree">Half saree</option>
+                        <option value="housewarming">House warming</option>
+                        <option value="gettogether">Get together</option>
+                    </select>
+                </div>
             </div>
-        </div>
 
-        <!-- File Preview -->
-        <div id="filePreview" class="file-preview"></div>
+            <div id="filePreview" class="gallery-upload-preview"></div>
 
-        <!-- Upload Progress -->
-        <div id="uploadProgress" class="upload-progress">
-            <h4>Uploading Images...</h4>
-            <div class="progress-bar">
-                <div id="progressFill" class="progress-fill"></div>
+            <div id="uploadProgress" class="gallery-upload-progress">
+                <h4 style="margin:0 0 0.75rem; font-size:0.95rem; color:var(--primary-color);">Uploading images…</h4>
+                <div class="gallery-upload-progress__bar">
+                    <div id="progressFill" class="gallery-upload-progress__fill"></div>
+                </div>
+                <p id="progressText" class="gallery-upload-progress__text">0% complete</p>
             </div>
-            <p id="progressText">0% Complete</p>
-        </div>
 
-        <!-- Action Buttons -->
-        <div style="text-align: center; margin: 30px 0;">
-            <button id="uploadBtn" class="upload-btn" disabled>
-                🚀 Upload Images to Firebase
-            </button>
-            <button id="clearBtn" class="upload-btn" style="background: #6c757d;">
-                🗑️ Clear All
-            </button>
-        </div>
+            <div class="gallery-upload-actions no-print">
+                <button type="button" id="uploadBtn" class="btn btn-primary btn--toolbar" disabled>Upload to Firebase</button>
+                <button type="button" id="clearBtn" class="btn btn-outline btn--toolbar">Clear all</button>
+            </div>
 
-        <!-- Status Messages -->
-        <div id="statusMessage"></div>
+            <div id="statusMessage" class="gallery-upload-status"></div>
 
-        <!-- Delete Mode Toggle -->
-        <div class="delete-mode">
-            <h4>🗑️ Image Management</h4>
-            <p>Toggle delete mode to remove unwanted images from your gallery</p>
-            <button id="toggleDeleteBtn" class="toggle-delete-btn">
-                🗑️ Enable Delete Mode
-            </button>
-            <button id="bulkDeleteBtn" class="toggle-delete-btn" style="background: #fd7e14; display: none; margin-left: 10px;">
-                🗑️ Delete All Visible
-            </button>
-        </div>
+            <div class="gallery-upload-panel gallery-upload-panel--warning no-print">
+                <h3 class="gallery-upload-panel__title">Image management</h3>
+                <p class="gallery-upload-panel__hint">Toggle delete mode to remove unwanted images from your gallery.</p>
+                <button type="button" id="toggleDeleteBtn" class="btn btn-outline btn--toolbar toggle-delete-btn">Enable delete mode</button>
+                <button type="button" id="bulkDeleteBtn" class="btn btn-outline btn--toolbar" style="display:none; margin-left:0.35rem;">Delete all visible</button>
+            </div>
 
-        <!-- Confirm Delete Dialog -->
-        <div id="confirmDelete" class="confirm-delete">
-            <h4>⚠️ Confirm Delete</h4>
-            <p id="deleteMessage">Are you sure you want to delete this image?</p>
-            <button id="confirmYes" class="confirm-yes">🗑️ Yes, Delete</button>
-            <button id="confirmNo" class="confirm-no">❌ Cancel</button>
-        </div>
+            <div id="confirmDelete" class="gallery-upload-confirm">
+                <h4>Confirm delete</h4>
+                <p id="deleteMessage">Are you sure you want to delete this image?</p>
+                <div class="gallery-upload-confirm__actions">
+                    <button type="button" id="confirmYes" class="btn btn-primary btn--toolbar">Yes, delete</button>
+                    <button type="button" id="confirmNo" class="btn btn-outline btn--toolbar">Cancel</button>
+                </div>
+            </div>
 
-        <!-- Recent Uploads -->
-        <div class="recent-uploads">
-            <h3>📸 Recent Uploads</h3>
-            <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
-                <span id="deleteInstructions" style="display: none;">
-                    🗑️ <strong>Delete Mode Active:</strong> Click the red ❌ button on any image to delete it
-                </span>
-                <span id="normalInstructions">
-                    Click on any image to view it in full size
-                </span>
-            </p>
-            <div id="recentUploads" class="recent-grid">
-                <p>Loading recent uploads...</p>
+            <div class="gallery-upload-panel">
+                <h3 class="gallery-upload-panel__title">Recent uploads</h3>
+                <p class="gallery-upload-panel__hint">
+                    <span id="deleteInstructions" hidden>Delete mode active: click the red button on any image to delete it.</span>
+                    <span id="normalInstructions">Click any image to view it full size.</span>
+                </p>
+                <div id="recentUploads" class="gallery-upload-recent">
+                    <p class="invoice-muted">Loading recent uploads…</p>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <script type="module">
         // Firebase imports
         import { firebaseConfig } from './js/firebase-config.js';
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-        // Removed auth import for simplified testing
         import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const storage = getStorage(app);
         const db = getFirestore(app);
 
-        // Simplified for testing (no auth required)
-        let isAuthenticated = true;
-
-        // DOM elements
         const uploadSection = document.getElementById('uploadSection');
         const fileInput = document.getElementById('fileInput');
         const categorySelect = document.getElementById('categorySelect');
@@ -564,42 +147,27 @@
         const normalInstructions = document.getElementById('normalInstructions');
         const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
 
-        // State
         let selectedFiles = [];
         let isUploading = false;
         let deleteMode = false;
         let pendingDelete = null;
 
-        // Test Firebase connection
         async function testFirebaseConnection() {
             try {
-                console.log('🔍 Testing Firebase connection...');
-                console.log('📋 Firebase config:', firebaseConfig);
-                console.log('🏪 Storage instance:', storage);
-                console.log('💾 Firestore instance:', db);
-                
-                // Test Firestore read
-                console.log('📖 Testing Firestore read...');
                 const testQuery = query(collection(db, 'galleryImages'), limit(1));
-                const testSnapshot = await getDocs(testQuery);
-                console.log('✅ Firestore read successful, docs:', testSnapshot.size);
-                
-                showStatus('✅ Firebase connection successful', 'success');
-                
+                await getDocs(testQuery);
+                showStatus('Firebase connection successful', 'success');
             } catch (error) {
-                console.error('❌ Firebase connection test failed:', error);
-                showStatus(`❌ Firebase connection failed: ${error.message}`, 'error');
+                console.error('Firebase connection test failed:', error);
+                showStatus(`Firebase connection failed: ${error.message}`, 'error');
             }
         }
 
-        // Initialize
         testFirebaseConnection();
         loadRecentUploads();
 
-        // File input change handler
         fileInput.addEventListener('change', handleFileSelect);
 
-        // Drag and drop handlers
         uploadSection.addEventListener('dragover', (e) => {
             e.preventDefault();
             uploadSection.classList.add('dragover');
@@ -613,14 +181,14 @@
         uploadSection.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadSection.classList.remove('dragover');
-            const files = Array.from(e.dataTransfer.files);
-            handleFiles(files);
+            handleFiles(Array.from(e.dataTransfer.files));
         });
 
-        // Category select handler
-        categorySelect.addEventListener('change', updateUploadButton);
+        uploadSection.querySelector('.gallery-upload-file-wrap button')?.addEventListener('click', () => {
+            fileInput.click();
+        });
 
-        // Button handlers
+        categorySelect.addEventListener('change', updateUploadButton);
         uploadBtn.addEventListener('click', uploadImages);
         clearBtn.addEventListener('click', clearAll);
         toggleDeleteBtn.addEventListener('click', toggleDeleteMode);
@@ -628,28 +196,22 @@
         confirmNo.addEventListener('click', cancelDelete);
         bulkDeleteBtn.addEventListener('click', bulkDeleteImages);
 
-        // Handle file selection
         function handleFileSelect(e) {
-            const files = Array.from(e.target.files);
-            handleFiles(files);
+            handleFiles(Array.from(e.target.files));
         }
 
-        // Handle files (from input or drag-drop)
         function handleFiles(files) {
-            const validFiles = files.filter(file => {
+            const validFiles = files.filter((file) => {
                 const isImage = file.type.startsWith('image/');
-                const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB limit
-                
+                const isValidSize = file.size <= 5 * 1024 * 1024;
                 if (!isImage) {
-                    showStatus(`❌ ${file.name} is not an image file`, 'error');
+                    showStatus(`${file.name} is not an image file`, 'error');
                     return false;
                 }
-                
                 if (!isValidSize) {
-                    showStatus(`❌ ${file.name} is too large (max 5MB)`, 'error');
+                    showStatus(`${file.name} is too large (max 5MB)`, 'error');
                     return false;
                 }
-                
                 return true;
             });
 
@@ -658,30 +220,27 @@
             updateUploadButton();
         }
 
-        // Display file preview
         function displayFilePreview() {
             filePreview.innerHTML = '';
-            
+
             selectedFiles.forEach((file, index) => {
                 const previewItem = document.createElement('div');
-                previewItem.className = 'preview-item';
-                
+                previewItem.className = 'gallery-upload-preview__item';
+
                 const img = document.createElement('img');
-                img.className = 'preview-img';
+                img.className = 'gallery-upload-preview__img';
                 img.src = URL.createObjectURL(file);
-                
+
                 const info = document.createElement('div');
-                info.className = 'preview-info';
-                info.innerHTML = `
-                    <strong>${file.name}</strong><br>
-                    ${(file.size / 1024 / 1024).toFixed(2)} MB
-                `;
-                
+                info.className = 'gallery-upload-preview__info';
+                info.innerHTML = `<strong>${file.name}</strong><br>${(file.size / 1024 / 1024).toFixed(2)} MB`;
+
                 const removeBtn = document.createElement('button');
-                removeBtn.className = 'remove-btn';
+                removeBtn.type = 'button';
+                removeBtn.className = 'gallery-upload-preview__remove';
                 removeBtn.innerHTML = '×';
                 removeBtn.onclick = () => removeFile(index);
-                
+
                 previewItem.appendChild(img);
                 previewItem.appendChild(info);
                 previewItem.appendChild(removeBtn);
@@ -689,14 +248,12 @@
             });
         }
 
-        // Remove file from selection
         function removeFile(index) {
             selectedFiles.splice(index, 1);
             displayFilePreview();
             updateUploadButton();
         }
 
-        // Clear all files
         function clearAll() {
             selectedFiles = [];
             fileInput.value = '';
@@ -705,28 +262,20 @@
             hideStatus();
         }
 
-        // Update upload button state
         function updateUploadButton() {
             const hasFiles = selectedFiles.length > 0;
             const hasCategory = categorySelect.value !== '';
             uploadBtn.disabled = !hasFiles || !hasCategory || isUploading;
-            
-            if (isUploading) {
-                uploadBtn.textContent = '⏳ Uploading...';
-            } else {
-                uploadBtn.textContent = '🚀 Upload Images to Firebase';
-            }
+            uploadBtn.textContent = isUploading ? 'Uploading…' : 'Upload to Firebase';
         }
 
-        // Upload images to Firebase
         async function uploadImages() {
             if (!categorySelect.value) {
-                showStatus('❌ Please select a category', 'error');
+                showStatus('Please select a category', 'error');
                 return;
             }
-
             if (selectedFiles.length === 0) {
-                showStatus('❌ Please select at least one image', 'error');
+                showStatus('Please select at least one image', 'error');
                 return;
             }
 
@@ -740,34 +289,20 @@
             let successful = 0;
             let failed = 0;
 
-            showStatus(`🚀 Uploading ${totalFiles} images...`, 'info');
+            showStatus(`Uploading ${totalFiles} image${totalFiles === 1 ? '' : 's'}…`, 'info');
 
             for (const file of selectedFiles) {
                 try {
-                    console.log(`🔄 Starting upload for: ${file.name}`);
-                    
-                    // Create unique filename
                     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
                     const fileName = `${timestamp}-${file.name}`;
                     const storagePath = `gallery/${category}/${fileName}`;
-                    
-                    console.log(`📁 Storage path: ${storagePath}`);
-                    
-                    // Upload to Firebase Storage
                     const storageRef = ref(storage, storagePath);
-                    console.log(`📤 Uploading to Firebase Storage...`);
-                    
                     const snapshot = await uploadBytes(storageRef, file);
-                    console.log(`✅ Storage upload complete, getting download URL...`);
-                    
                     const downloadURL = await getDownloadURL(snapshot.ref);
-                    console.log(`✅ Download URL obtained: ${downloadURL.substring(0, 50)}...`);
-                    
-                    // Save metadata to Firestore
-                    console.log(`💾 Saving metadata to Firestore...`);
+
                     await addDoc(collection(db, 'galleryImages'), {
                         originalName: fileName,
-                        category: category,
+                        category,
                         imageUrl: downloadURL,
                         uploadedAt: new Date(),
                         uploadedBy: 'admin-web',
@@ -776,204 +311,144 @@
                     });
 
                     successful++;
-                    console.log(`✅ Complete upload success: ${fileName}`);
-                    
                 } catch (error) {
                     failed++;
-                    console.error(`❌ Failed to upload ${file.name}:`, error);
-                    console.error(`❌ Error code: ${error.code}`);
-                    console.error(`❌ Error message: ${error.message}`);
-                    console.error(`❌ Full error:`, error);
-                    
-                    // Show specific error details
-                    if (error.code === 'storage/unauthorized') {
-                        showStatus('❌ Storage unauthorized. Checking Firebase Auth...', 'error');
-                    } else if (error.code === 'storage/unknown') {
-                        showStatus('❌ Storage error. Check Firebase configuration.', 'error');
-                    } else if (error.code === 'permission-denied') {
-                        showStatus('❌ Permission denied. Check Storage rules.', 'error');
-                    } else {
-                        showStatus(`❌ Upload error: ${error.message}`, 'error');
-                    }
+                    console.error(`Failed to upload ${file.name}:`, error);
+                    showStatus(`Upload error: ${error.message}`, 'error');
                 }
 
                 completed++;
                 const percentage = Math.round((completed / totalFiles) * 100);
                 progressFill.style.width = `${percentage}%`;
-                progressText.textContent = `${percentage}% Complete (${completed}/${totalFiles})`;
+                progressText.textContent = `${percentage}% complete (${completed}/${totalFiles})`;
             }
 
-            // Upload complete
             uploadProgress.style.display = 'none';
             isUploading = false;
-            
+
             if (successful === totalFiles) {
-                showStatus(`🎉 Successfully uploaded all ${successful} images!`, 'success');
+                showStatus(`Successfully uploaded all ${successful} images`, 'success');
                 clearAll();
                 loadRecentUploads();
             } else if (successful > 0) {
-                showStatus(`⚠️ Uploaded ${successful} images, ${failed} failed`, 'error');
+                showStatus(`Uploaded ${successful} images, ${failed} failed`, 'error');
             } else {
-                showStatus(`❌ Failed to upload images. Please try again.`, 'error');
+                showStatus('Failed to upload images. Please try again.', 'error');
             }
-            
+
             updateUploadButton();
         }
 
-        // Load recent uploads
         async function loadRecentUploads() {
             try {
-                const q = query(
-                    collection(db, 'galleryImages'), 
-                    orderBy('uploadedAt', 'desc'), 
-                    limit(12)
-                );
+                const q = query(collection(db, 'galleryImages'), orderBy('uploadedAt', 'desc'), limit(12));
                 const querySnapshot = await getDocs(q);
-                
+
                 recentUploads.innerHTML = '';
-                
+
                 if (querySnapshot.empty) {
-                    recentUploads.innerHTML = '<p>No recent uploads found.</p>';
+                    recentUploads.innerHTML = '<p class="invoice-muted">No recent uploads found.</p>';
                     return;
                 }
 
                 const allDocs = [];
-                querySnapshot.forEach((doc) => {
-                    allDocs.push(doc);
-                });
+                querySnapshot.forEach((item) => allDocs.push(item));
 
-                allDocs.forEach((doc) => {
-                    const image = doc.data();
+                allDocs.forEach((item) => {
+                    const image = item.data();
                     const recentItem = document.createElement('div');
-                    recentItem.className = 'recent-item';
-                    recentItem.style.position = 'relative';
-                    
+                    recentItem.className = 'gallery-upload-recent__item';
+
                     recentItem.innerHTML = `
-                        <img src="${image.imageUrl}" alt="${image.originalName}" class="recent-img">
-                        <div class="recent-info">
+                        <img src="${image.imageUrl}" alt="${image.originalName}" class="gallery-upload-recent__img">
+                        <div class="gallery-upload-recent__info">
                             <h4>${image.originalName}</h4>
                             <p>Category: ${image.category}</p>
                             <p>Uploaded: ${image.uploadedAt?.toDate?.()?.toLocaleDateString() || 'Recently'}</p>
                         </div>
                     `;
-                    
-                    // Add delete button if in delete mode
+
                     if (deleteMode) {
                         const deleteBtn = document.createElement('button');
-                        deleteBtn.className = 'delete-btn';
-                        deleteBtn.innerHTML = '❌';
-                        deleteBtn.style.opacity = '1'; // Always visible in delete mode
+                        deleteBtn.type = 'button';
+                        deleteBtn.className = 'gallery-upload-recent__delete is-visible';
+                        deleteBtn.innerHTML = '×';
                         deleteBtn.onclick = (e) => {
                             e.stopPropagation();
-                            showDeleteConfirmation(doc);
+                            showDeleteConfirmation(item);
                         };
                         recentItem.appendChild(deleteBtn);
-                    }
-                    
-                    // Add click handler for image viewing (when not in delete mode)
-                    if (!deleteMode) {
+                    } else {
                         recentItem.style.cursor = 'pointer';
-                        recentItem.onclick = () => {
-                            // Open image in new tab for viewing
-                            window.open(image.imageUrl, '_blank');
-                        };
+                        recentItem.onclick = () => window.open(image.imageUrl, '_blank');
                     }
-                    
+
                     recentUploads.appendChild(recentItem);
-                    
-                    // Store doc reference for delete functionality
-                    recentItem.imageDoc = doc;
+                    recentItem.imageDoc = item;
                 });
 
-                // Make docs available globally for delete buttons
                 window.recentImageDocs = allDocs;
-
             } catch (error) {
                 console.error('Error loading recent uploads:', error);
-                recentUploads.innerHTML = '<p>Error loading recent uploads.</p>';
+                recentUploads.innerHTML = '<p class="invoice-muted">Error loading recent uploads.</p>';
             }
         }
 
-        // Show status message
         function showStatus(message, type) {
             statusMessage.innerHTML = `<div class="status-${type}">${message}</div>`;
             setTimeout(hideStatus, 5000);
         }
 
-        // Hide status message
         function hideStatus() {
             statusMessage.innerHTML = '';
         }
 
-        // Toggle delete mode
         function toggleDeleteMode() {
             deleteMode = !deleteMode;
-            
+
             if (deleteMode) {
-                toggleDeleteBtn.textContent = '✅ Exit Delete Mode';
+                toggleDeleteBtn.textContent = 'Exit delete mode';
                 toggleDeleteBtn.classList.add('active');
                 bulkDeleteBtn.style.display = 'inline-block';
-                deleteInstructions.style.display = 'inline';
-                normalInstructions.style.display = 'none';
-                showStatus('🗑️ Delete mode enabled. Click ❌ on any image to delete it.', 'info');
+                deleteInstructions.hidden = false;
+                normalInstructions.hidden = true;
+                showStatus('Delete mode enabled. Click × on any image to delete it.', 'info');
             } else {
-                toggleDeleteBtn.textContent = '🗑️ Enable Delete Mode';
+                toggleDeleteBtn.textContent = 'Enable delete mode';
                 toggleDeleteBtn.classList.remove('active');
                 bulkDeleteBtn.style.display = 'none';
-                deleteInstructions.style.display = 'none';
-                normalInstructions.style.display = 'inline';
+                deleteInstructions.hidden = true;
+                normalInstructions.hidden = false;
                 hideStatus();
             }
-            
-            // Re-render recent uploads to show/hide delete buttons
+
             loadRecentUploads();
         }
 
-        // Delete image
         async function deleteImage(imageDoc) {
             try {
-                showStatus('🗑️ Deleting image...', 'info');
-                
+                showStatus('Deleting image…', 'info');
                 const imageData = imageDoc.data();
-                console.log('🗑️ Deleting image:', imageData.originalName);
-                
-                // Delete from Firebase Storage
-                console.log('📁 Deleting from Storage...');
                 const storagePath = `gallery/${imageData.category}/${imageData.originalName}`;
-                const storageRef = ref(storage, storagePath);
-                await deleteObject(storageRef);
-                console.log('✅ Storage deletion complete');
-                
-                // Delete from Firestore
-                console.log('💾 Deleting from Firestore...');
+                await deleteObject(ref(storage, storagePath));
                 await deleteDoc(doc(db, 'galleryImages', imageDoc.id));
-                console.log('✅ Firestore deletion complete');
-                
-                showStatus('✅ Image deleted successfully!', 'success');
-                
-                // Reload recent uploads
+                showStatus('Image deleted successfully', 'success');
                 await loadRecentUploads();
-                
                 setTimeout(hideStatus, 3000);
-                
             } catch (error) {
-                console.error('❌ Error deleting image:', error);
-                showStatus(`❌ Failed to delete image: ${error.message}`, 'error');
+                console.error('Error deleting image:', error);
+                showStatus(`Failed to delete image: ${error.message}`, 'error');
             }
         }
 
-        // Show delete confirmation
-        window.showDeleteConfirmation = function(imageDoc) {
+        window.showDeleteConfirmation = function (imageDoc) {
             const imageData = imageDoc.data();
             pendingDelete = imageDoc;
-            
-            const deleteMessage = document.getElementById('deleteMessage');
-            deleteMessage.textContent = `Are you sure you want to delete "${imageData.originalName}"? This action cannot be undone.`;
-            
+            document.getElementById('deleteMessage').textContent =
+                `Are you sure you want to delete "${imageData.originalName}"? This cannot be undone.`;
             confirmDelete.classList.add('show');
-        }
+        };
 
-        // Confirm delete
         async function confirmDeleteImage() {
             if (pendingDelete) {
                 confirmDelete.classList.remove('show');
@@ -982,58 +457,50 @@
             }
         }
 
-        // Cancel delete
         function cancelDelete() {
             confirmDelete.classList.remove('show');
             pendingDelete = null;
         }
 
-        // Bulk delete all visible images
         async function bulkDeleteImages() {
             if (!window.recentImageDocs || window.recentImageDocs.length === 0) {
-                showStatus('❌ No images to delete', 'error');
+                showStatus('No images to delete', 'error');
                 return;
             }
 
-            const confirmed = confirm(`⚠️ Are you sure you want to delete ALL ${window.recentImageDocs.length} visible images? This cannot be undone!`);
+            const confirmed = confirm(
+                `Are you sure you want to delete all ${window.recentImageDocs.length} visible images? This cannot be undone.`
+            );
             if (!confirmed) return;
 
-            showStatus(`🗑️ Deleting ${window.recentImageDocs.length} images...`, 'info');
-            
+            showStatus(`Deleting ${window.recentImageDocs.length} images…`, 'info');
+
             let deleted = 0;
             let failed = 0;
 
             for (const imageDoc of window.recentImageDocs) {
                 try {
                     const imageData = imageDoc.data();
-                    
-                    // Delete from Firebase Storage
                     const storagePath = `gallery/${imageData.category}/${imageData.originalName}`;
-                    const storageRef = ref(storage, storagePath);
-                    await deleteObject(storageRef);
-                    
-                    // Delete from Firestore
+                    await deleteObject(ref(storage, storagePath));
                     await deleteDoc(doc(db, 'galleryImages', imageDoc.id));
-                    
                     deleted++;
-                    showStatus(`🗑️ Deleted ${deleted}/${window.recentImageDocs.length} images...`, 'info');
-                    
                 } catch (error) {
                     failed++;
-                    console.error('❌ Error deleting image:', error);
+                    console.error('Error deleting image:', error);
                 }
             }
 
             if (failed === 0) {
-                showStatus(`✅ Successfully deleted all ${deleted} images!`, 'success');
+                showStatus(`Successfully deleted all ${deleted} images`, 'success');
             } else {
-                showStatus(`⚠️ Deleted ${deleted} images, ${failed} failed`, 'error');
+                showStatus(`Deleted ${deleted} images, ${failed} failed`, 'error');
             }
 
-            // Reload recent uploads
             await loadRecentUploads();
             setTimeout(hideStatus, 5000);
         }
     </script>
+    <script src="script.js"></script>
 </body>
 </html>

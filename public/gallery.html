@@ -396,7 +396,7 @@
                 }));
                 
                 // Update status periodically
-                statusText.textContent = `Getting URLs... ${Math.min(i + batchSize, allImages.length)}/${allImages.length}`;
+                statusText.textContent = `Fetching Memories... ${Math.min(i + batchSize, allImages.length)}/${allImages.length}`;
             }
             
             statusText.textContent = `✅ Processed ${allImages.length} images (${successCount} success, ${errorCount} fallback)`;
