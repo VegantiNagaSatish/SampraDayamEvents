@@ -1,0 +1,45 @@
+public/js/admin-home-content.js
+  edeb2c4d6cc2fda4 1-295
+public/admin-dashboard.html
+  edeb2c4d6cc2fda4 74-78
+public/admin.css
+  edeb2c4d6cc2fda4 2317-2407
+README.md
+  edeb2c4d6cc2fda4 90,102
+migrate-home-content.js
+  edeb2c4d6cc2fda4 1-106
+package.json
+  edeb2c4d6cc2fda4 8-10
+public/admin-home-content.html
+  edeb2c4d6cc2fda4 1-83
+public/js/home-content.js
+  edeb2c4d6cc2fda4 1-136
+public/js/home-content-defaults.js
+  edeb2c4d6cc2fda4 1-37
+public/index.html
+  edeb2c4d6cc2fda4 79,215,218,328
+public/script.js
+  edeb2c4d6cc2fda4 69-70,72-75,77-82
+firestore.rules
+  edeb2c4d6cc2fda4 8-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.23",
+  "base_commit_sha": "201714e3e0fa7a407e8f7575eba8e689d7687872",
+  "prompts": {
+    "edeb2c4d6cc2fda4": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "1cc71e46-b644-4c83-b205-49fa2f94a92a",
+        "model": "composer-2.5"
+      },
+      "human_author": "Veganti Satish <veganti.satish@gdn-commerce.com>",
+      "messages": [],
+      "total_additions": 824,
+      "total_deletions": 92,
+      "accepted_lines": 782,
+      "overriden_lines": 0
+    }
+  }
+}
