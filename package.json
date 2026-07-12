@@ -5,7 +5,9 @@
   "main": "migrate-gallery.js",
   "scripts": {
     "migrate": "node migrate-gallery.js",
-    "test-migrate": "node migrate-gallery.js --test"
+    "test-migrate": "node migrate-gallery.js --test",
+    "migrate-home-content": "node migrate-home-content.js",
+    "migrate-home-content:force": "node migrate-home-content.js --force"
   },
   "dependencies": {
     "firebase-admin": "^12.0.0",

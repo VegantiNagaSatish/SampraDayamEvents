@@ -5,7 +5,14 @@ service cloud.firestore {
       allow read, create, update, delete: if request.auth != null;
     }
     match /settings/{docId} {
-      allow read, write: if request.auth != null;
+      allow read: if docId == 'homepage' || request.auth != null;
+      allow write: if request.auth != null;
+    }
+
+    /* Homepage testimonials: public read; only signed-in admins can edit */
+    match /testimonials/{testimonialId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
     }
     match /catalogItems/{itemId} {
       allow read, write: if request.auth != null;

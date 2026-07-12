@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homepage content | SampraDayam Events</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+</head>
+<body class="invoice-app-body">
+  <nav class="navbar no-print">
+    <div class="container">
+      <div class="nav-wrapper">
+        <a href="index.html" class="logo">
+          <img src="sdLogoBlack.png" alt="" class="logo-icon" aria-hidden="true">
+          <div class="logo-main">
+            <div class="te-brand te-brand--nav" lang="te">
+              <span class="te-brand__eyebrow">తెలుగింటి</span>
+              <span class="te-brand__title">సంప్రదాయం ఈవెంట్స్</span>
+              <span class="te-brand__tagline">మీ వేడుక... మా బాధ్యత...</span>
+            </div>
+          </div>
+        </a>
+        <button class="mobile-menu-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="services.html" class="nav-link">Services</a></li>
+          <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+          <li><a href="about.html" class="nav-link">About</a></li>
+          <li><a href="contact.html" class="nav-link">Contact</a></li>
+          <li><a href="admin-dashboard.html" class="nav-link active">Admin</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="invoice-app-main">
+    <div class="invoice-card">
+      <div class="invoice-toolbar invoice-toolbar--compact no-print catalog-toolbar">
+        <h1 class="catalog-page-title">Homepage content</h1>
+        <div class="catalog-toolbar-actions">
+          <a class="btn btn-outline btn--toolbar" href="admin-dashboard.html">Admin home</a>
+          <a class="btn btn-outline btn--toolbar" href="index.html" target="_blank" rel="noopener noreferrer">View homepage</a>
+          <button type="button" class="btn btn-outline btn--toolbar" id="homeContentRefresh">Refresh</button>
+        </div>
+      </div>
+      <p class="invoice-muted no-print">Edit the hero stats and client reviews shown on the homepage. Changes appear on the public site after you save.</p>
+      <div id="homeContentError" class="invoice-alert no-print" hidden></div>
+
+      <section class="home-content-admin-section no-print">
+        <h2 class="home-content-admin-section__title">Hero stats</h2>
+        <p class="invoice-muted">Three numbers shown below the hero buttons on the homepage.</p>
+        <form id="statsForm" class="invoice-form home-content-stats-form">
+          <div id="statsFields"></div>
+          <div class="home-content-admin-actions">
+            <button type="button" class="btn btn-outline btn--toolbar" id="statsAddRow">Add stat</button>
+            <button type="submit" class="btn btn-primary btn--toolbar">Save stats</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="home-content-admin-section no-print">
+        <div class="home-content-admin-section__head">
+          <h2 class="home-content-admin-section__title">Client reviews</h2>
+          <button type="button" class="btn btn-primary btn--toolbar" id="reviewAddBtn">Add review</button>
+        </div>
+        <div id="reviewsList" class="home-content-reviews-list"></div>
+        <div class="home-content-admin-actions">
+          <button type="button" class="btn btn-outline btn--toolbar" id="seedDefaultsBtn">Load current defaults into database</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="adminToastHost" class="admin-toast-host" aria-live="polite" aria-relevant="additions text"></div>
+
+  <script type="module" src="js/admin-home-content.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

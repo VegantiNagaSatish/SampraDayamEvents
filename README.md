@@ -87,6 +87,7 @@ npx http-server public -p 8000
 1. Install CLI: `npm install -g firebase-tools`
 2. Login: `firebase login`
 3. Deploy: `firebase deploy --only hosting`
+4. Deploy Firestore rules (after editing `firestore.rules`): `firebase deploy --only firestore:rules`
 
 Hosting is configured to use the `public` directory.
 
@@ -98,7 +99,7 @@ Hosting is configured to use the `public` directory.
 - **Contact** — Form opens WhatsApp with pre-filled message  
 - **Maps** — Embedded Google Map for location  
 - **Favicon** — Site logo in browser tab  
-- **Dark theme** — Black backgrounds for header, gallery, and page headers  
+- **Homepage content** — Hero stats and client reviews load from Firestore; admins edit them at `admin-home-content.html` (no code changes needed)
 
 ## Pages
 

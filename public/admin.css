@@ -2314,3 +2314,94 @@ a.schedules-contact-link {
   border-color: #28a745 !important;
   color: #fff !important;
 }
+
+/* Homepage content admin */
+.home-content-admin-section {
+  margin-top: 2rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.home-content-admin-section__title {
+  margin: 0 0 0.35rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem;
+  color: var(--primary-color);
+}
+
+.home-content-admin-section__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.home-content-stats-form {
+  margin-top: 1rem;
+}
+
+.home-content-stat-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.home-content-stat-row__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 7rem;
+}
+
+.home-content-stat-row__field--grow {
+  flex: 1;
+  min-width: 12rem;
+}
+
+.home-content-stat-row__field span {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.home-content-admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.home-content-reviews-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.home-content-review-card {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  background: #fafafa;
+}
+
+.home-content-review-card textarea,
+.home-content-review-card input {
+  width: 100%;
+}
+
+.home-content-review-card__meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.home-content-review-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}

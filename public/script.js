@@ -66,12 +66,20 @@ const statsObserver = new IntersectionObserver((entries) => {
     });
 }, { threshold: 0.5 });
 
-// Observe all stat numbers
-document.addEventListener('DOMContentLoaded', () => {
+// Observe all stat numbers (also called after homepage stats load from Firebase)
+function initHeroStatCounters() {
     const statNumbers = document.querySelectorAll('.stat-number');
-    statNumbers.forEach(stat => {
-        statsObserver.observe(stat);
+    statNumbers.forEach((stat) => {
+        if (!stat.classList.contains('counted')) {
+            statsObserver.observe(stat);
+        }
     });
+}
+
+window.initHeroStatCounters = initHeroStatCounters;
+
+document.addEventListener('DOMContentLoaded', () => {
+    initHeroStatCounters();
 
     // Home gallery videos: play intro1 then intro2, then loop back to intro1
     const homeIntro1 = document.getElementById('homeGalleryIntro1');
