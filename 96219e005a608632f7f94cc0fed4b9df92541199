@@ -1,0 +1,23 @@
+public/styles.css
+  edeb2c4d6cc2fda4 2-3,22-26,77-94,152-308,2163-2174
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.23",
+  "base_commit_sha": "96219e005a608632f7f94cc0fed4b9df92541199",
+  "prompts": {
+    "edeb2c4d6cc2fda4": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "1cc71e46-b644-4c83-b205-49fa2f94a92a",
+        "model": "composer-2.5"
+      },
+      "human_author": "Veganti Satish <veganti.satish@gdn-commerce.com>",
+      "messages": [],
+      "total_additions": 288,
+      "total_deletions": 94,
+      "accepted_lines": 194,
+      "overriden_lines": 0
+    }
+  }
+}
